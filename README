@@ -6,7 +6,7 @@ https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
 2. Next, in order to get the interface to work download MySQL Connector/C++ Version 8 from here:
 https://dev.mysql.com/downloads/connector/cpp/
   2.1 Now, you need to tar it: https://dev.mysql.com/doc/connector-cpp/en/connector-cpp-installation-source-distribution.html
-  2.1 Build and install the package following the next part of the instructions.
+  2.2 Build and install the package following the next part of the instructions.
   
 3. You will also need MySQL Shell installed. Found here: https://dev.mysql.com/doc/refman/5.7/en/installing-mysql-shell-linux-quick.html
   3.1 Install the X Plugin as detailed here: https://dev.mysql.com/doc/refman/5.7/en/document-store-setting-up.html
