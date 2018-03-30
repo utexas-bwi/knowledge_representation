@@ -9,4 +9,4 @@ CPPFLAGS= -I $(MYSQL_CONCPP_DIR)/include -I /home/jason/hsr_ws/src/villa_krr/vil
 
 LDLIBS = -lmysqlcppconn8
 CXXFLAGS = -std=c++11
-high_level: interface.cpp high_level.cpp
+high_level: src/interface.cpp high_level.cpp
