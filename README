@@ -12,7 +12,7 @@ https://dev.mysql.com/downloads/connector/cpp/
   3.1 Install the X Plugin as detailed here: https://dev.mysql.com/doc/refman/5.7/en/document-store-setting-up.html
 
 4. Run the create_database.sql file in MySQL using 'source /path/to/create_database.sql'. This will create the schema on your SQL server.
-  4.1 Update username and password to whatever they are for your SQL server.
+  4.1 Update username and password in your program/high_level.cpp to whatever they are for your SQL server.
   
 5. Update the makefile and then use 'make' to build the library and your program that uses it. Replace the program listed as 'high_level' with your own program.
   Here you need to insert the proper paths of your MySQL Connector/C++ Library and the path of this repository's include directory on the system. 
