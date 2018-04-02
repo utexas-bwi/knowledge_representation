@@ -1,0 +1,10 @@
+#ifndef VILLA_WORLD_MODEL_SHORTTERMMEMORYINTERFACE_H
+#define VILLA_WORLD_MODEL_SHORTTERMMEMORYINTERFACE_H
+namespace knowledge_rep {
+
+    class ShortTermMemoryConduit {
+
+    };
+
+}
+#endif //VILLA_WORLD_MODEL_SHORTTERMMEMORYINTERFACE_H

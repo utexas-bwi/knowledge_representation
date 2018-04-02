@@ -3,7 +3,7 @@ create database villa_krr;
 use villa_krr;
 
 create table objects (
-    object_id int not null,
+    object_id int not null AUTO_INCREMENT,
     primary key(object_id)
 );
 
@@ -114,83 +114,3 @@ select object_id from object_attributes where attribute_name='is_a' and attribut
 insert into objects(object_id) values(3);
 insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(3, 'is_a', 0);
 */
-
-
-create table object_types (
-    type_name varchar(24),
-    primary key (type_name)
-);
-
-create table attribute_types (
-    attribute_name varchar(24),
-    primary key(attribute_name)
-);
-
-create table is_a (
-    more_specific varchar(24),
-    less_specific varchar(24),
-    primary key (more_specific, less_specific),
-    foreign key(more_specific) references object_types(type_name),
-    foreign key(less_specific) references object_types(type_name)
-);
-
-create table known_object_weights (
-    type_name varchar(24),
-    weight float,
-    primary key (type_name)
-);
-
-create table location (
-    object_id int not null,
-    location_id int not null,
-    is_in boolean,
-    is_on boolean,
-    primary key(object_id, location_id),
-    foreign key(object_id) references objects(id),
-    foreign key(location_id) references objects(id)
-);
-
-create table person (
-    person_id int not null,
-    primary key(person_id)
-);
-
-create table object_attributes (
-    object_id int not null,
-    attribute_name varchar(24),
-    primary key(object_id, attribute_name)
-);
-
-create table type_attributes (
-    type_name varchar(24),
-    attribute_name varchar(24),
-    primary key(type_name, attribute_name)
-);
-
-create table person_attributes (
-    person_id int not null,
-    attribute_name varchar(24),
-    primary key(person_id, attribute_name)
-);
-
-insert into object_types(type_name) values('unknown');
-insert into object_types(type_name) values('unknown_surface');
-insert into object_types(type_name) values('table');
-insert into object_types(type_name) values('surface');
-insert into object_types(type_name) values('shelf');
-insert into object_types(type_name) values('drink');
-insert into object_types(type_name) values('coke');
-insert into object_types(type_name) values('coke_can');
-insert into object_types(type_name) values('coke_bottle');
-
-insert into is_a(more_specific, less_specific) values('table', 'surface');
-insert into is_a(more_specific, less_specific) values('coke', 'drink');
-insert into is_a(more_specific, less_specific) values('coke_can', 'coke');
-insert into is_a(more_specific, less_specific) values('coke_bottle', 'coke');
-
-insert into object_types(type_name) values('room');
-insert into object_types(type_name) values('unknown_room');
-insert into object_types(type_name) values('kitchen');
-insert into object_types(type_name) values('dining room');
-insert into object_types(type_name) values('living room');
-
