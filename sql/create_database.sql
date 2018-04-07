@@ -3,18 +3,18 @@ create database villa_krr;
 use villa_krr;
 
 create table objects (
-    object_id int not null AUTO_INCREMENT,
+    object_id int NOT NULL AUTO_INCREMENT,
     primary key(object_id)
 );
 
 create table attributes (
-    attribute_name varchar(24) not null,
+    attribute_name varchar(24) NOT NULL,
     primary key(attribute_name)
 );
 
 create table object_attributes (
-    object_id int not null,
-    attribute_name varchar(24) not null,
+    object_id int NOT NULL,
+    attribute_name varchar(24) NOT NULL,
     attribute_value_object_id int,
     attribute_value_string varchar(24),
     attribute_value_float float,

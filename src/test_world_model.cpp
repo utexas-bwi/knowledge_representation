@@ -1,7 +1,7 @@
-#include <villa_world_model/LongTermMemoryConduit.h>
+#include <knowledge_representation/LongTermMemoryConduit.h>
 #include <iostream>
 #include <string>
-#include <villa_world_model/MemoryConduit.h>
+#include <knowledge_representation/MemoryConduit.h>
 
 using ::std::cout;
 using ::std::endl;
@@ -25,10 +25,21 @@ int main(int argc, const char* argv[]) {
 	// if you try this before and after you will see that the object and its relations have indeed been added.
 
 
-    int new_obj = ltmc.add_object();
-    assert(ltmc.object_exists(new_obj));
-    ltmc.add_object_attribute(new_obj, "concept", "coke");
+    int coke = ltmc.add_object();
+    int soda = ltmc.add_object();
+    int drinkable = ltmc.add_object();
+    assert(ltmc.object_exists(coke));
+    ltmc.add_object_attribute(coke, "concept", "coke");
+    ltmc.add_object_attribute(soda, "concept", "soda");
+    ltmc.add_object_attribute(drinkable, "concept", "drinkable");
+    ltmc.add_object_attribute(coke, "is_a", soda);
+    ltmc.add_object_attribute(soda, "is_a", drinkable);
 
+    auto attributes = ltmc.get_object_attribute(soda, "concept");
+    auto at = attributes[0];
+    assert(boost::get<std::string>(at) == string("soda"));
+    ltmc.delete_object(coke);
+    assert(!ltmc.object_exists(coke));
 
 	cout <<"Done!" << endl;
 } 

@@ -11,6 +11,7 @@ namespace knowledge_rep {
         LongTermMemoryConduit ltmc;
         ShortTermMemoryConduit stmc;
 
+    public:
         explicit MemoryConduit(const std::string &ltmi_adress = "127.0.0.1") : ltmc(ltmi_adress, 33060, "root", "",
                                                                                     "villa_krr"), stmc() {
 
