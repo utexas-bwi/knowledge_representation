@@ -4,6 +4,12 @@ namespace knowledge_rep {
 
     class ShortTermMemoryConduit {
 
+    public:
+        std::vector<int>
+        resolve_object_correspondences(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> &objects,
+                                       std::vector<int> candidates) {
+            // TODO: Make the ROS interface
+        }
     };
 
 }

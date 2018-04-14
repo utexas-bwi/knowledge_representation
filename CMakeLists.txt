@@ -8,12 +8,30 @@ set(CMAKE_CXX_STANDARD 11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
         roscpp
+        pcl_ros
+        pcl_conversions
+        std_msgs
+        sensor_msgs
         )
 
 link_directories(
         ${catkin_LINK_DIRS}
-
 )
+
+add_service_files(
+        FILES
+        ForgetObject.srv
+        RememberObject.srv
+        ResolveObjectCorrespondences.srv
+)
+
+generate_messages(
+        DEPENDENCIES
+        std_msgs
+        sensor_msgs
+)
+
+find_package(Eigen3 REQUIRED)
 
 find_library(mysql NAMES libmysqlcppconn8.so)
 
@@ -28,6 +46,7 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         include
         /usr/local/mysql/connector-c++-8.0/include
+        ${Eigen3_INCLUDE_DIRS}
 )
 
 

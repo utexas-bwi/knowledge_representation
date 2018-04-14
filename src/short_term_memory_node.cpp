@@ -2,8 +2,10 @@
 #include <ros/package.h>
 
 #include <signal.h>
+#include <knowledge_representation/ShortTermMemory.h>
 
 
+knowledge_rep::ShortTermMemory short_term_memory;
 //true if Ctrl-C is pressed
 bool g_caught_sigint=false;
 
@@ -14,6 +16,8 @@ void sig_handler(int sig) {
     ros::shutdown();
     exit(1);
 };
+
+// TODO: Write ROS wrapper
 
 
 int main(int argc, char **argv) {

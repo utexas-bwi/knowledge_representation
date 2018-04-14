@@ -7,7 +7,7 @@ using namespace std;
 
 namespace knowledge_rep {
 
-    typedef boost::variant<int, float, bool, std::string> ConceptValue;
+
 
     LongTermMemoryConduit::LongTermMemoryConduit(const std::string &addr, const uint port, const std::string &usr,
 												 const std::string &password, const std::string &db_name) {
@@ -121,7 +121,8 @@ namespace knowledge_rep {
         remover.execute();
     }
 
-    ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped) {
+
+    LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row_value(mysqlx::Value wrapped) {
         switch (wrapped.getType()) {
             case mysqlx::Value::INT64: {
                 int value = wrapped;
@@ -142,10 +143,30 @@ namespace knowledge_rep {
         }
     }
 
-    std::multimap<std::string, ConceptValue> unwrap_attribute_rows(std::list<Row> rows) {
+    LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row(Row row) {
+
+        // TODO: What is this doing?
+        // This makes sense because only one column between 2 and 6 isn't null. This is
+        // how we set our schema up
+        std::string attribute_name = row[1];
+        for (int i = 2; i < 6; i++) {
+            auto col_value = row[i];
+
+            if (col_value.isNull()) {
+                continue;
+            }
+            return unwrap_attribute_row_value(col_value);
+
+        }
+
+    }
+
+    std::multimap<std::string, LongTermMemoryConduit::ConceptValue>
+    LongTermMemoryConduit::unwrap_attribute_rows(std::list<Row> rows) {
         std::multimap<std::string, ConceptValue> result_map;
         for (auto &row: rows) {
             std::string attribute_name = row[1];
+            // TODO: Refactor this to use the above method
             for (int i = 2; i < 6; i++) {
                 auto col_value = row[i];
 
@@ -161,7 +182,7 @@ namespace knowledge_rep {
         return result_map;
     }
 
-    std::multimap<std::string, ConceptValue>
+    std::multimap<std::string, LongTermMemoryConduit::ConceptValue>
     LongTermMemoryConduit::get_object_attributes(int object_id) {
         Table object_attributes = db->getTable("object_attributes");
         RowResult result = object_attributes.select("*").where("object_id = :id").bind("id", object_id).execute();
@@ -170,7 +191,7 @@ namespace knowledge_rep {
         return unwrap_attribute_rows(rows);
     }
 
-    std::vector<ConceptValue>
+    std::vector<LongTermMemoryConduit::ConceptValue>
     LongTermMemoryConduit::get_object_attribute(int object_id, const std::string &attribute_name) {
         Table object_attributes = db->getTable("object_attributes");
         RowResult result = object_attributes.select("*").where("object_id = :id and attribute_name = :attr").bind("id",
@@ -179,13 +200,29 @@ namespace knowledge_rep {
 
         std::list<Row> rows = result.fetchAll();
         auto as_map = unwrap_attribute_rows(rows);
-        auto range = as_map.equal_range(attribute_name);
         std::vector<ConceptValue> as_vector;
-        transform(range.first, range.second, std::back_inserter(as_vector), [](pair<std::string, ConceptValue> pair) {
+        transform(as_map.begin(), as_map.end(), std::back_inserter(as_vector),
+                  [](pair<std::string, ConceptValue> pair) {
             return pair.second;
         });
         return as_vector;
 
+    }
+
+    vector<int> LongTermMemoryConduit::get_objects_with_attribute_of_value(const std::string &attribute_name,
+                                                                           const int other_object_id) {
+        Table object_attributes = db->getTable("object_attributes");
+        RowResult result = object_attributes.select("*").where(
+                "attribute_value_object_id = :id and attribute_name = :attr").bind("id",
+                                                                                   other_object_id).bind(
+                "attr", attribute_name).execute();
+        std::list<Row> rows = result.fetchAll();
+        vector<int> return_result;
+        transform(rows.begin(), rows.end(), back_inserter(return_result), [this](Row row) {
+            return boost::get<int>(unwrap_attribute_row_value(row[0]));
+        });
+
+        return vector<int>();
     }
 
 }

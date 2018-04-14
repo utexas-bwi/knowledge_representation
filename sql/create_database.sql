@@ -27,7 +27,13 @@ insert into attributes(attribute_name) values('concept');
 insert into attributes(attribute_name) values('is_a');
 insert into attributes(attribute_name) values('is_on');
 insert into attributes(attribute_name) values('is_in');
+insert into attributes(attribute_name) values('facing');
 
+insert into objects(object_id) values(0);
+insert into object_attributes(object_id, attribute_name, attribute_value_string) values(0, 'concept', 'robot');
+
+
+/*
 insert into objects(object_id) values(0);
 insert into object_attributes(object_id, attribute_name, attribute_value_string) values(0, 'concept', 'coke');
 
@@ -77,6 +83,7 @@ insert into object_attributes(object_id, attribute_name, attribute_value_object_
 insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(15, 'is_in', 100);
 insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(16, 'is_in', 100);
 insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(17, 'is_in', 100);
+*/
 
 /*
 How many chairs are in the livingroom?
