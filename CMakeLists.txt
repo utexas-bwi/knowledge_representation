@@ -50,7 +50,7 @@ include_directories(
 )
 
 
-add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp)
+add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/ShortTermMemory.cpp)
 target_link_libraries(libknowledge_rep ${mysql} ${catkin_LIBRARIES})
 
 add_executable(world_model_tester src/test_world_model.cpp)
