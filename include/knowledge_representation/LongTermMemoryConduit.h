@@ -15,6 +15,18 @@ namespace knowledge_rep {
 
     public:
         typedef boost::variant<int, float, bool, std::string> ConceptValue;
+
+        struct ObjectAttribute {
+            int object_id;
+            std::string attribute_name;
+            ConceptValue value;
+
+            ObjectAttribute(int object_id, std::string attribute_name, ConceptValue value) : object_id(object_id),
+                                                                                             attribute_name(
+                                                                                                     attribute_name),
+                                                                                             value(value) {}
+
+        };
         LongTermMemoryConduit(const std::string &addr, const uint port, const std::string &usr,
                               const std::string &password, const std::string &db_name);
 
@@ -30,9 +42,9 @@ namespace knowledge_rep {
 
         bool remove_object_attribute(int object_id, const std::string &attribute_name);
 
-        std::multimap<std::string, ConceptValue> get_object_attributes(int object_id);
+        std::vector<ObjectAttribute> get_object_attributes(int object_id);
 
-        std::vector<ConceptValue> get_object_attribute(int object_id, const std::string &attribute_name);
+        std::vector<ObjectAttribute> get_object_attribute(int object_id, const std::string &attribute_name);
 
         //TODO: Provide versions for the other possible attribute value types.
         std::vector<int>
@@ -44,20 +56,24 @@ namespace knowledge_rep {
 
         std::string get_object_type(int id);
 
-
         ~LongTermMemoryConduit();
 
+        void delete_all_objects();
 
         bool add_object_attribute(int object_id, const std::string &attribute_name, const char string_val[]);
 
 
-        std::multimap<std::string, ConceptValue> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
+        std::vector<ObjectAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
+
+        std::vector<int> get_all_objects();
 
 
     private:
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped);
 
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row(mysqlx::Row row);
+
+        bool add_object(int id);
 
 
     };

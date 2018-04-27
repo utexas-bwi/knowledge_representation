@@ -28,6 +28,10 @@ insert into attributes(attribute_name) values('is_a');
 insert into attributes(attribute_name) values('is_on');
 insert into attributes(attribute_name) values('is_in');
 insert into attributes(attribute_name) values('facing');
+insert into attributes(attribute_name) values('located');
+insert into attributes(attribute_name) values('sensed');
+
+
 
 insert into objects(object_id) values(0);
 insert into object_attributes(object_id, attribute_name, attribute_value_string) values(0, 'concept', 'robot');

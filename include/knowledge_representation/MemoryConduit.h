@@ -17,7 +17,7 @@ namespace knowledge_rep {
         LongTermMemoryConduit ltmc;
         ShortTermMemoryConduit stmc;
 
-        static const int robot_id = 0;
+        static const int robot_id = 1;
 
     public:
         explicit MemoryConduit(const std::string &ltmi_adress = "127.0.0.1") : ltmc(ltmi_adress, 33060, "root", "",
@@ -28,6 +28,8 @@ namespace knowledge_rep {
         bool get_object_cloud(int id, PointCloudT::Ptr &cloud_out);
 
         bool encode(std::vector<PointCloudT::Ptr> &objects, PointCloudT::Ptr &table);
+
+        std::vector<LongTermMemoryConduit::ObjectAttribute> relevant_to(std::vector<int> objects);
 
     };
 

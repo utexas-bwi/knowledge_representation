@@ -13,9 +13,9 @@ namespace knowledge_rep {
         typedef pcl::PointCloud<PointT> PointCloudT;
         std::map<int, PointCloudT> point_cloud_memory;
     public:
-        bool remember(int object_id, PointCloudT::Ptr cloud);
+        bool add(int object_id, PointCloudT::Ptr cloud);
 
-        bool forget(int object_id);
+        bool remove(int object_id);
 
     };
 }

@@ -3,8 +3,8 @@
 
 #include <signal.h>
 #include <knowledge_representation/ShortTermMemory.h>
-#include <knowledge_representation/ForgetObject.h>
-#include <knowledge_representation/RememberObject.h>
+#include <knowledge_representation/RemoveObject.h>
+#include <knowledge_representation/AddObject.h>
 #include <knowledge_representation/ResolveObjectCorrespondences.h>
 #include <pcl/conversions.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -21,17 +21,17 @@ void sig_handler(int sig) {
     exit(1);
 };
 
-bool forget_object_cb(knowledge_representation::ForgetObject::Request &req,
-                      knowledge_representation::ForgetObject::Response &res) {
-    short_term_memory.forget(req.id);
+bool remove_object_cb(knowledge_representation::RemoveObject::Request &req,
+                      knowledge_representation::RemoveObject::Response &res) {
+    short_term_memory.remove(req.id);
     return true;
 }
 
-bool remember_object_cb(knowledge_representation::RememberObject::Request &req,
-                        knowledge_representation::RememberObject::Response &res) {
+bool add_object_cb(knowledge_representation::AddObject::Request &req,
+                   knowledge_representation::AddObject::Response &res) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(req.cloud, *cloud);
-    short_term_memory.remember(req.id, cloud);
+    short_term_memory.add(req.id, cloud);
     return true;
 }
 
@@ -49,8 +49,8 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
     ros::NodeHandle pnh("~");
     short_term_memory = knowledge_rep::ShortTermMemory();
-    ros::ServiceServer forget_service = pnh.advertiseService("forget_object", forget_object_cb);
-    ros::ServiceServer remember_service = pnh.advertiseService("remember_object", remember_object_cb);
+    ros::ServiceServer forget_service = pnh.advertiseService("remove_object", remove_object_cb);
+    ros::ServiceServer remember_service = pnh.advertiseService("add_object", add_object_cb);
     ros::ServiceServer resolve_object_correspondences_service = pnh.advertiseService("resolve_object_correspondencs",
                                                                                      resolve_object_correspondences_cb);
 

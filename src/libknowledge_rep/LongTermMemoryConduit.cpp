@@ -44,6 +44,15 @@ namespace knowledge_rep {
         return result.getAutoIncrementValue();
     }
 
+    bool LongTermMemoryConduit::add_object(int id) {
+        if (object_exists(id)) {
+            return false;
+        }
+        Table objects = db->getTable("objects");
+        Result result = objects.insert("object_id").values(id).execute();
+        return true;
+    }
+
 
     /*
      * Deletes an object and any other objects and relations that rely on it.
@@ -144,8 +153,6 @@ namespace knowledge_rep {
     }
 
     LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row(Row row) {
-
-        // TODO: What is this doing?
         // This makes sense because only one column between 2 and 6 isn't null. This is
         // how we set our schema up
         std::string attribute_name = row[1];
@@ -161,28 +168,19 @@ namespace knowledge_rep {
 
     }
 
-    std::multimap<std::string, LongTermMemoryConduit::ConceptValue>
+    vector<LongTermMemoryConduit::ObjectAttribute>
     LongTermMemoryConduit::unwrap_attribute_rows(std::list<Row> rows) {
-        std::multimap<std::string, ConceptValue> result_map;
+        vector<ObjectAttribute> result_map;
         for (auto &row: rows) {
+            int obj_id = row[0];
             std::string attribute_name = row[1];
-            // TODO: Refactor this to use the above method
-            for (int i = 2; i < 6; i++) {
-                auto col_value = row[i];
-
-                if (col_value.isNull()) {
-                    continue;
-                }
-                result_map.emplace(attribute_name, unwrap_attribute_row_value(col_value));
-                break;
-
-            }
-
+            ConceptValue col_value = unwrap_attribute_row(row);
+            result_map.push_back(ObjectAttribute(obj_id, attribute_name, col_value));
         }
         return result_map;
     }
 
-    std::multimap<std::string, LongTermMemoryConduit::ConceptValue>
+    vector<LongTermMemoryConduit::ObjectAttribute>
     LongTermMemoryConduit::get_object_attributes(int object_id) {
         Table object_attributes = db->getTable("object_attributes");
         RowResult result = object_attributes.select("*").where("object_id = :id").bind("id", object_id).execute();
@@ -191,7 +189,7 @@ namespace knowledge_rep {
         return unwrap_attribute_rows(rows);
     }
 
-    std::vector<LongTermMemoryConduit::ConceptValue>
+    std::vector<LongTermMemoryConduit::ObjectAttribute>
     LongTermMemoryConduit::get_object_attribute(int object_id, const std::string &attribute_name) {
         Table object_attributes = db->getTable("object_attributes");
         RowResult result = object_attributes.select("*").where("object_id = :id and attribute_name = :attr").bind("id",
@@ -199,14 +197,7 @@ namespace knowledge_rep {
                 "attr", attribute_name).execute();
 
         std::list<Row> rows = result.fetchAll();
-        auto as_map = unwrap_attribute_rows(rows);
-        std::vector<ConceptValue> as_vector;
-        transform(as_map.begin(), as_map.end(), std::back_inserter(as_vector),
-                  [](pair<std::string, ConceptValue> pair) {
-            return pair.second;
-        });
-        return as_vector;
-
+        return unwrap_attribute_rows(rows);
     }
 
     vector<int> LongTermMemoryConduit::get_objects_with_attribute_of_value(const std::string &attribute_name,
@@ -224,5 +215,30 @@ namespace knowledge_rep {
 
         return vector<int>();
     }
+
+    std::vector<int> LongTermMemoryConduit::get_all_objects() {
+        vector<int> all_obj_ids;
+        Table objects = db->getTable("objects");
+        RowResult rows = objects.select("*").execute();
+        transform(rows.begin(), rows.end(), back_inserter(all_obj_ids), [](Row row) {
+            return row[0];
+        });
+        return all_obj_ids;
+    }
+
+    void LongTermMemoryConduit::delete_all_objects() {
+        Table table = db->getTable("object_attributes");
+        TableRemove remover = table.remove();
+        remover.execute();
+
+        // Finally, removing entry from object_attributes table
+        table = db->getTable("objects");
+        remover = table.remove();
+        remover.execute();
+        add_object(1);
+        assert(object_exists(1));
+    }
+
+
 
 }

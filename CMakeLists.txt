@@ -20,8 +20,8 @@ link_directories(
 
 add_service_files(
         FILES
-        ForgetObject.srv
-        RememberObject.srv
+        AddObject.srv
+        RemoveObject.srv
         ResolveObjectCorrespondences.srv
 )
 
@@ -37,8 +37,8 @@ find_library(mysql NAMES libmysqlcppconn8.so)
 
 catkin_package(
         INCLUDE_DIRS include /usr/local/mysql/connector-c++-8.0/include
-        LIBRARIES libknowledge_rep ${mysql} 
-        CATKIN_DEPENDS
+        LIBRARIES libknowledge_rep ${mysql}
+        CATKIN_DEPENDS pcl_ros pcl_conversions
         roscpp
 )
 
@@ -53,11 +53,23 @@ include_directories(
 add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/ShortTermMemory.cpp)
 target_link_libraries(libknowledge_rep ${mysql} ${catkin_LIBRARIES})
 
-add_executable(world_model_tester src/test_world_model.cpp)
-target_link_libraries(world_model_tester libknowledge_rep ${catkin_LIBRARIES})
+add_executable(test_ltmc src/test_ltmc.cpp)
+add_dependencies(test_ltmc ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(test_ltmc libknowledge_rep ${catkin_LIBRARIES})
+
+add_executable(test_stmc src/test_stmc.cpp)
+add_dependencies(test_stmc ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(test_stmc libknowledge_rep ${catkin_LIBRARIES})
+
+
+add_executable(initialize_planner_test_configuration src/initialize_planner_test_configuration.cpp)
+add_dependencies(initialize_planner_test_configuration ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(initialize_planner_test_configuration libknowledge_rep ${catkin_LIBRARIES})
 
 add_executable(short_term_memory_node src/short_term_memory_node.cpp src/short_term_memory_node.cpp)
+add_dependencies(short_term_memory_node ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(short_term_memory_node libknowledge_rep ${catkin_LIBRARIES})
+
 
 install(TARGETS libknowledge_rep
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -69,6 +81,7 @@ install(DIRECTORY include/${PROJECT_NAME}
         FILES_MATCHING PATTERN "*.h")
 
 install(TARGETS
-        world_model_tester
+        initialize_planner_test_configuration
+        test_ltmc
         short_term_memory_node
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
