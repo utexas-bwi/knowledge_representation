@@ -71,6 +71,9 @@ add_executable(short_term_memory_node src/short_term_memory_node.cpp src/short_t
 add_dependencies(short_term_memory_node ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(short_term_memory_node libknowledge_rep ${catkin_LIBRARIES})
 
+add_executable(csv_reader src/csv_reader.cpp)
+target_link_libraries(csv_reader libknowledge_rep)
+
 
 install(TARGETS libknowledge_rep
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
