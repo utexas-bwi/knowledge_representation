@@ -30,6 +30,15 @@ insert into attributes(attribute_name) values('is_in');
 insert into attributes(attribute_name) values('facing');
 insert into attributes(attribute_name) values('located');
 insert into attributes(attribute_name) values('sensed');
+insert into attributes(attribute_name) values('person_name');
+insert into attributes(attribute_name) values('location');
+insert into attributes(attribute_name) values('found_in');
+insert into attributes(attribute_name) values('question');
+insert into attributes(attribute_name) values('answer_to');
+
+
+
+
 
 
 
