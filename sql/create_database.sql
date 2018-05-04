@@ -18,7 +18,7 @@ create table object_attributes (
     attribute_value_object_id int,
     attribute_value_string varchar(24),
     attribute_value_float float,
-    attribute_value_bool boolean,
+    attribute_value_bool bool,
     primary key(object_id, attribute_name),
     foreign key(attribute_value_object_id) references objects(object_id)
 );

@@ -24,16 +24,21 @@ int main(int argc, const char *argv[]) {
     int coke = ltmc.add_object();
     int soda = ltmc.add_object();
     int drinkable = ltmc.add_object();
+    int can = ltmc.add_object();
     assert(ltmc.object_exists(coke));
     ltmc.add_object_attribute(coke, "concept", "coke");
     ltmc.add_object_attribute(soda, "concept", "soda");
     ltmc.add_object_attribute(drinkable, "concept", "drinkable");
     ltmc.add_object_attribute(coke, "is_a", soda);
     ltmc.add_object_attribute(soda, "is_a", drinkable);
+    ltmc.add_object_attribute(can, "navigable", true);
+    ltmc.add_object_attribute(can, "is_a", coke);
 
     auto attributes = ltmc.get_object_attribute(soda, "concept");
     auto at = attributes[0];
     assert(boost::get<std::string>(at.value) == string("soda"));
+    auto attr = ltmc.get_object_attribute(can, "navigable")[0];
+    assert(boost::get<bool>(attr.value) == true);
     ltmc.delete_object(coke);
     assert(!ltmc.object_exists(coke));
 

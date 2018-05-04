@@ -6,12 +6,13 @@
 #include <map>
 #include <boost/variant.hpp>
 #include <boost/optional.hpp>
+#include <utility>
 
 namespace knowledge_rep {
     class LongTermMemoryConduit {
 
-        std::unique_ptr<mysqlx::Session> sess;
-        std::unique_ptr<mysqlx::Schema> db;
+        std::shared_ptr<mysqlx::Session> sess;
+        std::shared_ptr<mysqlx::Schema> db;
 
     public:
         typedef boost::variant<int, float, bool, std::string> ConceptValue;
@@ -22,8 +23,8 @@ namespace knowledge_rep {
             ConceptValue value;
 
             ObjectAttribute(int object_id, std::string attribute_name, ConceptValue value) : object_id(object_id),
-                                                                                             attribute_name(
-                                                                                                     attribute_name),
+                                                                                             attribute_name(std::move(
+                                                                                                     attribute_name)),
                                                                                              value(value) {}
 
         };
@@ -62,13 +63,12 @@ namespace knowledge_rep {
 
         bool add_object_attribute(int object_id, const std::string &attribute_name, const char string_val[]);
 
-
-        std::vector<ObjectAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
-
         std::vector<int> get_all_objects();
 
 
     private:
+        std::vector<ObjectAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
+
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped);
 
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row(mysqlx::Row row);

@@ -1,0 +1,7 @@
+from knowledge_representation import LongTermMemoryConduit
+
+ltmc = LongTermMemoryConduit("127.0.0.1", 33060, "root", "", "villa_krr")
+coke = ltmc.add_object()
+assert ltmc.object_exists(coke)
+
+print("Done!")

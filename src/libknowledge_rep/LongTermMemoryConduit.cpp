@@ -149,6 +149,11 @@ namespace knowledge_rep {
                 std::string value = wrapped;
                 return ConceptValue(value);
             }
+            case mysqlx::Value::RAW: {
+                // NOTE: This is the case for BIT columns. Here, we assume BIT(1)
+                auto value = (bool) wrapped.getRawBytes().second;
+                return ConceptValue(value);
+            }
         }
     }
 
@@ -156,7 +161,7 @@ namespace knowledge_rep {
         // This makes sense because only one column between 2 and 6 isn't null. This is
         // how we set our schema up
         std::string attribute_name = row[1];
-        for (int i = 2; i < 6; i++) {
+        for (int i = 2; i < 5; i++) {
             auto col_value = row[i];
 
             if (col_value.isNull()) {
@@ -165,7 +170,8 @@ namespace knowledge_rep {
             return unwrap_attribute_row_value(col_value);
 
         }
-
+        int value = row[5];
+        return ConceptValue((bool) value);
     }
 
     vector<LongTermMemoryConduit::ObjectAttribute>
