@@ -1,20 +1,53 @@
-In order to get the knowledge base working on the robot, you need to do the following things:
+# knowledge_representation
 
-1. Make sure that MySQL is installed using apt (it didn't seem to work when installed from source), following the instructions here:
-https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
+Mechanisms for storing information about the world, and for querying this information.
 
-2. Next, in order to get the interface to work download MySQL Connector/C++ Version 8 from here:
-https://dev.mysql.com/downloads/connector/cpp/
-  2.1 Now, you need to tar it: https://dev.mysql.com/doc/connector-cpp/en/connector-cpp-installation-source-distribution.html
-  2.2 Build and install the package following the next part of the instructions.
+## Installation
+
+Try running these commands through, one at a time
+
+    cd /tmp
+    wget https://dev.mysql.com/get/mysql-apt-config_0.8.10-1_all.deb -O sql.deb
+    sudo dpkg -i sql.deb
+    sudo apt update
+    sudo apt install -y mysql-server mysql-shell
+    git clone https://github.com/mysql/mysql-connector-cpp.git
+    cd mysql-connector-cpp
+    mkdir build
+    cd build
+    cmake ..
+    sudo make -j4 install
+    sudo mv libmysqlcppconn* /usr/lib/x86_64-linux-gnu/
+    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY ''"
+    sudo mysql -u root -p -e "INSTALL PLUGIN mysqlx SONAME 'mysqlx.so';"
+    mysql -u root -p -e "source sql/create_database.sql"
+    
+    
+
+1. Make sure that MySQL is installed. Don't use your distribution's package. Get the latest `.deb` from [the MySQL website](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
+).
+2. Next [clone MySQL Connector/C++ Version 8](https://dev.mysql.com/downloads/connector/cpp/) with 
+
+    git clone https://github.com/mysql/mysql-connector-cpp.git
+
+Then build:
+
+    mkdir bulid
+    cd build
+    cmake ..
+    sudo make -j2 install
+
   
-3. You will also need MySQL Shell installed. Found here: https://dev.mysql.com/doc/refman/5.7/en/installing-mysql-shell-linux-quick.html
-  3.1 Install the X Plugin as detailed here: https://dev.mysql.com/doc/refman/5.7/en/document-store-setting-up.html
+3. You will also need MySQL Shell installed. Directions [here](https://dev.mysql.com/doc/refman/5.7/en/installing-mysql-shell-linux-quick.html).
 
-4. Run the create_database.sql file in MySQL using 'source /path/to/create_database.sql'. This will create the schema on your SQL server.
-  4.1 Update username and password in your program/high_level.cpp to whatever they are for your SQL server.
+
+4. Get the x plugin running with [these directions](https://dev.mysql.com/doc/refman/5.7/en/document-store-setting-up.html).
+
+5. Run the `create_database.sql` file in MySQL using 
+
+    mysql -u root -p -e "source sql/create_database.sql"
+    
+This will create the schema on your SQL server.
+    
   
-5. Update the makefile and then use 'make' to build the library and your program that uses it. Replace the program listed as 'high_level' with your own program.
-  Here you need to insert the proper paths of your MySQL Connector/C++ Library and the path of this repository's include directory on the system. 
-
-6. Run your compiled program that interfaces with the database!
+6. Build the catkin package.
