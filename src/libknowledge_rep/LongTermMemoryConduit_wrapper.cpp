@@ -20,12 +20,12 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
             .def("delete_entity", static_cast<bool (LTMC::*)(int)>(&LTMC::delete_entity))
             .def("entity_exists", static_cast<bool (LTMC::*)(int)>(&LTMC::entity_exists))
             .def("delete_all_entities", static_cast<void (LTMC::*)()>(&LTMC::delete_all_entities))
-            .def("add_entity_attribute",
-                 static_cast<bool (LTMC::*)(int, const std::string &, const char[])>(&LTMC::add_entity_attribute))
+                    //.def("add_entity_attribute",
+                    //     static_cast<bool (LTMC::*)(int, const std::string &, const char[])>(&LTMC::add_entity_attribute))
             .def("add_entity_attribute",
                  static_cast<bool (LTMC::*)(int, const std::string &, int)>(&LTMC::add_entity_attribute))
-            .def("add_entity_attribute",
-                 static_cast<bool (LTMC::*)(int, const std::string &, bool)>(&LTMC::add_entity_attribute))
+                    //.def("add_entity_attribute",
+                    //     static_cast<bool (LTMC::*)(int, const std::string &, bool)>(&LTMC::add_entity_attribute))
                     // FIXME: If we make this available to python, we can't use the int one, which is the more common
                     // anyways...
 //.def("add_entity_attribute",
