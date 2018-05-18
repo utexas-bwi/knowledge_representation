@@ -26,8 +26,10 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
                  static_cast<bool (LTMC::*)(int, const std::string &, int)>(&LTMC::add_entity_attribute))
             .def("add_entity_attribute",
                  static_cast<bool (LTMC::*)(int, const std::string &, bool)>(&LTMC::add_entity_attribute))
-            .def("add_entity_attribute",
-                 static_cast<bool (LTMC::*)(int, const std::string &, float)>(&LTMC::add_entity_attribute))
+                    // FIXME: If we make this available to python, we can't use the int one, which is the more common
+                    // anyways...
+//.def("add_entity_attribute",
+//                 static_cast<bool (LTMC::*)(int, const std::string &, float)>(&LTMC::add_entity_attribute))
             .def("get_all_entities", static_cast<std::vector<int> (LTMC::*)()>(&LTMC::get_all_entities))
             .def("get_concept", static_cast<int (LTMC::*)(const std::string &)>(&LTMC::get_concept));
 }

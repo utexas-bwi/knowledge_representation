@@ -202,7 +202,7 @@ namespace knowledge_rep {
 
     vector<LongTermMemoryConduit::EntityAttribute>
     LongTermMemoryConduit::get_entity_attributes(int entity_id) {
-        std::list<Row> rows;
+        std::list<Row> rows = {};
         for (const auto & table_name: table_names) {
             Table entity_attributes = db->getTable(table_name);
             RowResult result = entity_attributes.select("*").where("entity_id = :id").bind("id", entity_id).execute();
@@ -215,7 +215,7 @@ namespace knowledge_rep {
 
     std::vector<LongTermMemoryConduit::EntityAttribute>
     LongTermMemoryConduit::get_entity_attribute(int entity_id, const std::string &attribute_name) {
-        std::list<Row> rows;
+        std::list<Row> rows = {};
         for (const auto & table_name: table_names) {
             Table entity_attributes = db->getTable(table_name);
             RowResult result = entity_attributes.select("*").where("entity_id = :id and attribute_name = :attr").bind(
