@@ -4,7 +4,9 @@ Mechanisms for storing information about the world, and for querying this inform
 
 ## Installation
 
-Try running these commands through, one at a time
+### Semi-automatic
+
+Try running these commands through, one at a time. Leave the root password blank
 
     cd /tmp
     wget https://dev.mysql.com/get/mysql-apt-config_0.8.10-1_all.deb -O sql.deb
@@ -20,9 +22,13 @@ Try running these commands through, one at a time
     sudo mv libmysqlcppconn* /usr/lib/x86_64-linux-gnu/
     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY ''"
     sudo mysql -u root -p -e "INSTALL PLUGIN mysqlx SONAME 'mysqlx.so';"
+    roscd
+    cd ../src/Robocup_Integrated_Systems/villa_krr/knowledge_representation
     mysql -u root -p -e "source sql/create_database.sql"
     
-    
+### Manual
+
+If the above steps don't work, try these:
 
 1. Make sure that MySQL is installed. Don't use your distribution's package. Get the latest `.deb` from [the MySQL website](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/#apt-repo-fresh-install
 ).

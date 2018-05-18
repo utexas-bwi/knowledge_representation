@@ -33,6 +33,8 @@ namespace knowledge_rep {
 
         int add_object();
 
+        bool add_attribute(const std::string &name);
+
         bool add_object_attribute(int object_id, const std::string &attribute_name, const std::string &string_val);
 
         bool add_object_attribute(int object_id, const std::string &attribute_name, const float float_val);
@@ -54,6 +56,10 @@ namespace knowledge_rep {
         bool delete_object(int id);
 
         bool object_exists(int id);
+
+        bool delete_attribute(int id);
+
+        bool attribute_exists(int id);
 
         std::string get_object_type(int id);
 

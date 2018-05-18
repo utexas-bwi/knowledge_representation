@@ -53,6 +53,11 @@ namespace knowledge_rep {
         return true;
     }
 
+    bool LongTermMemoryConduit::add_attribute(const std::string &name) {
+        Table objects = db->getTable("attributes");
+        Result result = objects.insert("attribute_name").values(name).execute();
+        return true;
+    }
 
     /*
      * Deletes an object and any other objects and relations that rely on it.
@@ -62,19 +67,11 @@ namespace knowledge_rep {
         // TODO: Handle failure
         // TODO: Recursively remove objects that are members of directional relations
         // First, removing all references to the object
-        Table table = db->getTable("object_attributes");
+
+        // Because we've all references to this object have foreign key relationships with cascade set,
+        // this should clear out any references to this object in other tables as well
+        Table table = db->getTable("objects");
         TableRemove remover = table.remove();
-
-        remover.where("attribute_value_object_id=:id").bind("id", id);
-        remover.execute();
-
-        // Next, Removing entry from the original objects table
-        remover.where("object_id=:id").bind("id", id);
-        remover.execute();
-
-        // Finally, removing entry from object_attributes table
-        table = db->getTable("objects");
-        remover = table.remove();
         remover.where("object_id=:id").bind("id", id);
         remover.execute();
     }
@@ -90,7 +87,14 @@ namespace knowledge_rep {
         Table object_attributes = db->getTable("object_attributes");
         TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_float");
         inserter.values(object_id, attribute_name, float_val);
-        inserter.execute();
+        try {
+            inserter.execute();
+        }
+        catch (const mysqlx::Error &err) {
+            cout << "ERROR: " << err << endl;
+            return false;
+        }
+        return true;
     }
 
     bool
@@ -98,7 +102,14 @@ namespace knowledge_rep {
         Table object_attributes = db->getTable("object_attributes");
         TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_bool");
         inserter.values(object_id, attribute_name, bool_val);
-        inserter.execute();
+        try {
+            inserter.execute();
+        }
+        catch (const mysqlx::Error &err) {
+            cout << "ERROR: " << err << endl;
+            return false;
+        }
+        return true;
     }
 
 
@@ -107,8 +118,16 @@ namespace knowledge_rep {
         Table object_attributes = db->getTable("object_attributes");
         TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_object_id");
         inserter.values(object_id, attribute_name, other_object_id);
-        inserter.execute();
-        return false;
+        try {
+            inserter.execute();
+        }
+        catch (const mysqlx::Error &err) {
+            cout << "ERROR: " << err << endl;
+            return false;
+        }
+
+
+        return true;
     }
 
     bool LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name, const std::string &string_val) {
@@ -241,10 +260,22 @@ namespace knowledge_rep {
         table = db->getTable("objects");
         remover = table.remove();
         remover.execute();
+
+        // Add the robot itself back
         add_object(1);
+        int robot_concept_id = add_object();
+        add_object_attribute(robot_concept_id, "concept", "robot");
+        add_object_attribute(1, "is_a", robot_concept_id);
         assert(object_exists(1));
     }
 
+    bool LongTermMemoryConduit::delete_attribute(int id) {
+        return false;
+    }
+
+    bool LongTermMemoryConduit::attribute_exists(int id) {
+        return false;
+    }
 
 
 }

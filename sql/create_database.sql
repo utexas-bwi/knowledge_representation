@@ -2,25 +2,36 @@ drop database if exists villa_krr;
 create database villa_krr;
 use villa_krr;
 
-create table objects (
+CREATE TABLE objects (
     object_id int NOT NULL AUTO_INCREMENT,
-    primary key(object_id)
+    PRIMARY KEY(object_id)
 );
 
-create table attributes (
+CREATE TABLE attributes (
     attribute_name varchar(24) NOT NULL,
-    primary key(attribute_name)
+    PRIMARY KEY(attribute_name)
 );
 
-create table object_attributes (
+CREATE TABLE object_attributes (
     object_id int NOT NULL,
     attribute_name varchar(24) NOT NULL,
     attribute_value_object_id int,
     attribute_value_string varchar(24),
     attribute_value_float float,
     attribute_value_bool bool,
-    primary key(object_id, attribute_name),
-    foreign key(attribute_value_object_id) references objects(object_id)
+    PRIMARY KEY(object_id, attribute_name),
+    FOREIGN KEY(attribute_value_object_id)
+        REFERENCES objects(object_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(object_id)
+        REFERENCES objects(object_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY(attribute_name)
+        REFERENCES attributes(attribute_name)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 insert into attributes(attribute_name) values('concept');
@@ -36,67 +47,13 @@ insert into attributes(attribute_name) values('found_in');
 insert into attributes(attribute_name) values('question');
 insert into attributes(attribute_name) values('answer_to');
 
-
-
-
-
-
-
-insert into objects(object_id) values(0);
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(0, 'concept', 'robot');
-
-
-/*
-insert into objects(object_id) values(0);
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(0, 'concept', 'coke');
+/***** DEFAULT VALUES */
 
 insert into objects(object_id) values(1);
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(1, 'concept', 'surface');
-
 insert into objects(object_id) values(2);
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(2, 'concept', 'table');
+insert into object_attributes(object_id, attribute_name, attribute_value_string) values(2, 'concept', 'robot');
+insert into object_attributes(object_id, attribute_name, attribute_value_string) values(1, 'is_a', 'robot');
 
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(2, 'is_a', 1);
-
-insert into objects(object_id) values(3);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(3, 'is_a', 2);
-
-insert into objects(object_id) values(4);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(4, 'is_a', 0);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(4, 'is_on', 3);
-
-
-
-insert into objects(object_id) values(10);
-insert into objects(object_id) values(11);
-insert into objects(object_id) values(12);
-
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(10, 'concept', 'chair');
-
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(11, 'concept', 'room');
-insert into object_attributes(object_id, attribute_name, attribute_value_string) values(12, 'concept', 'livingroom');
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(12, 'is_a', 11);
-
-insert into objects(object_id) values(100);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(100, 'is_a', 12);
-
-insert into objects(object_id) values(13);
-insert into objects(object_id) values(14);
-insert into objects(object_id) values(15);
-insert into objects(object_id) values(16);
-insert into objects(object_id) values(17);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(13, 'is_a', 10);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(14, 'is_a', 10);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(15, 'is_a', 10);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(16, 'is_a', 10);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(17, 'is_a', 10);
-
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(13, 'is_in', 100);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(14, 'is_in', 100);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(15, 'is_in', 100);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(16, 'is_in', 100);
-insert into object_attributes(object_id, attribute_name, attribute_value_object_id) values(17, 'is_in', 100);
-*/
 
 /*
 How many chairs are in the livingroom?
