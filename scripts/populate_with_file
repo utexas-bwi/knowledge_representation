@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+from knowledge_representation import LongTermMemoryConduit
+import argparse
+import sys
+import os
+import xml.etree.ElementTree as ET
+
+
+def populate(ltmc, file_path):
+    file_name = os.path.basename(file_path)
+    room_con = ltmc.get_concept("room")
+    location_con = ltmc.get_concept("location")
+    placement_con = ltmc.get_concept("placement")
+    if ".xml" in file_name:
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+        if root.tag == "rooms":
+            for room in root:
+                room_id = ltmc.add_entity()
+                ltmc.add_entity_attribute(room_id, "is_a", room_con)
+                # ltmc.add_entity_attribute(room_id, "is_a", location_con)
+                for location in room:
+                    if location.tag != "location":
+                        continue
+                    location_name = location.attrib["name"]
+                    location_id = ltmc.add_entity()
+                    specific_location_concept = ltmc.get_concept(location_name)
+                    ltmc.add_entity_attribute(specific_location_concept, "is_a", location_id)
+                    ltmc.add_entity_attribute(location_id, "is_a", specific_location_concept)
+                    ltmc.add_entity_attribute(location_id, "is_in", room_id)
+                    if location.attrib.get("isPlacement"):
+                        ltmc.add_entity_attribute(location_id, "is_a", placement_con)
+
+        else:
+            print("Not sure how to parse the top level tag: {}".format(root.tag))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file_paths", type=str, nargs="+")
+    args = parser.parse_args()
+    ltmc = LongTermMemoryConduit("127.0.0.1", 33060, "root", "", "villa_krr")
+    for file_path in args.file_paths:
+        populate(ltmc, file_path)
+
+
+if __name__ == "__main__":
+    main()

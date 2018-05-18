@@ -29,6 +29,8 @@ int main(int argc, const char *argv[]) {
 
 
     ltmc.add_entity_attribute(soda, "is_a", drinkable);
+    // Adding a second time should fail
+    assert(ltmc.add_entity_attribute(soda, "is_a", drinkable) == false);
     ltmc.add_entity_attribute(can, "is_a", "navigable");
     ltmc.add_entity_attribute(can, "is_a", soda);
     assert(ltmc.add_entity_attribute(can, "not a real attribute", coke) == false);
