@@ -17,12 +17,12 @@ namespace knowledge_rep {
     public:
         typedef boost::variant<int, float, bool, std::string> ConceptValue;
 
-        struct ObjectAttribute {
-            int object_id;
+        struct EntityAttribute {
+            int entity_id;
             std::string attribute_name;
             ConceptValue value;
 
-            ObjectAttribute(int object_id, std::string attribute_name, ConceptValue value) : object_id(object_id),
+            EntityAttribute(int entity_id, std::string attribute_name, ConceptValue value) : entity_id(entity_id),
                                                                                              attribute_name(std::move(
                                                                                                      attribute_name)),
                                                                                              value(value) {}
@@ -31,55 +31,60 @@ namespace knowledge_rep {
         LongTermMemoryConduit(const std::string &addr, const uint port, const std::string &usr,
                               const std::string &password, const std::string &db_name);
 
-        int add_object();
+        int add_entity();
 
         bool add_attribute(const std::string &name);
 
-        bool add_object_attribute(int object_id, const std::string &attribute_name, const std::string &string_val);
+        bool add_entity_attribute(int entity_id, const std::string &attribute_name, const std::string &string_val);
 
-        bool add_object_attribute(int object_id, const std::string &attribute_name, const float float_val);
+        bool add_entity_attribute(int entity_id, const std::string &attribute_name, const float float_val);
 
-        bool add_object_attribute(int object_id, const std::string &attribute_name, const bool bool_val);
+        bool add_entity_attribute(int entity_id, const std::string &attribute_name, const bool bool_val);
 
-        bool add_object_attribute(int object_id, const std::string &attribute_name, const int other_object_id);
+        bool add_entity_attribute(int entity_id, const std::string &attribute_name, const int other_entity_id);
 
-        bool remove_object_attribute(int object_id, const std::string &attribute_name);
+        bool remove_entity_attribute(int entity_id, const std::string &attribute_name);
 
-        std::vector<ObjectAttribute> get_object_attributes(int object_id);
+        std::vector<EntityAttribute> get_entity_attributes(int entity_id);
 
-        std::vector<ObjectAttribute> get_object_attribute(int object_id, const std::string &attribute_name);
+        std::vector<EntityAttribute> get_entity_attribute(int entity_id, const std::string &attribute_name);
 
         //TODO: Provide versions for the other possible attribute value types.
         std::vector<int>
-        get_objects_with_attribute_of_value(const std::string &attribute_name, const int other_object_id);
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id);
 
-        bool delete_object(int id);
+        bool delete_entity(int id);
 
-        bool object_exists(int id);
+        bool entity_exists(int id);
 
         bool delete_attribute(int id);
 
         bool attribute_exists(int id);
 
-        std::string get_object_type(int id);
+        std::string get_entity_type(int id);
 
         ~LongTermMemoryConduit();
 
-        void delete_all_objects();
+        void delete_all_entities();
 
-        bool add_object_attribute(int object_id, const std::string &attribute_name, const char string_val[]);
+        bool add_entity_attribute(int entity_id, const std::string &attribute_name, const char string_val[]);
 
-        std::vector<int> get_all_objects();
+        std::vector<int> get_all_entities();
+
+        //// CONVENIENCE
+        int get_concept(const std::string &name);
 
 
     private:
-        std::vector<ObjectAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
+
+        static const std::string table_names[];
+        std::vector<EntityAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
 
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped);
 
         LongTermMemoryConduit::ConceptValue unwrap_attribute_row(mysqlx::Row row);
 
-        bool add_object(int id);
+        bool add_entity(int id);
 
 
     };

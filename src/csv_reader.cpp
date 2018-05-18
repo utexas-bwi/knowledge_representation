@@ -72,33 +72,33 @@ int main(int argc, char *argv[]) {
                         if(used_concepts.find(second) == used_concepts.end()) {
 
 
-                            second_concept_id = interface.add_object();
+                            second_concept_id = interface.add_entity();
                             used_concepts[second] = second_concept_id;
-                            interface.add_object_attribute(second_concept_id, "concept", second);
+                            interface.add_entity_attribute(second_concept_id, "concept", second);
                         }
                         else {
 
                             second_concept_id = used_concepts.find(second)->second;
                         }
-                        interface.add_object_attribute(first_concept_id = interface.add_object(), "concept", first);
-                        // Adding another reference to the object that was just added 'first', that it 'is_a' second.
-                        interface.add_object_attribute(first_concept_id, "is_a", second_concept_id);
+                        interface.add_entity_attribute(first_concept_id = interface.add_entity(), "concept", first);
+                        // Adding another reference to the entity that was just added 'first', that it 'is_a' second.
+                        interface.add_entity_attribute(first_concept_id, "is_a", second_concept_id);
                     }
 
                     // There are different cases of processing depending on the csv file. The relations are slightly different for each.
 
                     if(filename == "names.csv") {
                         if(first == "Female") continue;
-                        interface.add_object_attribute(interface.add_object(), "person_name", first);
-                        interface.add_object_attribute(interface.add_object(), "person_name", second);
+                        interface.add_entity_attribute(interface.add_entity(), "person_name", first);
+                        interface.add_entity_attribute(interface.add_entity(), "person_name", second);
                     }
 
                     if(filename == "questions.csv") {
                         if(first == "QUESTION") continue;
-                        interface.add_object_attribute(first_concept_id = interface.add_object(), "question", first);
+                        interface.add_entity_attribute(first_concept_id = interface.add_entity(), "question", first);
                         int answer_id;
-                        interface.add_object_attribute(answer_id = interface.add_object(), "answer", second);
-                        interface.add_object_attribute(answer_id, "answer_to", first_concept_id);
+                        interface.add_entity_attribute(answer_id = interface.add_entity(), "answer", second);
+                        interface.add_entity_attribute(answer_id, "answer_to", first_concept_id);
 
                     }
 
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
                         std::string third;
 
                         int location_id;
-                        interface.add_object_attribute(location_id = interface.add_object(), "location", second);
+                        interface.add_entity_attribute(location_id = interface.add_entity(), "location", second);
 
 
                         if(p != NULL) {
@@ -122,13 +122,13 @@ int main(int argc, char *argv[]) {
                                 concept_id = used_concepts.find(third)->second;
                             }
                             else {
-                                interface.add_object_attribute(concept_id = interface.add_object(), "concept", third);
+                                interface.add_entity_attribute(concept_id = interface.add_entity(), "concept", third);
                                 used_concepts[third] = concept_id;
                             }
 
 
 
-                            interface.add_object_attribute(concept_id, "found_in", location_id);
+                            interface.add_entity_attribute(concept_id, "found_in", location_id);
                         }
 
 

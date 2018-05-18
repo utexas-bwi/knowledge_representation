@@ -7,6 +7,7 @@ using namespace std;
 
 namespace knowledge_rep {
 
+    const std::string LongTermMemoryConduit::table_names[] = {"entity_attributes_id" ,"entity_attributes_str" , "entity_attributes_float" , "entity_attributes_bool"};
 
 
     LongTermMemoryConduit::LongTermMemoryConduit(const std::string &addr, const uint port, const std::string &usr,
@@ -35,58 +36,58 @@ namespace knowledge_rep {
 	LongTermMemoryConduit::~LongTermMemoryConduit() = default;
 
     /*
-     * Inserts a new object into the database. Returns the object's ID so
+     * Inserts a new entity into the database. Returns the entity's ID so
      * it can be manipulated with other methods.
      */
-    int LongTermMemoryConduit::add_object() {
-        Table objects = db->getTable("objects");
-        Result result = objects.insert("object_id").values(NULL).execute();
+    int LongTermMemoryConduit::add_entity() {
+        Table entities = db->getTable("entities");
+        Result result = entities.insert("entity_id").values(NULL).execute();
         return result.getAutoIncrementValue();
     }
 
-    bool LongTermMemoryConduit::add_object(int id) {
-        if (object_exists(id)) {
+    bool LongTermMemoryConduit::add_entity(int id) {
+        if (entity_exists(id)) {
             return false;
         }
-        Table objects = db->getTable("objects");
-        Result result = objects.insert("object_id").values(id).execute();
+        Table entities = db->getTable("entities");
+        Result result = entities.insert("entity_id").values(id).execute();
         return true;
     }
 
     bool LongTermMemoryConduit::add_attribute(const std::string &name) {
-        Table objects = db->getTable("attributes");
-        Result result = objects.insert("attribute_name").values(name).execute();
+        Table entities = db->getTable("attributes");
+        Result result = entities.insert("attribute_name").values(name).execute();
         return true;
     }
 
     /*
-     * Deletes an object and any other objects and relations that rely on it.
+     * Deletes an entity and any other entities and relations that rely on it.
      */
-    bool LongTermMemoryConduit::delete_object(int id) {
+    bool LongTermMemoryConduit::delete_entity(int id) {
 
         // TODO: Handle failure
-        // TODO: Recursively remove objects that are members of directional relations
-        // First, removing all references to the object
+        // TODO: Recursively remove entities that are members of directional relations
+        // First, removing all references to the entity
 
-        // Because we've all references to this object have foreign key relationships with cascade set,
-        // this should clear out any references to this object in other tables as well
-        Table table = db->getTable("objects");
+        // Because we've all references to this entity have foreign key relationships with cascade set,
+        // this should clear out any references to this entity in other tables as well
+        Table table = db->getTable("entities");
         TableRemove remover = table.remove();
-        remover.where("object_id=:id").bind("id", id);
+        remover.where("entity_id=:id").bind("id", id);
         remover.execute();
     }
 
-	bool LongTermMemoryConduit::object_exists(int id) {
-		Table objects = db->getTable("objects");
-		auto result = objects.select("object_id").where("object_id = :id").bind("id", id).execute();
+	bool LongTermMemoryConduit::entity_exists(int id) {
+		Table entities = db->getTable("entities");
+		auto result = entities.select("entity_id").where("entity_id = :id").bind("id", id).execute();
 		return result.count() == 1;
 	}
 
-    bool LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name,
+    bool LongTermMemoryConduit::add_entity_attribute(int entity_id, const std::string &attribute_name,
                                                      const float float_val) {
-        Table object_attributes = db->getTable("object_attributes");
-        TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_float");
-        inserter.values(object_id, attribute_name, float_val);
+        Table entity_attributes = db->getTable("entity_attributes_float");
+        TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
+        inserter.values(entity_id, attribute_name, float_val);
         try {
             inserter.execute();
         }
@@ -98,10 +99,10 @@ namespace knowledge_rep {
     }
 
     bool
-    LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name, const bool bool_val) {
-        Table object_attributes = db->getTable("object_attributes");
-        TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_bool");
-        inserter.values(object_id, attribute_name, bool_val);
+    LongTermMemoryConduit::add_entity_attribute(int entity_id, const std::string &attribute_name, const bool bool_val) {
+        Table entity_attributes = db->getTable("entity_attributes_bool");
+        TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
+        inserter.values(entity_id, attribute_name, bool_val);
         try {
             inserter.execute();
         }
@@ -113,11 +114,11 @@ namespace knowledge_rep {
     }
 
 
-    bool LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name,
-                                                     const int other_object_id) {
-        Table object_attributes = db->getTable("object_attributes");
-        TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_object_id");
-        inserter.values(object_id, attribute_name, other_object_id);
+    bool LongTermMemoryConduit::add_entity_attribute(int entity_id, const std::string &attribute_name,
+                                                     const int other_entity_id) {
+        Table entity_attributes = db->getTable("entity_attributes_id");
+        TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
+        inserter.values(entity_id, attribute_name, other_entity_id);
         try {
             inserter.execute();
         }
@@ -130,23 +131,33 @@ namespace knowledge_rep {
         return true;
     }
 
-    bool LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name, const std::string &string_val) {
-        Table object_attributes = db->getTable("object_attributes");
-        TableInsert inserter = object_attributes.insert("object_id", "attribute_name", "attribute_value_string");
-        inserter.values(object_id, attribute_name, string_val);
-		inserter.execute();
+    bool LongTermMemoryConduit::add_entity_attribute(int entity_id, const std::string &attribute_name, const std::string &string_val) {
+        Table entity_attributes = db->getTable("entity_attributes_str");
+        TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
+        inserter.values(entity_id, attribute_name, string_val);
+        try {
+            inserter.execute();
+        }
+        catch (const mysqlx::Error &err) {
+            cout << "ERROR: " << err << endl;
+            return false;
+        }
 	}
 
-    bool LongTermMemoryConduit::add_object_attribute(int object_id, const std::string &attribute_name,
+    bool LongTermMemoryConduit::add_entity_attribute(int entity_id, const std::string &attribute_name,
                                                      const char string_val[]) {
-        return add_object_attribute(object_id, attribute_name, std::string(string_val));
+        return add_entity_attribute(entity_id, attribute_name, std::string(string_val));
     }
 
-    bool LongTermMemoryConduit::remove_object_attribute(int object_id, const std::string &attribute_name) {
-        Table object_attributes = db->getTable("object_attributes");
-        TableRemove remover = object_attributes.remove();
-        remover.where("object_id = :id and attribute_name = :name").bind("id", object_id).bind("name", attribute_name);
-        remover.execute();
+    bool LongTermMemoryConduit::remove_entity_attribute(int entity_id, const std::string &attribute_name) {
+
+        for (const auto & table_name: table_names) {
+            Table entity_attributes = db->getTable(table_name);
+            TableRemove remover = entity_attributes.remove();
+            remover.where("entity_id = :id and attribute_name = :name").bind("id", entity_id).bind("name",
+                                                                                                   attribute_name);
+            remover.execute();
+        }
     }
 
 
@@ -166,6 +177,7 @@ namespace knowledge_rep {
             }
             case mysqlx::Value::STRING: {
                 std::string value = wrapped;
+                //cout << value << endl;
                 return ConceptValue(value);
             }
             case mysqlx::Value::RAW: {
@@ -176,61 +188,53 @@ namespace knowledge_rep {
         }
     }
 
-    LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row(Row row) {
-        // This makes sense because only one column between 2 and 6 isn't null. This is
-        // how we set our schema up
-        std::string attribute_name = row[1];
-        for (int i = 2; i < 5; i++) {
-            auto col_value = row[i];
-
-            if (col_value.isNull()) {
-                continue;
-            }
-            return unwrap_attribute_row_value(col_value);
-
-        }
-        int value = row[5];
-        return ConceptValue((bool) value);
-    }
-
-    vector<LongTermMemoryConduit::ObjectAttribute>
+    vector<LongTermMemoryConduit::EntityAttribute>
     LongTermMemoryConduit::unwrap_attribute_rows(std::list<Row> rows) {
-        vector<ObjectAttribute> result_map;
+        vector<EntityAttribute> result_map;
         for (auto &row: rows) {
             int obj_id = row[0];
             std::string attribute_name = row[1];
-            ConceptValue col_value = unwrap_attribute_row(row);
-            result_map.push_back(ObjectAttribute(obj_id, attribute_name, col_value));
+            ConceptValue col_value = unwrap_attribute_row_value(row[2]);
+            result_map.emplace_back(EntityAttribute(obj_id, attribute_name, col_value));
         }
         return result_map;
     }
 
-    vector<LongTermMemoryConduit::ObjectAttribute>
-    LongTermMemoryConduit::get_object_attributes(int object_id) {
-        Table object_attributes = db->getTable("object_attributes");
-        RowResult result = object_attributes.select("*").where("object_id = :id").bind("id", object_id).execute();
-        std::list<Row> rows = result.fetchAll();
+    vector<LongTermMemoryConduit::EntityAttribute>
+    LongTermMemoryConduit::get_entity_attributes(int entity_id) {
+        std::list<Row> rows;
+        for (const auto & table_name: table_names) {
+            Table entity_attributes = db->getTable(table_name);
+            RowResult result = entity_attributes.select("*").where("entity_id = :id").bind("id", entity_id).execute();
+            auto result_rows = result.fetchAll();
+            rows.insert(rows.end(),result_rows.begin(), result_rows.end());
+        }
 
         return unwrap_attribute_rows(rows);
     }
 
-    std::vector<LongTermMemoryConduit::ObjectAttribute>
-    LongTermMemoryConduit::get_object_attribute(int object_id, const std::string &attribute_name) {
-        Table object_attributes = db->getTable("object_attributes");
-        RowResult result = object_attributes.select("*").where("object_id = :id and attribute_name = :attr").bind("id",
-                                                                                                                  object_id).bind(
-                "attr", attribute_name).execute();
+    std::vector<LongTermMemoryConduit::EntityAttribute>
+    LongTermMemoryConduit::get_entity_attribute(int entity_id, const std::string &attribute_name) {
+        std::list<Row> rows;
+        for (const auto & table_name: table_names) {
+            Table entity_attributes = db->getTable(table_name);
+            RowResult result = entity_attributes.select("*").where("entity_id = :id and attribute_name = :attr").bind(
+                    "id",
+                    entity_id).bind(
+                    "attr", attribute_name).execute();
 
-        std::list<Row> rows = result.fetchAll();
+            auto result_rows = result.fetchAll();
+            rows.insert(rows.end(), result_rows.begin(), result_rows.end());
+        }
         return unwrap_attribute_rows(rows);
     }
 
-    vector<int> LongTermMemoryConduit::get_objects_with_attribute_of_value(const std::string &attribute_name,
-                                                                           const int other_object_id) {
-        Table object_attributes = db->getTable("object_attributes");
-        RowResult result = object_attributes.select("*").where(
-                "attribute_value_object_id = :id and attribute_name = :attr").bind("id",
-                                                                                   other_object_id).bind(
+    vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
+                                                                           const int other_entity_id) {
+        Table entity_attributes = db->getTable("entity_attributes_id");
+        RowResult result = entity_attributes.select("*").where(
+                "attribute_value = :id and attribute_name = :attr").bind("id",
+                                                                                   other_entity_id).bind(
                 "attr", attribute_name).execute();
         std::list<Row> rows = result.fetchAll();
         vector<int> return_result;
@@ -241,32 +245,29 @@ namespace knowledge_rep {
         return vector<int>();
     }
 
-    std::vector<int> LongTermMemoryConduit::get_all_objects() {
+    std::vector<int> LongTermMemoryConduit::get_all_entities() {
         vector<int> all_obj_ids;
-        Table objects = db->getTable("objects");
-        RowResult rows = objects.select("*").execute();
+        Table entities = db->getTable("entities");
+        RowResult rows = entities.select("*").execute();
         transform(rows.begin(), rows.end(), back_inserter(all_obj_ids), [](Row row) {
             return row[0];
         });
         return all_obj_ids;
     }
 
-    void LongTermMemoryConduit::delete_all_objects() {
-        Table table = db->getTable("object_attributes");
+    void LongTermMemoryConduit::delete_all_entities() {
+
+
+        Table table = db->getTable("entities");
         TableRemove remover = table.remove();
         remover.execute();
 
-        // Finally, removing entry from object_attributes table
-        table = db->getTable("objects");
-        remover = table.remove();
-        remover.execute();
-
         // Add the robot itself back
-        add_object(1);
-        int robot_concept_id = add_object();
-        add_object_attribute(robot_concept_id, "concept", "robot");
-        add_object_attribute(1, "is_a", robot_concept_id);
-        assert(object_exists(1));
+        add_entity(1);
+        int robot_concept_id = add_entity();
+        add_entity_attribute(robot_concept_id, "concept", "robot");
+        add_entity_attribute(1, "is_a", robot_concept_id);
+        assert(entity_exists(1));
     }
 
     bool LongTermMemoryConduit::delete_attribute(int id) {
@@ -275,6 +276,21 @@ namespace knowledge_rep {
 
     bool LongTermMemoryConduit::attribute_exists(int id) {
         return false;
+    }
+
+    int LongTermMemoryConduit::get_concept(const std::string &name) {
+        Table entity_attributes = db->getTable("entity_attributes_str");
+        RowResult result = entity_attributes.select("*").where("attribute_name = 'concept' and attribute_value= :concept_name").bind("concept_name",
+                                                                                                                  name).execute();
+        std::list<Row> rows = result.fetchAll();
+        auto unwrapped = unwrap_attribute_rows(rows);
+        if (unwrapped.empty()) {
+            int new_concept = add_entity();
+            add_entity_attribute(new_concept, "concept", name);
+            return new_concept;
+        } else {
+            return unwrapped[0].entity_id;
+        }
     }
 
 
