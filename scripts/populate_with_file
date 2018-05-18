@@ -11,25 +11,33 @@ def populate(ltmc, file_path):
     room_con = ltmc.get_concept("room")
     location_con = ltmc.get_concept("location")
     placement_con = ltmc.get_concept("placement")
+    beacon_con = ltmc.get_concept("beacon")
+    ltmc.add_entity_attribute(placement_con, "is_a", location_con)
+    ltmc.add_entity_attribute(beacon_con, "is_a", location_con)
+
     if ".xml" in file_name:
         tree = ET.parse(file_path)
         root = tree.getroot()
         if root.tag == "rooms":
             for room in root:
+                specifc_room_concept = ltmc.get_concept(room.attrib['name'])
+                ltmc.add_entity_attribute(specifc_room_concept, "is_a", room_con)
                 room_id = ltmc.add_entity()
-                ltmc.add_entity_attribute(room_id, "is_a", room_con)
-                # ltmc.add_entity_attribute(room_id, "is_a", location_con)
+                ltmc.add_entity_attribute(room_id, "is_a", specifc_room_concept)
+
                 for location in room:
                     if location.tag != "location":
                         continue
                     location_name = location.attrib["name"]
                     location_id = ltmc.add_entity()
                     specific_location_concept = ltmc.get_concept(location_name)
-                    ltmc.add_entity_attribute(specific_location_concept, "is_a", location_id)
+                    ltmc.add_entity_attribute(specific_location_concept, "is_a", location_con)
                     ltmc.add_entity_attribute(location_id, "is_a", specific_location_concept)
                     ltmc.add_entity_attribute(location_id, "is_in", room_id)
                     if location.attrib.get("isPlacement"):
                         ltmc.add_entity_attribute(location_id, "is_a", placement_con)
+                    if location.attrib.get("isBeacon"):
+                        ltmc.add_entity_attribute(location_id, "is_a", beacon_con)
 
         else:
             print("Not sure how to parse the top level tag: {}".format(root.tag))
