@@ -27,6 +27,17 @@ namespace knowledge_rep {
                                                                                                      attribute_name)),
                                                                                              value(value) {}
 
+            int get_int_value() { return boost::get<int>(value); }
+            float get_float_value() { return boost::get<float>(value); }
+            bool get_bool_value() { return boost::get<bool>(value); }
+            std::string get_string_value() { return boost::get<std::string>(value); }
+
+            bool operator==(const EntityAttribute& other) {
+                return (this->entity_id == other.entity_id) 
+                    && (this->attribute_name == other.attribute_name) 
+                    && (this->value == other.value);
+            }
+
         };
         LongTermMemoryConduit(const std::string &addr, const uint port, const std::string &usr,
                               const std::string &password, const std::string &db_name);
@@ -44,6 +55,8 @@ namespace knowledge_rep {
         bool add_entity_attribute(int entity_id, const std::string &attribute_name, const int other_entity_id);
 
         bool remove_entity_attribute(int entity_id, const std::string &attribute_name);
+
+        bool remove_concept_references(const std::string &concept_name);
 
         std::vector<EntityAttribute> get_entity_attributes(int entity_id);
 

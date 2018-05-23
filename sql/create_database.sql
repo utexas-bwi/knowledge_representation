@@ -78,11 +78,11 @@ CREATE TABLE entity_attributes_bool (
 
 insert into attributes(attribute_name) values('concept');
 insert into attributes(attribute_name) values('is_a');
-insert into attributes(attribute_name) values('is_on');
 insert into attributes(attribute_name) values('is_in');
 insert into attributes(attribute_name) values('is_facing');
 insert into attributes(attribute_name) values('is_located');
 insert into attributes(attribute_name) values('is_placed');
+insert into attributes(attribute_name) values('is_delivered');
 insert into attributes(attribute_name) values('sensed');
 insert into attributes(attribute_name) values('person_name');
 insert into attributes(attribute_name) values('found_in');

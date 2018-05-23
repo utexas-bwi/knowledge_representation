@@ -160,6 +160,15 @@ namespace knowledge_rep {
         }
     }
 
+    bool LongTermMemoryConduit::remove_concept_references(const std::string &concept_name) {
+        int concept_id = get_concept(concept_name);
+        delete_entity(concept_id);
+        int new_concept_id = add_entity();
+        add_entity_attribute(new_concept_id, "concept", concept_name);
+
+        return true;
+    }
+
 
     LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row_value(mysqlx::Value wrapped) {
         switch (wrapped.getType()) {
@@ -242,7 +251,7 @@ namespace knowledge_rep {
             return boost::get<int>(unwrap_attribute_row_value(row[0]));
         });
 
-        return vector<int>();
+        return return_result;
     }
 
     std::vector<int> LongTermMemoryConduit::get_all_entities() {

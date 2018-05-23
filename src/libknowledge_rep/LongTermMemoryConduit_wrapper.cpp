@@ -1,4 +1,5 @@
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <knowledge_representation/LongTermMemoryConduit.h>
 
 using namespace boost::python;
@@ -6,6 +7,20 @@ using namespace knowledge_rep;
 
 BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
     typedef LongTermMemoryConduit LTMC;
+    class_<std::vector<int> >("PyIntList")
+        .def(vector_indexing_suite<std::vector<int> >() );
+
+    class_<LTMC::EntityAttribute>("EntityAttribute", init<int, std::string, LTMC::ConceptValue>())
+        .def_readonly("entity_id", &LTMC::EntityAttribute::entity_id)
+        .def_readonly("attribute_name", &LTMC::EntityAttribute::attribute_name)
+        .def("get_int_value", &LTMC::EntityAttribute::get_int_value)
+        .def("get_float_value", &LTMC::EntityAttribute::get_float_value)
+        .def("get_bool_value", &LTMC::EntityAttribute::get_bool_value)
+        .def("get_string_value", &LTMC::EntityAttribute::get_string_value);
+
+    class_<std::vector<LTMC::EntityAttribute> >("PyAttributeList")
+        .def(vector_indexing_suite<std::vector<LTMC::EntityAttribute> >() );
+
     class_<LongTermMemoryConduit>("LongTermMemoryConduit",
                                   init<std::string, uint, std::string, std::string, std::string>())
             .def("add_entity", static_cast<int (LTMC::*)()>(&LTMC::add_entity))
@@ -17,6 +32,8 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
                                                                                                   const std::string &)>(&LTMC::get_entity_attribute))
             .def("get_entity_attributes",
                  static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int)>(&LTMC::get_entity_attributes))
+            .def("get_entities_with_attribute_of_value", 
+                 static_cast<std::vector<int> (LTMC::*)(const std::string &, int)>(&LTMC::get_entities_with_attribute_of_value))
             .def("delete_entity", static_cast<bool (LTMC::*)(int)>(&LTMC::delete_entity))
             .def("entity_exists", static_cast<bool (LTMC::*)(int)>(&LTMC::entity_exists))
             .def("delete_all_entities", static_cast<void (LTMC::*)()>(&LTMC::delete_all_entities))
@@ -31,5 +48,6 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
 //.def("add_entity_attribute",
 //                 static_cast<bool (LTMC::*)(int, const std::string &, float)>(&LTMC::add_entity_attribute))
             .def("get_all_entities", static_cast<std::vector<int> (LTMC::*)()>(&LTMC::get_all_entities))
-            .def("get_concept", static_cast<int (LTMC::*)(const std::string &)>(&LTMC::get_concept));
+            .def("get_concept", static_cast<int (LTMC::*)(const std::string &)>(&LTMC::get_concept))
+            .def("remove_concept_references", static_cast<bool (LTMC::*)(const std::string &)>(&LTMC::remove_concept_references));
 }
