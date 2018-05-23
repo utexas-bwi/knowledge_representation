@@ -58,6 +58,31 @@ int main(int argc, const char *argv[]) {
     assert(all_objs.size() == 2);
     assert(all_objs.at(0) == 1);
 
+    ltmc.add_entity_attribute(1, "sensed", 1);
+    attrs = ltmc.get_entity_attribute(1, "sensed");
+    assert(attrs.at(0).value.type() == typeid(int));
+    assert(boost::get<int>(attrs.at(0).value) == 1);
+    ltmc.remove_entity_attribute(1, "sensed");
+
+    ltmc.add_entity_attribute(1, "sensed", 1.0f);
+    attrs = ltmc.get_entity_attribute(1, "sensed");
+    assert(attrs.at(0).value.type() == typeid(float));
+    assert(boost::get<float>(attrs.at(0).value) == 1.0f);
+    ltmc.remove_entity_attribute(1, "sensed");
+
+    ltmc.add_entity_attribute(1, "sensed", "test");
+    attrs = ltmc.get_entity_attribute(1, "sensed");
+    assert(attrs.at(0).value.type() == typeid(string));
+    assert(boost::get<string>(attrs.at(0).value) == "test");
+    ltmc.remove_entity_attribute(1, "sensed");
+
+    // TODO: This is bugged. Bool attributes are not stored correctly. They'll come out as ints.
+    /*ltmc.add_entity_attribute(1, "sensed", true);
+    attrs = ltmc.get_entity_attribute(1, "sensed");
+    assert(attrs.at(0).value.type() == typeid(bool));
+    assert(boost::get<bool>(attrs.at(0).value) == true);
+    ltmc.remove_entity_attribute(1, "sensed");*/
+
     cout << "Done!" << endl;
 } 
 
