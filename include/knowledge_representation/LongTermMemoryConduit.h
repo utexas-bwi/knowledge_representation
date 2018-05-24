@@ -60,7 +60,7 @@ namespace knowledge_rep {
 
         std::vector<EntityAttribute> get_entity_attributes(int entity_id);
 
-        std::vector<EntityAttribute> get_entity_attribute(int entity_id, const std::string &attribute_name);
+        std::vector<EntityAttribute> get_entity_attributes(int entity_id, const std::string &attribute_name);
 
         //TODO: Provide versions for the other possible attribute value types.
         std::vector<int>

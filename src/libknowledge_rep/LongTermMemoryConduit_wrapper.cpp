@@ -28,8 +28,8 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
                                                                     const std::string &)>(&LTMC::add_entity_attribute))
             .def("remove_entity_attribute",
                  static_cast<bool (LTMC::*)(int, const std::string &)>(&LTMC::remove_entity_attribute))
-            .def("get_entity_attribute", static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int,
-                                                                                                  const std::string &)>(&LTMC::get_entity_attribute))
+            .def("get_entity_attributes", static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int,
+                                                                                                  const std::string &)>(&LTMC::get_entity_attributes))
             .def("get_entity_attributes",
                  static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int)>(&LTMC::get_entity_attributes))
             .def("get_entities_with_attribute_of_value", 

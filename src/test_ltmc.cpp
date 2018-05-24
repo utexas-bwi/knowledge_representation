@@ -36,10 +36,10 @@ int main(int argc, const char *argv[]) {
     assert(ltmc.add_entity_attribute(can, "not a real attribute", coke) == false);
 
     // Concept is an attribute, so we should be able to poke at it through here
-    auto attributes = ltmc.get_entity_attribute(soda, "concept");
+    auto attributes = ltmc.get_entity_attributes(soda, "concept");
     auto at = attributes[0];
     assert(boost::get<std::string>(at.value) == string("soda"));
-    auto attrs = ltmc.get_entity_attribute(can, "is_a");
+    auto attrs = ltmc.get_entity_attributes(can, "is_a");
     assert(attrs.size() == 2);
 
     // The concrete object should vanish...
@@ -59,19 +59,19 @@ int main(int argc, const char *argv[]) {
     assert(all_objs.at(0) == 1);
 
     ltmc.add_entity_attribute(1, "sensed", 1);
-    attrs = ltmc.get_entity_attribute(1, "sensed");
+    attrs = ltmc.get_entity_attributes(1, "sensed");
     assert(attrs.at(0).value.type() == typeid(int));
     assert(boost::get<int>(attrs.at(0).value) == 1);
     ltmc.remove_entity_attribute(1, "sensed");
 
     ltmc.add_entity_attribute(1, "sensed", 1.0f);
-    attrs = ltmc.get_entity_attribute(1, "sensed");
+    attrs = ltmc.get_entity_attributes(1, "sensed");
     assert(attrs.at(0).value.type() == typeid(float));
     assert(boost::get<float>(attrs.at(0).value) == 1.0f);
     ltmc.remove_entity_attribute(1, "sensed");
 
     ltmc.add_entity_attribute(1, "sensed", "test");
-    attrs = ltmc.get_entity_attribute(1, "sensed");
+    attrs = ltmc.get_entity_attributes(1, "sensed");
     assert(attrs.at(0).value.type() == typeid(string));
     assert(boost::get<string>(attrs.at(0).value) == "test");
     ltmc.remove_entity_attribute(1, "sensed");

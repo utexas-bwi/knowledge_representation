@@ -4,7 +4,7 @@ using namespace std;
 
 bool knowledge_rep::MemoryConduit::encode(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> &entities,
                                           pcl::PointCloud<pcl::PointXYZ>::Ptr &table) {
-    vector<LongTermMemoryConduit::EntityAttribute> facings = ltmc.get_entity_attribute(robot_id, "facing");
+    vector<LongTermMemoryConduit::EntityAttribute> facings = ltmc.get_entity_attributes(robot_id, "facing");
     assert(facings.size() == 1);
     int facing_id = boost::get<int>(facings.at(0).value);
     //TODO: Make sure this is table
