@@ -8,20 +8,26 @@
 
 #include "LongTermMemoryConduit.h"
 #include "ShortTermMemoryConduit.h"
+#include <ros/ros.h>
+#include <villa_octomap_server/GetPointCloud.h>
 
 namespace knowledge_rep {
 
     class MemoryConduit {
-        typedef pcl::PointXYZ PointT;
+        typedef pcl::PointXYZRGB PointT;
         typedef pcl::PointCloud<PointT> PointCloudT;
         LongTermMemoryConduit ltmc;
         ShortTermMemoryConduit stmc;
 
         static const int robot_id = 1;
 
+        ros::NodeHandle _pnh;
+        ros::ServiceClient get_octomap_service;
     public:
         explicit MemoryConduit(const std::string &ltmi_adress = "127.0.0.1") : ltmc(ltmi_adress, 33060, "root", "",
                                                                                     "villa_krr"), stmc() {
+            _pnh = ros::NodeHandle("~");
+            get_octomap_service = _pnh.serviceClient<villa_octomap_server::GetPointCloud>("/octomap_cloud");
 
         }
 
@@ -31,6 +37,9 @@ namespace knowledge_rep {
 
         std::vector<LongTermMemoryConduit::EntityAttribute> relevant_to(std::vector<int> objects);
 
+        pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_facing_cloud(bool include_ground=false);
+
+        sensor_msgs::PointCloud2 get_facing_cloud_ros(bool include_ground=false);
     };
 
 }

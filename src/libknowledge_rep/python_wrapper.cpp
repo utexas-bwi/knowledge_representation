@@ -50,4 +50,5 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
             .def("get_all_entities", static_cast<std::vector<int> (LTMC::*)()>(&LTMC::get_all_entities))
             .def("get_concept", static_cast<int (LTMC::*)(const std::string &)>(&LTMC::get_concept))
             .def("remove_concept_references", static_cast<bool (LTMC::*)(const std::string &)>(&LTMC::remove_concept_references));
+
 }

@@ -8,11 +8,13 @@ set(CMAKE_CXX_STANDARD 11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+        bwi_perception
         roscpp
         pcl_ros
         pcl_conversions
         std_msgs
         sensor_msgs
+        villa_octomap_server
         )
 
 find_package(Boost REQUIRED COMPONENTS python)
@@ -31,6 +33,7 @@ link_directories(
 add_service_files(
         FILES
         AddObject.srv
+        GetCloud.srv
         RemoveObject.srv
         ResolveObjectCorrespondences.srv
 )
@@ -47,8 +50,11 @@ generate_messages(
 catkin_package(
         INCLUDE_DIRS include /usr/local/mysql/connector-c++-8.0/include
         LIBRARIES libknowledge_rep ${mysql}
-        CATKIN_DEPENDS pcl_ros pcl_conversions
+        CATKIN_DEPENDS
+        pcl_ros
+        pcl_conversions
         roscpp
+        villa_octomap_server
 )
 
 include_directories(
@@ -59,11 +65,11 @@ include_directories(
 )
 
 
-add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/ShortTermMemory.cpp)
+add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp)
 add_dependencies(libknowledge_rep ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(libknowledge_rep ${mysql} ${catkin_LIBRARIES})
 
-add_library(_libknowledge_rep_wrapper_cpp src/libknowledge_rep/LongTermMemoryConduit_wrapper.cpp)
+add_library(_libknowledge_rep_wrapper_cpp src/libknowledge_rep/python_wrapper.cpp)
 add_dependencies(_libknowledge_rep_wrapper_cpp ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(_libknowledge_rep_wrapper_cpp
         libknowledge_rep
@@ -71,9 +77,9 @@ target_link_libraries(_libknowledge_rep_wrapper_cpp
         ${Boost_LIBRARIES}
         ${catkin_LIBRARIES})
 
-add_executable(short_term_memory_node src/short_term_memory_node.cpp src/short_term_memory_node.cpp)
-add_dependencies(short_term_memory_node ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(short_term_memory_node libknowledge_rep ${catkin_LIBRARIES})
+add_executable(memory_conduit_proxy_node src/memory_conduit_proxy_node.cpp)
+add_dependencies(memory_conduit_proxy_node ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(memory_conduit_proxy_node libknowledge_rep ${catkin_LIBRARIES})
 
 ### TEST TARGETS
 
@@ -81,9 +87,9 @@ add_executable(test_ltmc src/test_ltmc.cpp)
 add_dependencies(test_ltmc ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(test_ltmc libknowledge_rep ${catkin_LIBRARIES})
 
-add_executable(test_stmc src/test_stmc.cpp)
-add_dependencies(test_stmc ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(test_stmc libknowledge_rep ${catkin_LIBRARIES})
+add_executable(test_mc src/test_mc.cpp)
+add_dependencies(test_mc ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(test_mc libknowledge_rep ${catkin_LIBRARIES})
 
 add_executable(initialize_planner_test_configuration src/initialize_planner_test_configuration.cpp)
 add_dependencies(initialize_planner_test_configuration ${knowledge_representation_EXPORTED_TARGETS})
@@ -110,5 +116,4 @@ install(DIRECTORY include/${PROJECT_NAME}
 install(TARGETS
         initialize_planner_test_configuration
         test_ltmc
-        short_term_memory_node
         RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
