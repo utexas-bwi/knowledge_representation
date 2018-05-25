@@ -17,9 +17,12 @@ int main(int argc, char *argv[]) {
     ltmc.add_entity_attribute(1, "is_a", empty_handed_con);
 
 
-    int living_room_con = ltmc.get_concept("living room");
-    int living_room = ltmc.get_entities_with_attribute_of_value("is_a", living_room_con).at(0);
-    ltmc.add_entity_attribute(1, "is_located", living_room);
+    int start_position_con = ltmc.get_concept("start position");
+    int location_con = ltmc.get_concept("location");
+    ltmc.add_entity_attribute(start_position_con, "is_a", location_con);
+    int start_position = ltmc.add_entity();
+    ltmc.add_entity_attribute(start_position, "is_a", start_position_con);
+    ltmc.add_entity_attribute(1, "is_located", start_position);
     
     cout << "Done!" << endl;
 } 
