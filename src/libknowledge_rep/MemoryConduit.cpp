@@ -73,6 +73,7 @@ PointCloudT::Ptr knowledge_rep::MemoryConduit::get_facing_cloud(bool include_gro
     bwi_perception::filter_points_between<PointT>(from_octomap, result, {x, y}, yaw - M_PI / 4, yaw + M_PI / 4);
     if (!include_ground) {
         pcl::PassThrough<PointT> ground_filter;
+        ground_filter.setInputCloud(result);
         ground_filter.setFilterFieldName("z");
         ground_filter.setFilterLimits(0.1, std::numeric_limits<float>::max());
         ground_filter.filter(*result);
