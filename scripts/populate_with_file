@@ -24,6 +24,7 @@ def populate(ltmc, file_path):
                 ltmc.add_entity_attribute(specifc_room_concept, "is_a", room_con)
                 room_id = ltmc.add_entity()
                 ltmc.add_entity_attribute(room_id, "is_a", specifc_room_concept)
+                ltmc.add_entity_attribute(room_id, "map_name", room.attrib['name'])
 
                 for location in room:
                     if location.tag != "location":
@@ -33,11 +34,12 @@ def populate(ltmc, file_path):
                     specific_location_concept = ltmc.get_concept(location_name)
                     ltmc.add_entity_attribute(specific_location_concept, "is_a", location_con)
                     ltmc.add_entity_attribute(location_id, "is_a", specific_location_concept)
+                    ltmc.add_entity_attribute(location_id, "map_name", location_name)
                     ltmc.add_entity_attribute(location_id, "is_in", room_id)
                     if location.attrib.get("isPlacement"):
-                        ltmc.add_entity_attribute(specific_location_concept, "is_a", placement_con)
+                        ltmc.add_entity_attribute(location_id, "is_a", placement_con)
                     if location.attrib.get("isBeacon"):
-                        ltmc.add_entity_attribute(specific_location_concept, "is_a", beacon_con)
+                        ltmc.add_entity_attribute(location_id, "is_a", beacon_con)
 
         else:
             print("Not sure how to parse the top level tag: {}".format(root.tag))

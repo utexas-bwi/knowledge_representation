@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     ltmc.add_entity_attribute(start_position_con, "is_a", location_con);
     int start_position = ltmc.add_entity();
     ltmc.add_entity_attribute(start_position, "is_a", start_position_con);
-    ltmc.add_entity_attribute(1, "is_located", start_position);
+    ltmc.add_entity_attribute(start_position, "map_name", "start position");
     
     cout << "Done!" << endl;
 } 

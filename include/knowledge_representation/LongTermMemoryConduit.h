@@ -66,6 +66,9 @@ namespace knowledge_rep {
         std::vector<int>
         get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id);
 
+        std::vector<int> 
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const std::string &string_val);
+
         bool delete_entity(int id);
 
         bool entity_exists(int id);
