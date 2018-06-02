@@ -19,11 +19,12 @@ namespace knowledge_rep {
         LongTermMemoryConduit ltmc;
         ShortTermMemoryConduit stmc;
 
-        static const int robot_id = 1;
+
 
         ros::NodeHandle _pnh;
         ros::ServiceClient get_octomap_service;
     public:
+        static const int robot_id = 1;
         explicit MemoryConduit(const std::string &ltmi_adress = "127.0.0.1") : ltmc(ltmi_adress, 33060, "root", "",
                                                                                     "villa_krr"), stmc() {
             _pnh = ros::NodeHandle("~");
