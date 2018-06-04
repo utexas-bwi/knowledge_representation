@@ -1,5 +1,5 @@
-#ifndef INTERFACE_H
-#define INTERFACE_H
+#ifndef LONG_TERM_MEMORY_CONDUIT_H
+#define LONG_TERM_MEMORY_CONDUIT_H
 #include <iostream>
 #include <mysqlx/xdevapi.h>
 #include <string>
@@ -65,6 +65,9 @@ namespace knowledge_rep {
         //TODO: Provide versions for the other possible attribute value types.
         std::vector<int>
         get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id);
+
+        std::vector<int>
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const bool other_entity_id);
 
         std::vector<int> 
         get_entities_with_attribute_of_value(const std::string &attribute_name, const std::string &string_val);

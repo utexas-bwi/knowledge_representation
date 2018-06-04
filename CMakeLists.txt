@@ -65,7 +65,7 @@ include_directories(
 )
 
 
-add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp)
+add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/villa_convenience.cpp)
 add_dependencies(libknowledge_rep ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(libknowledge_rep ${mysql} ${catkin_LIBRARIES})
 
@@ -103,6 +103,8 @@ set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
         PREFIX ""
         LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_PYTHON_DESTINATION}
         )
+
+catkin_add_env_hooks(${PROJECT_NAME} SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
 install(TARGETS libknowledge_rep
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

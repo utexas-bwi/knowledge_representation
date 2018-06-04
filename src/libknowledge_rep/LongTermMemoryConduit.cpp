@@ -255,6 +255,23 @@ namespace knowledge_rep {
     }
 
     vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
+                                                                            const bool bool_val) {
+        Table entity_attributes = db->getTable("entity_attributes_bool");
+        RowResult result = entity_attributes.select("*").where(
+                "attribute_value = :val and attribute_name = :attr").bind("val",
+                                                                          bool_val).bind(
+                "attr", attribute_name).execute();
+        std::list<Row> rows = result.fetchAll();
+        vector<int> return_result;
+        transform(rows.begin(), rows.end(), back_inserter(return_result), [this](Row row) {
+            return boost::get<int>(unwrap_attribute_row_value(row[0]));
+        });
+
+        return return_result;
+    }
+
+
+    vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
                                                                            const std::string &string_val) {
         Table entity_attributes = db->getTable("entity_attributes_str");
         RowResult result = entity_attributes.select("*").where(
