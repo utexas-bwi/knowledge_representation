@@ -95,7 +95,7 @@ insert into attributes(attribute_name) values('answer_to');
 insert into entities(entity_id) values(1);
 insert into entities(entity_id) values(2);
 insert into entity_attributes_str(entity_id, attribute_name, attribute_value) values(2, 'concept', 'robot');
-insert into entity_attributes_str(entity_id, attribute_name, attribute_value) values(1, 'is_a', 'robot');
+insert into entity_attributes_id(entity_id, attribute_name, attribute_value) values(1, 'is_a', 2);
 
 
 /*

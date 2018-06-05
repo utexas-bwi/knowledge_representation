@@ -306,8 +306,7 @@ namespace knowledge_rep {
 
         // Add the robot itself back
         add_entity(1);
-        int robot_concept_id = add_entity();
-        add_entity_attribute(robot_concept_id, "concept", "robot");
+        int robot_concept_id = get_concept("robot");
         add_entity_attribute(1, "is_a", robot_concept_id);
         assert(entity_exists(1));
     }
