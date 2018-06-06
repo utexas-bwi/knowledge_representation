@@ -95,6 +95,9 @@ add_executable(initialize_planner_test_configuration src/initialize_planner_test
 add_dependencies(initialize_planner_test_configuration ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(initialize_planner_test_configuration libknowledge_rep ${catkin_LIBRARIES})
 
+add_executable(add_inspection_point src/add_inspection_point.cpp)
+add_dependencies(add_inspection_point ${knowledge_representation_EXPORTED_TARGETS})
+target_link_libraries(add_inspection_point libknowledge_rep ${catkin_LIBRARIES})
 
 add_executable(csv_reader src/csv_reader.cpp)
 target_link_libraries(csv_reader libknowledge_rep)
