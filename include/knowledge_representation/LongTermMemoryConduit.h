@@ -58,19 +58,19 @@ namespace knowledge_rep {
 
         bool remove_concept_references(const std::string &concept_name);
 
-        std::vector<EntityAttribute> get_entity_attributes(int entity_id);
+        std::vector<EntityAttribute> get_entity_attributes(int entity_id) const;
 
-        std::vector<EntityAttribute> get_entity_attributes(int entity_id, const std::string &attribute_name);
+        std::vector<EntityAttribute> get_entity_attributes(int entity_id, const std::string &attribute_name) const;
 
         //TODO: Provide versions for the other possible attribute value types.
         std::vector<int>
-        get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id);
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id) const;
 
         std::vector<int>
-        get_entities_with_attribute_of_value(const std::string &attribute_name, const bool other_entity_id);
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const bool other_entity_id) const;
 
         std::vector<int> 
-        get_entities_with_attribute_of_value(const std::string &attribute_name, const std::string &string_val);
+        get_entities_with_attribute_of_value(const std::string &attribute_name, const std::string &string_val) const;
 
         bool delete_entity(int id);
 
@@ -88,7 +88,7 @@ namespace knowledge_rep {
 
         bool add_entity_attribute(int entity_id, const std::string &attribute_name, const char string_val[]);
 
-        std::vector<int> get_all_entities();
+        std::vector<int> get_all_entities() const;
 
         //// CONVENIENCE
         int get_concept(const std::string &name);
@@ -97,11 +97,11 @@ namespace knowledge_rep {
     private:
 
         static const std::string table_names[];
-        std::vector<EntityAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows);
+        std::vector<EntityAttribute> unwrap_attribute_rows(std::list<mysqlx::Row> rows) const;
 
-        LongTermMemoryConduit::ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped);
+        LongTermMemoryConduit::ConceptValue unwrap_attribute_row_value(mysqlx::Value wrapped) const;
 
-        LongTermMemoryConduit::ConceptValue unwrap_attribute_row(mysqlx::Row row);
+        LongTermMemoryConduit::ConceptValue unwrap_attribute_row(mysqlx::Row row) const;
 
         bool add_entity(int id);
 

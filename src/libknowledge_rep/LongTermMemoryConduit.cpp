@@ -170,7 +170,7 @@ namespace knowledge_rep {
     }
 
 
-    LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row_value(mysqlx::Value wrapped) {
+    LongTermMemoryConduit::ConceptValue LongTermMemoryConduit::unwrap_attribute_row_value(mysqlx::Value wrapped) const {
         switch (wrapped.getType()) {
             case mysqlx::Value::INT64: {
                 int value = wrapped;
@@ -198,7 +198,7 @@ namespace knowledge_rep {
     }
 
     vector<LongTermMemoryConduit::EntityAttribute>
-    LongTermMemoryConduit::unwrap_attribute_rows(std::list<Row> rows) {
+    LongTermMemoryConduit::unwrap_attribute_rows(std::list<Row> rows) const {
         vector<EntityAttribute> result_map;
         for (auto &row: rows) {
             int obj_id = row[0];
@@ -210,7 +210,7 @@ namespace knowledge_rep {
     }
 
     vector<LongTermMemoryConduit::EntityAttribute>
-    LongTermMemoryConduit::get_entity_attributes(int entity_id) {
+    LongTermMemoryConduit::get_entity_attributes(int entity_id) const {
         std::list<Row> rows = {};
         for (const auto & table_name: table_names) {
             Table entity_attributes = db->getTable(table_name);
@@ -223,7 +223,7 @@ namespace knowledge_rep {
     }
 
     std::vector<LongTermMemoryConduit::EntityAttribute>
-    LongTermMemoryConduit::get_entity_attributes(int entity_id, const std::string &attribute_name) {
+    LongTermMemoryConduit::get_entity_attributes(int entity_id, const std::string &attribute_name) const {
         std::list<Row> rows = {};
         for (const auto & table_name: table_names) {
             Table entity_attributes = db->getTable(table_name);
@@ -239,7 +239,7 @@ namespace knowledge_rep {
     }
 
     vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
-                                                                           const int other_entity_id) {
+                                                                           const int other_entity_id) const {
         Table entity_attributes = db->getTable("entity_attributes_id");
         RowResult result = entity_attributes.select("*").where(
                 "attribute_value = :id and attribute_name = :attr").bind("id",
@@ -255,7 +255,7 @@ namespace knowledge_rep {
     }
 
     vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
-                                                                            const bool bool_val) {
+                                                                            const bool bool_val) const {
         Table entity_attributes = db->getTable("entity_attributes_bool");
         RowResult result = entity_attributes.select("*").where(
                 "attribute_value = :val and attribute_name = :attr").bind("val",
@@ -272,7 +272,7 @@ namespace knowledge_rep {
 
 
     vector<int> LongTermMemoryConduit::get_entities_with_attribute_of_value(const std::string &attribute_name,
-                                                                           const std::string &string_val) {
+                                                                           const std::string &string_val) const {
         Table entity_attributes = db->getTable("entity_attributes_str");
         RowResult result = entity_attributes.select("*").where(
                 "attribute_value = :val and attribute_name = :attr").bind("val",
@@ -287,7 +287,7 @@ namespace knowledge_rep {
         return return_result;
     }
 
-    std::vector<int> LongTermMemoryConduit::get_all_entities() {
+    std::vector<int> LongTermMemoryConduit::get_all_entities() const {
         vector<int> all_obj_ids;
         Table entities = db->getTable("entities");
         RowResult rows = entities.select("*").execute();

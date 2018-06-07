@@ -51,7 +51,6 @@ def category_parser(ltmc, root):
             if obj.tag != "object":
                 continue
             object_name = obj.attrib["name"]
-            object_con_id = ltmc.add_entity()
             object_con_id = ltmc.get_concept(object_name)
             ltmc.add_entity_attribute(object_con_id, "is_a", category_concept)
 

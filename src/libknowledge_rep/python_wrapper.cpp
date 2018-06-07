@@ -29,11 +29,11 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
             .def("remove_entity_attribute",
                  static_cast<bool (LTMC::*)(int, const std::string &)>(&LTMC::remove_entity_attribute))
             .def("get_entity_attributes", static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int,
-                                                                                                  const std::string &)>(&LTMC::get_entity_attributes))
+                                                                                                  const std::string &) const>(&LTMC::get_entity_attributes) )
             .def("get_entity_attributes",
-                 static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int)>(&LTMC::get_entity_attributes))
+                 static_cast<std::vector<LTMC::EntityAttribute> (LTMC::*)(int) const> (&LTMC::get_entity_attributes))
             .def("get_entities_with_attribute_of_value", 
-                 static_cast<std::vector<int> (LTMC::*)(const std::string &, int)>(&LTMC::get_entities_with_attribute_of_value))
+                 static_cast<std::vector<int> (LTMC::*)(const std::string &, int) const>(&LTMC::get_entities_with_attribute_of_value))
             .def("delete_entity", static_cast<bool (LTMC::*)(int)>(&LTMC::delete_entity))
             .def("entity_exists", static_cast<bool (LTMC::*)(int)>(&LTMC::entity_exists))
             .def("delete_all_entities", static_cast<void (LTMC::*)()>(&LTMC::delete_all_entities))
@@ -47,7 +47,7 @@ BOOST_PYTHON_MODULE (_libknowledge_rep_wrapper_cpp) {
                     // anyways...
 //.def("add_entity_attribute",
 //                 static_cast<bool (LTMC::*)(int, const std::string &, float)>(&LTMC::add_entity_attribute))
-            .def("get_all_entities", static_cast<std::vector<int> (LTMC::*)()>(&LTMC::get_all_entities))
+            .def("get_all_entities", static_cast<std::vector<int> (LTMC::*)() const>(&LTMC::get_all_entities))
             .def("get_concept", static_cast<int (LTMC::*)(const std::string &)>(&LTMC::get_concept))
             .def("remove_concept_references", static_cast<bool (LTMC::*)(const std::string &)>(&LTMC::remove_concept_references));
 

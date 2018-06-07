@@ -13,3 +13,11 @@ prepare_knowledge() {
     # Load addenda
     rosrun knowledge_representation initialize_planner_test_configuration
 }
+
+save_knowledge() {
+    stamp=$(date +%Y-%m-%d_%H-%M-%S)
+    if [[ $# == 1 ]]; then
+       stamp=$1
+    fi
+    mysqldump -u root -p --databases villa_krr > knowledge_$(stamp).sql
+}
