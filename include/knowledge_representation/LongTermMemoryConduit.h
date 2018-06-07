@@ -58,6 +58,10 @@ namespace knowledge_rep {
 
         bool remove_concept_references(const std::string &concept_name);
 
+        bool remove_children_of_entity(int entity_id);
+
+        bool remove_entities_of_concept(const std::string &concept_name);
+
         std::vector<EntityAttribute> get_entity_attributes(int entity_id) const;
 
         std::vector<EntityAttribute> get_entity_attributes(int entity_id, const std::string &attribute_name) const;

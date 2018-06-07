@@ -160,11 +160,30 @@ namespace knowledge_rep {
         }
     }
 
+
     bool LongTermMemoryConduit::remove_concept_references(const std::string &concept_name) {
         int concept_id = get_concept(concept_name);
         delete_entity(concept_id);
         int new_concept_id = add_entity();
         add_entity_attribute(new_concept_id, "concept", concept_name);
+
+        return true;
+    }
+
+    bool LongTermMemoryConduit::remove_children_of_entity(int entity_id) {
+        vector<int> children = get_entities_with_attribute_of_value("is_a", entity_id);
+        for (auto& child : children) {
+            remove_children_of_entity(child);
+            delete_entity(child);
+        }
+
+        return true;
+    }
+
+
+    bool LongTermMemoryConduit::remove_entities_of_concept(const std::string &concept_name) {
+        int concept_id = get_concept(concept_name);
+        remove_children_of_entity(concept_id);
 
         return true;
     }
