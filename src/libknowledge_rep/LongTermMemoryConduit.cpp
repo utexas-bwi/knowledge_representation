@@ -107,6 +107,7 @@ namespace knowledge_rep {
             inserter.execute();
         }
         catch (const mysqlx::Error &err) {
+            cout << "Tried to add " << entity_id << " " << attribute_name << " " << bool_val;
             cout << "ERROR: " << err << endl;
             return false;
         }
@@ -123,6 +124,7 @@ namespace knowledge_rep {
             inserter.execute();
         }
         catch (const mysqlx::Error &err) {
+            cout << "Tried to add " << entity_id << " " << attribute_name << " " << other_entity_id;
             cout << "ERROR: " << err << endl;
             return false;
         }

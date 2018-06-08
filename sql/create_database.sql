@@ -83,6 +83,7 @@ insert into attributes(attribute_name) values('is_facing');
 insert into attributes(attribute_name) values('is_located');
 insert into attributes(attribute_name) values('is_placed');
 insert into attributes(attribute_name) values('is_delivered');
+insert into attributes(attribute_name) values('is_holding');
 insert into attributes(attribute_name) values('default_location');
 insert into attributes(attribute_name) values('sensed');
 insert into attributes(attribute_name) values('person_name');
