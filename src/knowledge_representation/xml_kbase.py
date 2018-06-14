@@ -24,7 +24,7 @@ def get_default_xml_kbase():
 
 
 class XMLKnowledgeBase(object):
-    def __init__(self, object_xml_file, location_xml_file, question_xml_file, name_xml_filename):
+    def __init__(self, location_xml_file, object_xml_file, question_xml_file, name_xml_filename):
         self.location_parser = LocationParser(location_xml_file)
         self.object_parser = ObjectParser(object_xml_file)
         self.question_parser = QuestionParser(question_xml_file)
