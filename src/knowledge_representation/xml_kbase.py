@@ -1,28 +1,39 @@
 from knowledge_representation.xml_parsers.locations import LocationParser
 from knowledge_representation.xml_parsers.objects import ObjectParser
 from knowledge_representation.xml_parsers.questions import QuestionParser
+from knowledge_representation.xml_parsers.names import NameParser
+from knowledge_representation.xml_parsers.crowd import CrowdParser
 import random
 import os
 from rospkg.rospack import RosPack
 
 
-def get_default_xml_kbase():
+def get_default_xml_files():
     rospack = RosPack()
     xml_files_location = os.path.abspath(os.path.join(rospack.get_path('spr_qa'), '../GPSRCmdGen/CommonFiles'))
     assert (os.path.isdir(xml_files_location))
     location_xml_filename = os.path.join(xml_files_location, 'Locations.xml')
     object_xml_filename = os.path.join(xml_files_location, 'Objects.xml')
     question_xml_filename = os.path.join(xml_files_location, 'Questions.xml')
-    assert (os.path.isfile(location_xml_filename) and os.path.isfile(object_xml_filename) and os.path.isfile(question_xml_filename))
-    return XMLKnowledgeBase(object_xml_filename, location_xml_filename, question_xml_filename)
+    name_xml_filename = os.path.join(xml_files_location, 'Names.xml')
+    
+    crowd_xml_filename = os.path.abspath(os.path.join(rospack.get_path('spr_qa'), 'resources/people_info.xml'))
+    
+    assert (os.path.isfile(location_xml_filename) and os.path.isfile(object_xml_filename) and os.path.isfile(question_xml_filename) and os.path.isfile(name_xml_filename))
+    return location_xml_filename, object_xml_filename, question_xml_filename, name_xml_filename, crowd_xml_filename
+
+
+def get_default_xml_kbase():
+    return XMLKnowledgeBase(*get_default_xml_files())
 
 
 class XMLKnowledgeBase(object):
-    def __init__(self, object_xml_file, location_xml_file, question_xml_file):
+    def __init__(self, location_xml_file, object_xml_file, question_xml_file, name_xml_filename, crowd_xml_filename):
         self.location_parser = LocationParser(location_xml_file)
         self.object_parser = ObjectParser(object_xml_file)
         self.question_parser = QuestionParser(question_xml_file)
-        #self.person_parser = PersonParser()
+        self.name_parser = NameParser(name_xml_filename)
+        self.crowd_parser = CrowdParser(crowd_xml_filename)
     
     def query(self, logic, argument_tuple):
         if logic == "find_location(x)":
@@ -30,14 +41,37 @@ class XMLKnowledgeBase(object):
         elif logic == "count(x,doors)":
             return self.location_parser.how_many_doors(argument_tuple[0])
         elif logic == "count_crowd(x)":
-            #TODO: need to connect crowd questions, for now just guess zero, one,or two.
-            return random.randint(0,2)
+            person_type = argument_tuple[0]
+            total_num_people = self.crowd_parser.count_crowd()
+            num_women = self.crowd_parser.count_females()
+            num_men = self.crowd_parser.count_males()
+            #hard code in no children
+            if person_type == "adults":
+                return total_num_people
+            if person_type == "children" or person_type == "boys" or person_type == "girls" or person_type == "elders":
+                return 0
+            elif person_type == "females" or person_type == "women":
+                #TODO: don't hard code this
+                return num_women
+            else: 
+                #TODO: need to connect crowd questions, for now just guess zero, one,or two.
+                #return random.randint(0,2)
+                return num_men
         elif logic == "count_posture(x)":
-            #TODO: need to connect crowd questions, for now just guess zero, one,or two.
-            return random.randint(0,2)
+            posture = argument_tuple[0]
+            if posture == "waving":
+                #TODO connect waving from xml
+                return self.crowd_parser.count_waving()
+            elif posture == "raising their left arm":
+                return self.crowd_parser.count_raising_left_arm()
+            elif posture == "raising their right arm":
+                return self.crowd_parser.count_raising_right_arm()
+            else:
+                #just guess
+                return random.randint(0,3)
         elif logic == "count_wearing(x)":
             #TODO: need to connect crowd questions, for now just guess zero, one,or two.
-            return random.randint(0,2)
+            return random.randint(0,3)
         elif logic == "count(x,y)":
             #TODO what do we do about crowd questions?
             #Ambiguous so need to check with multiple queries and see what works
@@ -51,13 +85,17 @@ class XMLKnowledgeBase(object):
             else:
                 return object_query
         elif logic == "which_person(x,y,z)":
-            #TODO need to connect to akanksha's detector
             #guess for now.
             if (random.random() < 0.5):
                 return argument_tuple[1]
             else:
                 return argument_tuple[2]
         elif logic=="is_person(x,y)":
+            #hard code zero children
+            person_type = argument_tuple[1]
+            if person_type == "boy" or person_type == "girl":
+                return 0
+            #TODO: make this based on XML
             if random.random() < 0.5:
                 return True
             else:
