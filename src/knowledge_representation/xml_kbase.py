@@ -1,34 +1,27 @@
 from knowledge_representation.xml_parsers.locations import LocationParser
 from knowledge_representation.xml_parsers.objects import ObjectParser
 from knowledge_representation.xml_parsers.questions import QuestionParser
-from knowledge_representation.xml_parsers.names import NameParser
 import random
 import os
 from rospkg.rospack import RosPack
 
 
-def get_default_xml_files():
+def get_default_xml_kbase():
     rospack = RosPack()
     xml_files_location = os.path.abspath(os.path.join(rospack.get_path('spr_qa'), '../GPSRCmdGen/CommonFiles'))
     assert (os.path.isdir(xml_files_location))
     location_xml_filename = os.path.join(xml_files_location, 'Locations.xml')
     object_xml_filename = os.path.join(xml_files_location, 'Objects.xml')
     question_xml_filename = os.path.join(xml_files_location, 'Questions.xml')
-    name_xml_filename = os.path.join(xml_files_location, 'Names.xml')
-    assert (os.path.isfile(location_xml_filename) and os.path.isfile(object_xml_filename) and os.path.isfile(question_xml_filename) and os.path.isfile(name_xml_filename))
-    return location_xml_filename, object_xml_filename, question_xml_filename, name_xml_filename
-
-
-def get_default_xml_kbase():
-    return XMLKnowledgeBase(*get_default_xml_files())
+    assert (os.path.isfile(location_xml_filename) and os.path.isfile(object_xml_filename) and os.path.isfile(question_xml_filename))
+    return XMLKnowledgeBase(object_xml_filename, location_xml_filename, question_xml_filename)
 
 
 class XMLKnowledgeBase(object):
-    def __init__(self, location_xml_file, object_xml_file, question_xml_file, name_xml_filename):
+    def __init__(self, object_xml_file, location_xml_file, question_xml_file):
         self.location_parser = LocationParser(location_xml_file)
         self.object_parser = ObjectParser(object_xml_file)
         self.question_parser = QuestionParser(question_xml_file)
-        self.name_parser = NameParser(name_xml_filename)
         #self.person_parser = PersonParser()
     
     def query(self, logic, argument_tuple):
