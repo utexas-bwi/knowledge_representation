@@ -9,7 +9,6 @@
 #include "LongTermMemoryConduit.h"
 #include "ShortTermMemoryConduit.h"
 #include <ros/ros.h>
-#include <villa_octomap_server/GetPointCloud.h>
 
 namespace knowledge_rep {
 
@@ -28,7 +27,6 @@ namespace knowledge_rep {
         explicit MemoryConduit(const std::string &ltmi_adress = "127.0.0.1") : ltmc(ltmi_adress, 33060, "root", "",
                                                                                     "villa_krr"), stmc() {
             _pnh = ros::NodeHandle("~");
-            get_octomap_service = _pnh.serviceClient<villa_octomap_server::GetPointCloud>("/octomap_cloud");
 
         }
 
@@ -38,9 +36,6 @@ namespace knowledge_rep {
 
         std::vector<LongTermMemoryConduit::EntityAttribute> relevant_to(std::vector<int> objects);
 
-        pcl::PointCloud<pcl::PointXYZRGB>::Ptr get_facing_cloud(bool include_ground=false);
-
-        sensor_msgs::PointCloud2 get_facing_cloud_ros(bool include_ground=false);
     };
 
 }

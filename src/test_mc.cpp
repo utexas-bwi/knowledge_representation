@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     ros::Publisher facing_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("facing_cloud",1,true);
     knowledge_rep::MemoryConduit mc;
 
-    facing_cloud_pub.publish(mc.get_facing_cloud_ros());
+    //facing_cloud_pub.publish(mc.get_facing_cloud_ros());
 
     // Spin to keep the message available. Ctrl-C when done inspecting
     ros::spin();

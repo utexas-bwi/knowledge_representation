@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
         pcl_conversions
         std_msgs
         sensor_msgs
-        villa_octomap_server
         )
 
 find_package(Boost REQUIRED COMPONENTS python)
@@ -54,7 +53,6 @@ catkin_package(
         pcl_ros
         pcl_conversions
         roscpp
-        villa_octomap_server
 )
 
 include_directories(
@@ -64,8 +62,8 @@ include_directories(
         ${Eigen3_INCLUDE_DIRS}
 )
 
+add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/convenience.cpp)
 
-add_library(libknowledge_rep src/libknowledge_rep/LongTermMemoryConduit.cpp src/libknowledge_rep/MemoryConduit.cpp src/libknowledge_rep/villa_convenience.cpp)
 add_dependencies(libknowledge_rep ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(libknowledge_rep ${mysql} ${catkin_LIBRARIES})
 

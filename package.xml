@@ -2,7 +2,8 @@
 <package format="2">
     <name>knowledge_representation</name>
     <version>1.0.0</version>
-    <description>The Villa world model</description>
+    <description>The knowledge_representation package</description>
+
     <maintainer email="jiangyuqian@utexas.edu">Yuqian Jiang</maintainer>
     <maintainer email="nickswalker@utexas.edu">Nick Walker</maintainer>
     <license>Apache 2.0</license>
@@ -18,7 +19,7 @@
     <depend>roscpp</depend>
     <depend>sensor_msgs</depend>
     <depend>std_msgs</depend>
-    <depend>villa_octomap_server</depend>
+
     <export>
     </export>
 </package>

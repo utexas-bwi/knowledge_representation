@@ -29,7 +29,8 @@ struct MemoryConduitProxy {
 
     bool get_facing_cloud_cb(knowledge_representation::GetCloud::Request &req,
                              knowledge_representation::GetCloud::Response &res) {
-        res.cloud = mc.get_facing_cloud_ros(req.include_ground);
+
+        //res.cloud = mc.get_facing_cloud_ros(req.include_ground);
         return true;
     }
 };
@@ -43,3 +44,4 @@ int main(int argc, char **argv) {
     ros::MultiThreadedSpinner spinner(2);
     spinner.spin();
 }
+
