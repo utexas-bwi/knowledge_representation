@@ -123,10 +123,6 @@ target_link_libraries(_libknowledge_rep_wrapper_cpp
         ${Boost_LIBRARIES}
         ${catkin_LIBRARIES})
 
-add_executable(memory_conduit_proxy_node src/memory_conduit_proxy_node.cpp)
-add_dependencies(memory_conduit_proxy_node ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(memory_conduit_proxy_node libknowledge_rep ${catkin_LIBRARIES})
-
 add_executable(show_me src/show_me.cpp)
 add_dependencies(show_me ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(show_me libknowledge_rep ${catkin_LIBRARIES})
@@ -136,10 +132,6 @@ target_link_libraries(show_me libknowledge_rep ${catkin_LIBRARIES})
 catkin_add_gtest(test_ltmc test/ltmc.cpp)
 add_dependencies(test_ltmc ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(test_ltmc libknowledge_rep ${catkin_LIBRARIES})
-
-catkin_add_gtest(test_mc test/mc.cpp)
-add_dependencies(test_mc ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(test_mc libknowledge_rep ${catkin_LIBRARIES})
 
 catkin_add_gtest(test_parser test/parser.cpp)
 add_dependencies(test_parser ${knowledge_representation_EXPORTED_TARGETS})
