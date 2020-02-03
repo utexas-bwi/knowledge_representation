@@ -24,7 +24,6 @@ find_package(Boost REQUIRED COMPONENTS python)
 
 find_package(PythonLibs REQUIRED)
 
-set(PostgreSQL_ADDITIONAL_VERSIONS "10.5" "9.3" "9.3.15")
 find_package(PostgreSQL)
 
 find_library(libpqxx NAMES pqxx)
