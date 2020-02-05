@@ -212,7 +212,7 @@ $$;
 
 /***** DEFAULT VALUES */
 CREATE FUNCTION add_default_entities()
-    RETURNS VOID
+    RETURNS bigint
     LANGUAGE SQL
 AS
 $$
@@ -227,6 +227,10 @@ INSERT INTO entity_attributes_bool
 VALUES (2, 'is_concept', TRUE);
 INSERT INTO entity_attributes_id
 VALUES (1, 'instance_of', 2);
+
+/* Manual inserts will mess up the SERIAL sequence, so we have to manually bump the number*/
+SELECT setval('entities_entity_id_seq', max(entity_id))
+FROM   entities;
 $$;
 
 SELECT *
