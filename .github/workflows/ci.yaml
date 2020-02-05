@@ -4,11 +4,14 @@ on: [push, pull_request]
 
 jobs:
   industrial_ci:
+    env:
+      ROS_REPO: main
+      AFTER_INSTALL_TARGET_DEPENDENCIES: scripts/configure_postgresql.sh
     strategy:
       matrix:
         env:
-          - {ROS_DISTRO: kinetic, ROS_REPO: main}
-          - {ROS_DISTRO: melodic, ROS_REPO: main}
+          - {ROS_DISTRO: kinetic}
+          - {ROS_DISTRO: melodic}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
