@@ -2,26 +2,27 @@
 <package format="2">
     <name>knowledge_representation</name>
     <version>1.0.0</version>
-    <description>The knowledge_representation package</description>
+    <description>APIs for storing and querying information about the world.
+    Provides C++ and Python API's to make getting facts in and out easy (while still exposing a full SQL interface).
+        Supports PostgreSQL and MySQL backends.</description>
 
+    <maintainer email="nswalker@cs.washington.edu">Nick Walker</maintainer>
     <maintainer email="jiangyuqian@utexas.edu">Yuqian Jiang</maintainer>
-    <maintainer email="nickswalker@utexas.edu">Nick Walker</maintainer>
-    <license>Apache 2.0</license>
+    <license>BSD</license>
 
     <buildtool_depend>catkin</buildtool_depend>
 
     <depend>bison</depend>
+    <depend>boost</depend>
     <depend>flex</depend>
     <depend>libmysqlclient-dev</depend>
     <depend>libmysqlcppconn-dev</depend>
     <depend>libpqxx</depend>
     <depend>libpqxx-dev</depend>
-    <depend>pcl_conversions</depend>
-    <depend>pcl_ros</depend>
     <depend>postgresql</depend>
-    <depend>roscpp</depend>
-    <depend>sensor_msgs</depend>
-    <depend>std_msgs</depend>
+    <depend>python-dev</depend>
+
+    <test_depend>rosunit</test_depend>
 
     <export>
     </export>

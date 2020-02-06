@@ -255,7 +255,7 @@ Instance LongTermMemoryConduitPostgreSQL::get_robot() {
  */
 Entity LongTermMemoryConduitPostgreSQL::add_entity() {
   pqxx::work txn{*conn, "add_entity"};
-  // Remove all entities
+
   auto result = txn.exec("INSERT INTO entities VALUES (DEFAULT) RETURNING entity_id");
   txn.commit();
   return {result[0]["entity_id"].as<uint>(), *this};

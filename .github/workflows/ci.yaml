@@ -5,8 +5,9 @@ on: [push, pull_request]
 jobs:
   industrial_ci:
     env:
-      ROS_REPO: main
       AFTER_INSTALL_TARGET_DEPENDENCIES: scripts/configure_postgresql.sh
+      CATKIN_LINT: true
+      ROS_REPO: main
     strategy:
       matrix:
         env:

@@ -1,6 +1,5 @@
 #include <knowledge_representation/LongTermMemoryConduitInterface.h>
 #include <string>
-#include <knowledge_representation/MemoryConduit.h>
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>

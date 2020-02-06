@@ -14,3 +14,5 @@ if [[ -n "$IN_DOCKER" ]]; then
   cp sql/schema_postgresql.sql $POSTGRES_HOME
   sudo -u postgres psql -d knowledge_base -f $POSTGRES_HOME/schema_postgresql.sql
 fi
+
+# TODO: Trust local connections in /etc/postgresql/10/main/pg_hba.conf

@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(knowledge_representation)
 
+set(CMAKE_CXX_STANDARD 11)
 
-if("$ENV{ROS_DISTRO}" STREQUAL "indigo")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    set(CMAKE_CXX_STANDARD 11)
-endif()
 find_package(BISON)
 find_package(FLEX)
 
@@ -14,15 +10,10 @@ find_package(FLEX)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-        roscpp
-        pcl_ros
-        pcl_conversions
-        std_msgs
-        sensor_msgs
         )
 find_package(Boost REQUIRED COMPONENTS python)
 
-find_package(PythonLibs REQUIRED)
+find_package(PythonLibs 2.7 REQUIRED)
 
 find_package(PostgreSQL)
 
@@ -48,94 +39,63 @@ else()
     message(FATAL_ERROR "Neither MySQL nor PostgreSQL found. Please install one.")
 endif()
 
-
-link_directories(
-        ${catkin_LINK_DIRS}
-)
-
-add_service_files(
-        FILES
-        AddObject.srv
-        GetCloud.srv
-        RemoveObject.srv
-        ResolveObjectCorrespondences.srv
-)
 catkin_python_setup()
 
-generate_messages(
-        DEPENDENCIES
-        std_msgs
-        sensor_msgs
-)
-
 catkin_package(
-        INCLUDE_DIRS include ${DB_INCLUDES}
-        LIBRARIES libknowledge_rep ${DB_LIBS}
+        INCLUDE_DIRS include
+        LIBRARIES knowledge_rep ${DB_LIBS}
         CATKIN_DEPENDS
-        pcl_ros
-        pcl_conversions
-        roscpp
 )
 
 include_directories(
+        ${Boost_INCLUDE_DIRS}
         ${catkin_INCLUDE_DIRS}
-        include
         ${DB_INCLUDES}
+        include
+        ${PYTHON_INCLUDE_DIRS}
 )
 
 
 if ("${MYSQL_AVAILABLE}" OR "${POSTGRES_AVAILABLE}")
 
 
-BISON_TARGET(parser src/libknowledge_rep/parser.yy ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.cpp COMPILE_FLAGS --defines=${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.h)
-FLEX_TARGET(scanner src/libknowledge_rep/lexer.l  ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
+#BISON_TARGET(parser src/libknowledge_rep/parser.yy ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.cpp COMPILE_FLAGS --defines=${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.h)
+#FLEX_TARGET(scanner src/libknowledge_rep/lexer.l  ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
 
 
-ADD_FLEX_BISON_DEPENDENCY(scanner parser)
+#ADD_FLEX_BISON_DEPENDENCY(scanner parser)
 if (MYSQL_AVAILABLE)
     set(DB_SOURCES src/libknowledge_rep/mysql/LongTermMemoryConduitMySQL.cpp)
     # Symlink the LTMC header into place. We have to put this header in the public
     # interface in order to instantiate the template of the base class. This class
     # will not be used alone, so methods in its interface can't really be used.
-    ADD_CUSTOM_TARGET(link_target ALL
+    add_custom_target(link_target ALL
             COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/src/libknowledge_rep/mysql/LongTermMemoryConduitMySQL.h ${PROJECT_SOURCE_DIR}/include/knowledge_representation/LongTermMemoryConduit.h)
 elseif (POSTGRES_AVAILABLE)
     set(DB_SOURCES src/libknowledge_rep/postgresql/LongTermMemoryConduitPostgreSQL.cpp)
-    ADD_CUSTOM_TARGET(link_target ALL
+    add_custom_target(link_target ALL
             COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/src/libknowledge_rep/postgresql/LongTermMemoryConduitPostgreSQL.h ${PROJECT_SOURCE_DIR}/include/knowledge_representation/LongTermMemoryConduit.h)
 endif()
-add_library(libknowledge_rep
+add_library(knowledge_rep
         ${DB_SOURCES}
-        src/libknowledge_rep/MemoryConduit.cpp
         src/libknowledge_rep/convenience.cpp
-        src/libknowledge_rep/Compiler.cpp
-        ${BISON_parser_OUTPUTS}
-        ${FLEX_scanner_OUTPUTS} )
+       # src/libknowledge_rep/Compiler.cpp
+       # ${BISON_parser_OUTPUTS}
+       # ${FLEX_scanner_OUTPUTS}
+        )
 
-add_dependencies(libknowledge_rep link_target ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(libknowledge_rep ${DB_LIBS} ${catkin_LIBRARIES})
+add_dependencies(knowledge_rep link_target)
+target_link_libraries(knowledge_rep ${DB_LIBS} ${catkin_LIBRARIES})
 
 add_library(_libknowledge_rep_wrapper_cpp src/libknowledge_rep/python_wrapper.cpp)
-add_dependencies(_libknowledge_rep_wrapper_cpp ${knowledge_representation_EXPORTED_TARGETS})
 target_link_libraries(_libknowledge_rep_wrapper_cpp
-        libknowledge_rep
+        knowledge_rep
         ${DB_LIBS}
         ${Boost_LIBRARIES}
         ${catkin_LIBRARIES})
 
 add_executable(show_me src/show_me.cpp)
-add_dependencies(show_me ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(show_me libknowledge_rep ${catkin_LIBRARIES})
-
-### TEST TARGETS
-
-catkin_add_gtest(test_ltmc test/ltmc.cpp)
-add_dependencies(test_ltmc ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(test_ltmc libknowledge_rep ${catkin_LIBRARIES})
-
-catkin_add_gtest(test_parser test/parser.cpp)
-add_dependencies(test_parser ${knowledge_representation_EXPORTED_TARGETS})
-target_link_libraries(test_parser libknowledge_rep ${catkin_LIBRARIES})
+target_link_libraries(show_me knowledge_rep ${catkin_LIBRARIES})
 
 
 set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
@@ -145,7 +105,12 @@ set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
 
 catkin_add_env_hooks(${PROJECT_NAME} SHELLS sh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
-install(TARGETS libknowledge_rep
+install(TARGETS show_me
+        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+        RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+
+install(TARGETS knowledge_rep
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
@@ -158,6 +123,15 @@ install(TARGETS _libknowledge_rep_wrapper_cpp
 install(DIRECTORY include/${PROJECT_NAME}
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
         FILES_MATCHING PATTERN "*.h")
+
+### TEST TARGETS
+if(CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(test_ltmc test/ltmc.cpp)
+    target_link_libraries(test_ltmc knowledge_rep ${catkin_LIBRARIES})
+
+#    catkin_add_gtest(test_parser test/parser.cpp)
+#    target_link_libraries(test_parser knowledge_rep ${catkin_LIBRARIES})
+endif()
 
 
 endif ()
