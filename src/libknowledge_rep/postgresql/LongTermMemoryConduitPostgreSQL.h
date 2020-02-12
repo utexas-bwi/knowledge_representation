@@ -143,7 +143,7 @@ protected:
   std::vector<EntityAttribute>
   getAttributes(const EntityImpl& entity, const std::string& attribute_name) const;
 
-  bool is_valid(const EntityImpl& entity) const;
+  bool isValid(const EntityImpl& entity) const;
 
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance);
 };

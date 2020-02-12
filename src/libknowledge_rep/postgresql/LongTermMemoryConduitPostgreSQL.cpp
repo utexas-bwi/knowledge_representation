@@ -474,7 +474,7 @@ int LongTermMemoryConduitPostgreSQL::removeAttribute(Entity &entity, const std::
   try
   {
     auto result = txn.exec(
-                    "SELECT * FROM removeAttribute"
+                    "SELECT * FROM remove_attribute"
                     "(" + txn.quote(entity.entity_id) + ", " + txn.quote(attribute_name) +
                     ") AS count");
     txn.commit();
@@ -588,7 +588,7 @@ LongTermMemoryConduitPostgreSQL::getAttributes(const Entity &entity, const std::
  * it is removed as a result of other helpers that delete entities.
  * @return whether the entity is valid
  */
-bool LongTermMemoryConduitPostgreSQL::is_valid(const Entity &entity) const
+bool LongTermMemoryConduitPostgreSQL::isValid(const Entity &entity) const
 {
   return entityExists(entity.entity_id);
 }
@@ -604,7 +604,7 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
   try
   {
     pqxx::work txn{*conn, "getConcepts"};
-    auto result = txn.exec("SELECT getConcepts(" + txn.quote(instance.entity_id) + ") AS concept_id");
+    auto result = txn.exec("SELECT get_concepts(" + txn.quote(instance.entity_id) + ") AS concept_id");
     txn.commit();
     std::vector<Concept> concepts{};
     for (const auto &row : result)
