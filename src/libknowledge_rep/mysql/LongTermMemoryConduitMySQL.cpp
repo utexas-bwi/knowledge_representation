@@ -72,14 +72,14 @@ bool LongTermMemoryConduitMySQL::add_entity(int id) {
  * @param allowed_types a bitmask representing the types allowed for the attribute
  * @return whether the attribute was added. Note that addition will fail if the attribute already exists.
  */
-bool LongTermMemoryConduitMySQL::add_new_attribute(const string &name, const std::string &type) {
+bool LongTermMemoryConduitMySQL::add_new_attribute(const string &name, AttributeValueType type) {
   if (attribute_exists(name)) {
     return true;
   }
 
   Table attributes = db->getTable("attributes");
   TableInsert inserter = attributes.insert("attribute_name", "type");
-  inserter.values(name, type);
+  inserter.values(name, attribute_value_type_to_string[type]);
   try {
     inserter.execute();
   }
@@ -100,7 +100,7 @@ bool LongTermMemoryConduitMySQL::entity_exists(int id) const {
 
 
 vector<Entity> LongTermMemoryConduitMySQL::get_entities_with_attribute_of_value(const string &attribute_name,
-                                                                        const int other_entity_id) {
+                                                                        const uint other_entity_id) {
   Table entity_attributes = db->getTable("entity_attributes_id");
   RowResult result = entity_attributes.select("*").where(
       "attribute_value = :id and attribute_name = :attr").bind("id",
@@ -343,10 +343,9 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::get_all_attributes()
     return true;
   }
 
-  bool LongTermMemoryConduitMySQL::add_attribute(Entity &entity, const std::string &attribute_name,
-                                                         const float float_val) {
+  bool LongTermMemoryConduitMySQL::add_attribute(Entity &entity, const std::string &attribute_name, const float float_val) {
     if (!attribute_exists(attribute_name)) {
-      add_new_attribute(attribute_name, "float");
+      add_new_attribute(attribute_name, AttributeValueType::Float);
     }
     Table entity_attributes = db->getTable("entity_attributes_float");
     TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
@@ -365,7 +364,7 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::get_all_attributes()
 
   bool LongTermMemoryConduitMySQL::add_attribute(Entity &entity, const std::string &attribute_name, const bool bool_val) {
     if (!attribute_exists(attribute_name)) {
-      add_new_attribute(attribute_name, "bool");
+      add_new_attribute(attribute_name, AttributeValueType::Bool);
     }
     Table entity_attributes = db->getTable("entity_attributes_bool");
     TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
@@ -383,9 +382,9 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::get_all_attributes()
 
 
   bool LongTermMemoryConduitMySQL::add_attribute(Entity &entity, const std::string &attribute_name,
-                                                         const int other_entity_id) {
+                                                         const uint other_entity_id) {
     if (!attribute_exists(attribute_name)) {
-      add_new_attribute(attribute_name, "id");
+      add_new_attribute(attribute_name, AttributeValueType::Int);
     }
     Table entity_attributes = db->getTable("entity_attributes_id");
     TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");
@@ -405,7 +404,7 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::get_all_attributes()
   bool LongTermMemoryConduitMySQL::add_attribute(Entity &entity, const std::string &attribute_name,
                                                          const std::string &string_val) {
     if (!attribute_exists(attribute_name)) {
-      add_new_attribute(attribute_name, "string");
+      add_new_attribute(attribute_name, AttributeValueType::Str);
     }
     Table entity_attributes = db->getTable("entity_attributes_str");
     TableInsert inserter = entity_attributes.insert("entity_id", "attribute_name", "attribute_value");

@@ -57,10 +57,10 @@ public:
   // Move assignment
   LongTermMemoryConduitMySQL &operator=(LongTermMemoryConduitMySQL &&that) noexcept = default;
 
-  bool add_new_attribute(const std::string &name, const std::string &type);
+  bool add_new_attribute(const std::string &name, const AttributeValueType type);
 
   std::vector<EntityImpl>
-  get_entities_with_attribute_of_value(const std::string &attribute_name, const int other_entity_id);
+  get_entities_with_attribute_of_value(const std::string &attribute_name, const uint other_entity_id);
 
   std::vector<EntityImpl>
   get_entities_with_attribute_of_value(const std::string &attribute_name, const bool bool_val);
@@ -130,24 +130,6 @@ public:
     return select_query<bool>(sql_query, result);
   }
 
-// TODO: Implement this
-// TODO: Move this to a higher level location.
-// This interface supports general purpose reasoning over the knowledge base
-// Takes in some representation of constraints, outputs the parsed answer set
-// bool asp_query(std::string &query, std::vector<std::string> result) {
-//	// Dump knowledge
-//
-//	// Use actasp to query
-//}
-//
-//bwi_door(D) :- door(D), has(bwi, P), has(P, R), has(R, D).
-//bwi_door(D) :- door(D), has(bwi, R), has(R, D).
-//
-//#show bwi_door/1.
-//
-//#
-//#bwi_door(d3_414b1). bwi_door(d3_414b2
-
 
 //// CONVENIENCE
   LTMCConcept<LongTermMemoryConduitMySQL> get_concept(const std::string &name);
@@ -200,7 +182,7 @@ protected:
   add_attribute(EntityImpl &entity, const std::string &attribute_name, const bool bool_val);
 
   bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
-                     const int other_entity_id);
+                     const uint other_entity_id);
 
   bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
                      const std::string &string_val);

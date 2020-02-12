@@ -172,7 +172,7 @@ protected:
 
   bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
                      const uint other_entity_id) {
-    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, other_entity_id);
+    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, static_cast<const uint>(other_entity_id));
   }
 
   bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
