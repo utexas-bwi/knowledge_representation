@@ -20,10 +20,9 @@ public:
     return ltmc.get().addAttribute(*this, attribute_name, string_val);
   };
 
-  bool addAttribute(const std::string& attribute_name, const char *string_val)
+  bool addAttribute(const std::string& attribute_name, const char* string_val)
   {
-    return ltmc.get().addAttribute(*this, attribute_name,
-                                   std::string(string_val));
+    return ltmc.get().addAttribute(*this, attribute_name, std::string(string_val));
   };
 
   bool addAttribute(const std::string& attribute_name, float float_val)
@@ -43,8 +42,7 @@ public:
 
   bool addAttribute(const std::string& attribute_name, const LTMCEntity& other_entity)
   {
-    return ltmc.get().addAttribute(*this, attribute_name,
-                                   other_entity.entity_id);
+    return ltmc.get().addAttribute(*this, attribute_name, other_entity.entity_id);
   };
 
   int removeAttribute(const std::string& attribute_name)
@@ -54,8 +52,7 @@ public:
 
   int removeAttributeOfValue(const std::string& attribute_name, const LTMCEntity& other_entity)
   {
-    return ltmc.get().removeAttributeOfValue(*this, attribute_name,
-                                             other_entity);
+    return ltmc.get().removeAttributeOfValue(*this, attribute_name, other_entity);
   };
 
   std::vector<EntityAttribute> getAttributes() const
@@ -63,8 +60,7 @@ public:
     return ltmc.get().getAttributes(*this);
   };
 
-  std::vector<EntityAttribute>
-  getAttributes(const std::string& attribute_name) const
+  std::vector<EntityAttribute> getAttributes(const std::string& attribute_name) const
   {
     return ltmc.get().getAttributes(*this, attribute_name);
   };

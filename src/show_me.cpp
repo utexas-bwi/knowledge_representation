@@ -6,7 +6,6 @@
 #include <knowledge_representation/LTMCInstance.h>
 #include <boost/lexical_cast.hpp>
 
-
 using std::vector;
 using std::string;
 using std::cout;
@@ -26,7 +25,7 @@ void about_id(const int id)
     cout << id << " does not exist" << endl;
   }
   auto attributes = entity.getAttributes();
-  for (const auto &attr : attributes)
+  for (const auto& attr : attributes)
   {
     if (attr.value.type() == typeid(0))
     {
@@ -46,13 +45,13 @@ void about_id(const int id)
   }
 }
 
-void concept_instances(const std::string &concept_name)
+void concept_instances(const std::string& concept_name)
 {
   auto concept = ltmc.getConcept(concept_name);
   auto instances = concept.getInstances();
   cout << instances.size() << " instances of " << concept_name << endl;
   cout << "ID \t Name" << endl;
-  for (auto &instance : instances)
+  for (auto& instance : instances)
   {
     auto name = instance.getName();
     string name_to_print = "-";
@@ -64,7 +63,7 @@ void concept_instances(const std::string &concept_name)
   }
 }
 
-int main(int argc, const char *argv[])
+int main(int argc, const char* argv[])
 {
   if (argc == 1)
   {
@@ -80,11 +79,10 @@ int main(int argc, const char *argv[])
     about_id(entity_id);
     return 0;
   }
-  catch (boost::bad_lexical_cast &e)
+  catch (boost::bad_lexical_cast& e)
   {
   }
 
   concept_instances(first_arg);
   return 0;
 }
-

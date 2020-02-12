@@ -123,21 +123,15 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<Entity>("Entity", init<uint, LTMC&>())
       .def_readonly("entity_id", &Entity::entity_id)
-      .def("add_attribute_str", static_cast<bool (Entity::*)(const string&, const string&)>(
-               &Entity::addAttribute))
-      .def("add_attribute_int", static_cast<bool (Entity::*)(const string&, uint)>(
-               &Entity::addAttribute))
-      .def("add_attribute_float", static_cast<bool (Entity::*)(const string&, float)>(
-               &Entity::addAttribute))
-      .def("add_attribute_bool", static_cast<bool (Entity::*)(const string&, bool)>(
-               &Entity::addAttribute))
-      .def("add_attribute_entity", static_cast<bool (Entity::*)(const string&, const Entity&)>(
-               &Entity::addAttribute))
+      .def("add_attribute_str", static_cast<bool (Entity::*)(const string&, const string&)>(&Entity::addAttribute))
+      .def("add_attribute_int", static_cast<bool (Entity::*)(const string&, uint)>(&Entity::addAttribute))
+      .def("add_attribute_float", static_cast<bool (Entity::*)(const string&, float)>(&Entity::addAttribute))
+      .def("add_attribute_bool", static_cast<bool (Entity::*)(const string&, bool)>(&Entity::addAttribute))
+      .def("add_attribute_entity", static_cast<bool (Entity::*)(const string&, const Entity&)>(&Entity::addAttribute))
       .def("remove_attribute", &Entity::removeAttribute)
       .def("get_attributes",
            static_cast<vector<EntityAttribute> (Entity::*)(const string&) const>(&Entity::getAttributes))
-      .def("get_attributes", static_cast<vector<EntityAttribute> (Entity::*)() const>(
-               &Entity::getAttributes))
+      .def("get_attributes", static_cast<vector<EntityAttribute> (Entity::*)() const>(&Entity::getAttributes))
       .def("delete", &Entity::deleteEntity)
       .def("is_valid", &Entity::isValid);
 
@@ -174,8 +168,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("entity_exists", &LTMC::entityExists)
       .def("attribute_exists", &LTMC::attributeExists)
       .def("delete_all_entities", &LTMC::deleteAllEntities)
-      .def("get_entities_with_attribute_of_value", static_cast<vector<Entity> (LTMC::*)(const string&, const uint)>(
-               &LTMC::getEntitiesWithAttributeOfValue))
+      .def("get_entities_with_attribute_of_value",
+           static_cast<vector<Entity> (LTMC::*)(const string&, const uint)>(&LTMC::getEntitiesWithAttributeOfValue))
       .def("select_query_int",
            static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryInt))
       .def("select_query_bool",

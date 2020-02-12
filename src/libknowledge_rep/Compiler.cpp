@@ -10,7 +10,7 @@ Compiler::Compiler()
 {
 }
 
-bool Compiler::parse_stream(std::istream &in)
+bool Compiler::parse_stream(std::istream& in)
 {
   Lexer lexer(*this, &in);
   lexer.set_debug(trace_scanning);
@@ -21,25 +21,26 @@ bool Compiler::parse_stream(std::istream &in)
   return (parser.parse() == 0);
 }
 
-bool Compiler::parse_file(const std::string &filename)
+bool Compiler::parse_file(const std::string& filename)
 {
   std::ifstream in(filename.c_str());
-  if (!in.good()) return false;
+  if (!in.good())
+    return false;
   return parse_stream(in);
 }
 
-bool Compiler::parse_string(const std::string &input)
+bool Compiler::parse_string(const std::string& input)
 {
   std::istringstream iss(input);
   return parse_stream(iss);
 }
 
-void Compiler::set_root(Node &root)
+void Compiler::set_root(Node& root)
 {
   this->root = &root;
 }
 
-Node *Compiler::get_root()
+Node* Compiler::get_root()
 {
   return root;
 }

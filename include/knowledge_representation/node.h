@@ -39,7 +39,7 @@ public:
   VId()
   {
   }
-  explicit  VId(int value) : value(value)
+  explicit VId(int value) : value(value)
   {
   }
 

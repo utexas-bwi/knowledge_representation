@@ -60,22 +60,18 @@ public:
     return static_cast<Impl*>(this)->addAttribute(name, type);
   };
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                               const uint other_entity_id)
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const uint other_entity_id)
   {
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, other_entity_id);
   };
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val)
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val)
   {
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, bool_val);
   }
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                               const std::string& string_val)
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                          const std::string& string_val)
   {
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, string_val);
   }
@@ -217,8 +213,7 @@ protected:
     return static_cast<const Impl*>(this)->getAttributes(entity);
   }
 
-  std::vector<EntityAttribute>
-  getAttributes(const EntityImpl& entity, const std::string& attribute_name) const
+  std::vector<EntityAttribute> getAttributes(const EntityImpl& entity, const std::string& attribute_name) const
   {
     return static_cast<const Impl*>(this)->getAttributes(entity, attribute_name);
   }

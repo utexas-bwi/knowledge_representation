@@ -8,5 +8,4 @@
 namespace knowledge_rep
 {
 LongTermMemoryConduit getDefaultLTMC();
-
 }

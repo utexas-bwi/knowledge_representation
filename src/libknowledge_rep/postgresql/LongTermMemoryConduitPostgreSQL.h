@@ -7,9 +7,9 @@
 
 namespace knowledge_rep
 {
-
-static const char* table_names[] = {"entity_attributes_id", "entity_attributes_str", "entity_attributes_bool", // NOLINT
-                                     "entity_attributes_float"}; // NOLINT
+static const char* table_names[] = { "entity_attributes_id", "entity_attributes_str",
+                                     "entity_attributes_bool",     // NOLINT
+                                     "entity_attributes_float" };  // NOLINT
 
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
 {
@@ -38,16 +38,13 @@ public:
 
   bool addNewAttribute(const std::string& name, const AttributeValueType type);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                               const uint other_entity_id);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                          const uint other_entity_id);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                               const std::string& string_val);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                          const std::string& string_val);
 
   bool entityExists(uint id) const;
 
@@ -65,8 +62,7 @@ public:
 
   std::vector<InstanceImpl> getAllInstances();
 
-  std::vector<std::pair<std::string, AttributeValueType>>
-  getAllAttributes() const;
+  std::vector<std::pair<std::string, AttributeValueType>> getAllAttributes() const;
 
   template <typename T>
   bool selectQuery(const std::string& sql_query, std::vector<EntityAttribute>& result) const
@@ -110,8 +106,7 @@ public:
   }
 
   //// CONVENIENCE
-  LTMCConcept<LongTermMemoryConduitPostgreSQL>
-  getConcept(const std::string& name);
+  LTMCConcept<LongTermMemoryConduitPostgreSQL> getConcept(const std::string& name);
 
   InstanceImpl getInstanceNamed(const std::string& name);
 
@@ -140,8 +135,7 @@ protected:
 
   std::vector<EntityAttribute> getAttributes(const EntityImpl& entity) const;
 
-  std::vector<EntityAttribute>
-  getAttributes(const EntityImpl& entity, const std::string& attribute_name) const;
+  std::vector<EntityAttribute> getAttributes(const EntityImpl& entity, const std::string& attribute_name) const;
 
   bool isValid(const EntityImpl& entity) const;
 

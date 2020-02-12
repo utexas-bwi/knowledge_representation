@@ -45,14 +45,10 @@ public:
 
   std::vector<InstanceImpl> getInstances() const
   {
-    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue(
-        "instance_of", this->entity_id);
+    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue("instance_of", this->entity_id);
     std::vector<InstanceImpl> instances;
     transform(entities.begin(), entities.end(), std::back_inserter(instances),
-              [this](const EntityImpl& entity)
-              {
-      return InstanceImpl(entity.entity_id, this->ltmc.get());
-    });
+              [this](const EntityImpl& entity) { return InstanceImpl(entity.entity_id, this->ltmc.get()); });
     return instances;
   }
 
@@ -65,18 +61,14 @@ public:
    */
   int removeInstances()
   {
-    std::vector<EntityImpl> child_concepts =
-        this->ltmc.get().getEntitiesWithAttributeOfValue("is_a",
-                                                         this->entity_id);
+    std::vector<EntityImpl> child_concepts = this->ltmc.get().getEntitiesWithAttributeOfValue("is_a", this->entity_id);
     std::vector<EntityImpl> instances_of_concept =
-        this->ltmc.get().getEntitiesWithAttributeOfValue("instance_of",
-                                                         this->entity_id);
+        this->ltmc.get().getEntitiesWithAttributeOfValue("instance_of", this->entity_id);
 
     int total_removed = 0;
     for (const auto& child : child_concepts)
     {
-      total_removed +=
-          LTMCConcept(child.entity_id, this->ltmc).removeInstances();
+      total_removed += LTMCConcept(child.entity_id, this->ltmc).removeInstances();
     }
     for (auto& instance : instances_of_concept)
     {
@@ -119,8 +111,7 @@ public:
   std::vector<LTMCConcept> getChildren() const
   {
     // Is a should only apply to concepts
-    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue(
-        "is_a", this->entity_id);
+    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue("is_a", this->entity_id);
     std::vector<LTMCConcept> as_concept{};
     std::transform(entities.begin(), entities.end(), std::back_inserter(as_concept),
                    [this](const EntityImpl& entity) { return LTMCConcept<LTMCImpl>(entity.entity_id, this->ltmc); });

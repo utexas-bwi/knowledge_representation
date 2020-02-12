@@ -6,7 +6,6 @@
 
 #include <knowledge_representation/node.h>
 
-
 namespace knowledge_rep
 {
 class Lexer;

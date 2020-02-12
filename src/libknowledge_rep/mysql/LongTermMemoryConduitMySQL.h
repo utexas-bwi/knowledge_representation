@@ -55,25 +55,20 @@ public:
   // Move assignment
   LongTermMemoryConduitMySQL& operator=(LongTermMemoryConduitMySQL&& that) noexcept = default;
 
-  bool addNewAttribute(const std::string &name, const AttributeValueType type);
+  bool addNewAttribute(const std::string& name, const AttributeValueType type);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string &attribute_name,
-                                  uint other_entity_id);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, uint other_entity_id);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string &attribute_name,
-                                  const uint other_entity_id);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                          const uint other_entity_id);
 
-  std::vector<EntityImpl>
-  getEntitiesWithAttributeOfValue(const std::string &attribute_name,
-                                  uint other_entity_id);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, uint other_entity_id);
 
   bool entityExists(int id) const;
 
-  bool deleteAttribute(std::string &name);
+  bool deleteAttribute(std::string& name);
 
-  bool attributeExists(const std::string &name) const;
+  bool attributeExists(const std::string& name) const;
 
   void deleteAllEntities();
 
@@ -138,9 +133,9 @@ public:
   }
 
   //// CONVENIENCE
-  LTMCConcept<LongTermMemoryConduitMySQL> getConcept(const std::string &name);
+  LTMCConcept<LongTermMemoryConduitMySQL> getConcept(const std::string& name);
 
-  InstanceImpl getInstanceNamed(const std::string &name);
+  InstanceImpl getInstanceNamed(const std::string& name);
 
   InstanceImpl getRobot();
 
@@ -152,8 +147,7 @@ public:
 
 protected:
   template <typename T>
-  std::vector<EntityAttribute>
-  unwrapAttributeRows(std::list<mysqlx::Row> rows) const
+  std::vector<EntityAttribute> unwrapAttributeRows(std::list<mysqlx::Row> rows) const
   {
     std::vector<EntityAttribute> result_map;
     for (auto& row : rows)
@@ -167,9 +161,8 @@ protected:
     return result_map;
   }
 
-  std::vector<EntityAttribute>
-  unwrapAttributeRows(const std::string& table_name,
-                                                     const std::list<mysqlx::Row>& rows) const
+  std::vector<EntityAttribute> unwrapAttributeRows(const std::string& table_name,
+                                                   const std::list<mysqlx::Row>& rows) const
   {
     if (table_name == "entity_attributes_str")
     {
@@ -191,8 +184,8 @@ protected:
 
   bool deleteEntity(EntityImpl& entity);
 
-  bool addAttribute(LTMCEntity<LongTermMemoryConduitMySQL> &entity,
-      const std::string& attribute_name, const float float_val);
+  bool addAttribute(LTMCEntity<LongTermMemoryConduitMySQL>& entity, const std::string& attribute_name,
+                    const float float_val);
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const bool bool_val);
 
@@ -206,8 +199,7 @@ protected:
 
   std::vector<EntityAttribute> getAttributes(const EntityImpl& entity) const;
 
-  std::vector<EntityAttribute>
-  getAttributes(const EntityImpl& entity, const std::string& attribute_name) const;
+  std::vector<EntityAttribute> getAttributes(const EntityImpl& entity, const std::string& attribute_name) const;
 
   bool isValid(const EntityImpl& entity) const;
 

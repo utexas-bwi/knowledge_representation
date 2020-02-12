@@ -29,33 +29,32 @@ using std::unique_ptr;
 
 namespace knowledge_rep
 {
-
 typedef LTMCConcept<LongTermMemoryConduitMySQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitMySQL> Instance;
 typedef LTMCEntity<LongTermMemoryConduitMySQL> Entity;
 
-LongTermMemoryConduitMySQL::LongTermMemoryConduitMySQL(const string &db_name = "knowledge_base"):
-LongTermMemoryConduitInterface<LongTermMemoryConduitMySQL>()
+LongTermMemoryConduitMySQL::LongTermMemoryConduitMySQL(const string& db_name = "knowledge_base")
+  : LongTermMemoryConduitInterface<LongTermMemoryConduitMySQL>()
 {
   std::cout << "In MySQL constructor" << std::endl;
   try
   {
-    SessionSettings from_options("127.0.0.1", 33060, "root", "",  db_name);
+    SessionSettings from_options("127.0.0.1", 33060, "root", "", db_name);
     sess = std::unique_ptr<Session>(new Session(from_options));
     db = std::unique_ptr<Schema>(new Schema(*sess, db_name));
     cout << "DONE!" << endl;
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cout << "ERROR: " << err << endl;
     return;
   }
-  catch (std::exception &ex)
+  catch (std::exception& ex)
   {
     cout << "STD EXCEPTION: " << ex.what() << endl;
     return;
   }
-  catch (const char *ex)
+  catch (const char* ex)
   {
     cout << "EXCEPTION: " << ex << endl;
     return;
@@ -81,8 +80,7 @@ bool LongTermMemoryConduitMySQL::addEntity(int id)
  * @param allowed_types a bitmask representing the types allowed for the attribute
  * @return whether the attribute was added. Note that addition will fail if the attribute already exists.
  */
-bool LongTermMemoryConduitMySQL::addNewAttribute(
-    const std::string &name, const AttributeValueType type)
+bool LongTermMemoryConduitMySQL::addNewAttribute(const std::string& name, const AttributeValueType type)
 {
   if (attributeExists(name))
   {
@@ -96,7 +94,7 @@ bool LongTermMemoryConduitMySQL::addNewAttribute(
   {
     inserter.execute();
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cerr << "Tried to add new attribute " << name << " with type " << type << endl;
     cerr << "ERROR: " << err << endl;
@@ -113,59 +111,55 @@ bool LongTermMemoryConduitMySQL::entityExists(int id) const
   return result.count() == 1;
 }
 
-
-vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(
-    const std::string &attribute_name,
-    const uint other_entity_id)
+vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                                           const uint other_entity_id)
 {
   Table entity_attributes = db->getTable("entity_attributes_id");
-  RowResult result = entity_attributes.select("*").where(
-                       "attribute_value = :id and attribute_name = :attr").bind("id",
-                           other_entity_id).bind(
-                       "attr", attribute_name).execute();
+  RowResult result = entity_attributes.select("*")
+                         .where("attribute_value = :id and attribute_name = :attr")
+                         .bind("id", other_entity_id)
+                         .bind("attr", attribute_name)
+                         .execute();
   std::list<Row> rows = result.fetchAll();
 
   vector<Entity> return_result;
-  transform(rows.begin(), rows.end(), back_inserter(return_result), [this](Row row) mutable
-  {
-    return Entity(static_cast<int>(row[0]), *this);
-  });
+  transform(rows.begin(), rows.end(), back_inserter(return_result),
+            [this](Row row) mutable { return Entity(static_cast<int>(row[0]), *this); });
 
   return return_result;
 }
 
-vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(
-    const std::string &attribute_name, uint other_entity_id)
+vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                                           uint other_entity_id)
 {
   Table entity_attributes = db->getTable("entity_attributes_bool");
-  RowResult result = entity_attributes.select("*").where(
-                       "attribute_value = :val and attribute_name = :attr").bind("val", other_entity_id).bind(
-                       "attr", attribute_name).execute();
+  RowResult result = entity_attributes.select("*")
+                         .where("attribute_value = :val and attribute_name = :attr")
+                         .bind("val", other_entity_id)
+                         .bind("attr", attribute_name)
+                         .execute();
   std::list<Row> rows = result.fetchAll();
   vector<Entity> return_result;
 
-  transform(rows.begin(), rows.end(), back_inserter(return_result), [this](Row row)
-  {
-    return Entity(static_cast<int>(row[0]), *this);
-  });
+  transform(rows.begin(), rows.end(), back_inserter(return_result),
+            [this](Row row) { return Entity(static_cast<int>(row[0]), *this); });
 
   return return_result;
 }
 
-
-vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(
-    const std::string &attribute_name, uint other_entity_id)
+vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                                           uint other_entity_id)
 {
   Table entity_attributes = db->getTable("entity_attributes_str");
-  RowResult result = entity_attributes.select("*").where(
-                       "attribute_value = :val and attribute_name = :attr").bind("val", other_entity_id).bind(
-                       "attr", attribute_name).execute();
+  RowResult result = entity_attributes.select("*")
+                         .where("attribute_value = :val and attribute_name = :attr")
+                         .bind("val", other_entity_id)
+                         .bind("attr", attribute_name)
+                         .execute();
   std::list<Row> rows = result.fetchAll();
   vector<Entity> return_result;
-  transform(rows.begin(), rows.end(), back_inserter(return_result), [this](Row row)
-  {
-    return Entity(static_cast<int>(row[0]), *this);
-  });
+  transform(rows.begin(), rows.end(), back_inserter(return_result),
+            [this](Row row) { return Entity(static_cast<int>(row[0]), *this); });
 
   return return_result;
 }
@@ -175,10 +169,7 @@ std::vector<Entity> LongTermMemoryConduitMySQL::getAllEntities()
   vector<Entity> all_obj_ids;
   Table entities = db->getTable("entities");
   RowResult rows = entities.select("*").execute();
-  transform(rows.begin(), rows.end(), back_inserter(all_obj_ids), [this](Row row)
-  {
-    return Entity(row[0], *this);
-  });
+  transform(rows.begin(), rows.end(), back_inserter(all_obj_ids), [this](Row row) { return Entity(row[0], *this); });
   return all_obj_ids;
 }
 
@@ -199,14 +190,13 @@ void LongTermMemoryConduitMySQL::deleteAllEntities()
   assert(entityExists(1));
 }
 
-bool LongTermMemoryConduitMySQL::deleteAttribute(std::string &name)
+bool LongTermMemoryConduitMySQL::deleteAttribute(std::string& name)
 {
   // TODO(nickswalker): Write
   return false;
 }
 
-bool LongTermMemoryConduitMySQL::attributeExists(
-    const std::string &name) const
+bool LongTermMemoryConduitMySQL::attributeExists(const std::string& name) const
 {
   Table entities = db->getTable("attributes");
   auto result = entities.select("attribute_name").where("attribute_name = :name").bind("name", name).execute();
@@ -219,15 +209,14 @@ bool LongTermMemoryConduitMySQL::attributeExists(
  * @return the existing concept, or the newly created one. In either case, the instance will at least have the name
  *         passed as a parameter.
  */
-Concept LongTermMemoryConduitMySQL::getConcept(const std::string &name)
+Concept LongTermMemoryConduitMySQL::getConcept(const std::string& name)
 {
-  string query =
-    "SELECT * FROM entity_attributes_str AS eas "
-    "INNER JOIN entity_attributes_bool AS eab ON eas.entity_id = eab.entity_id "
-    "WHERE eas.attribute_name = 'name' "
-    "AND eas.attribute_value = ? "
-    "AND eab.attribute_name = 'is_concept' "
-    "AND eab.attribute_value = true";
+  string query = "SELECT * FROM entity_attributes_str AS eas "
+                 "INNER JOIN entity_attributes_bool AS eab ON eas.entity_id = eab.entity_id "
+                 "WHERE eas.attribute_name = 'name' "
+                 "AND eas.attribute_value = ? "
+                 "AND eab.attribute_name = 'is_concept' "
+                 "AND eab.attribute_value = true";
   std::vector<EntityAttribute> result;
   select_query_args<string>(query, result, name);
   if (result.empty())
@@ -235,11 +224,11 @@ Concept LongTermMemoryConduitMySQL::getConcept(const std::string &name)
     Entity new_concept = addEntity();
     new_concept.add_attribute("name", name);
     new_concept.add_attribute("is_concept", true);
-    return {new_concept.entity_id, name, *this};
+    return { new_concept.entity_id, name, *this };
   }
   else
   {
-    return {result[0].entity_id, name, *this};
+    return { result[0].entity_id, name, *this };
   }
 }
 
@@ -249,15 +238,14 @@ Concept LongTermMemoryConduitMySQL::getConcept(const std::string &name)
  * @return the existing instance, or the newly created one. In either case, the instance will at least have the name
  *         passed as a parameter.
  */
-Instance LongTermMemoryConduitMySQL::getInstanceNamed(const std::string &name)
+Instance LongTermMemoryConduitMySQL::getInstanceNamed(const std::string& name)
 {
-  string query =
-    "SELECT * FROM entity_attributes_str AS eas "
-    "LEFT JOIN entity_attributes_bool AS eab ON eas.entity_id = eab.entity_id "
-    "WHERE eas.attribute_name = 'name' "
-    "AND eas.attribute_value = ? "
-    "AND ((eab.attribute_name = 'is_concept' AND eab.attribute_value = false) "
-    "     OR (eab.entity_id is NULL))";
+  string query = "SELECT * FROM entity_attributes_str AS eas "
+                 "LEFT JOIN entity_attributes_bool AS eab ON eas.entity_id = eab.entity_id "
+                 "WHERE eas.attribute_name = 'name' "
+                 "AND eas.attribute_value = ? "
+                 "AND ((eab.attribute_name = 'is_concept' AND eab.attribute_value = false) "
+                 "     OR (eab.entity_id is NULL))";
   std::vector<EntityAttribute> result;
   select_query_args<string>(query, result, name);
   if (result.empty())
@@ -269,7 +257,7 @@ Instance LongTermMemoryConduitMySQL::getInstanceNamed(const std::string &name)
   }
   else
   {
-    return {result[0].entity_id, *this};
+    return { result[0].entity_id, *this };
   }
 }
 
@@ -282,7 +270,7 @@ boost::optional<Entity> LongTermMemoryConduitMySQL::getEntity(int entity_id)
 {
   if (entityExists(entity_id))
   {
-    return Entity{entity_id, *this};
+    return Entity{ entity_id, *this };
   }
   return {};
 }
@@ -306,7 +294,7 @@ Entity LongTermMemoryConduitMySQL::addEntity()
 {
   Table entities = db->getTable("entities");
   Result result = entities.insert("entity_id").values(NULL).execute();
-  return { static_cast<int>(result.getAutoIncrementValue()), *this};
+  return { static_cast<int>(result.getAutoIncrementValue()), *this };
 }
 
 /**
@@ -316,17 +304,13 @@ Entity LongTermMemoryConduitMySQL::addEntity()
 std::vector<Concept> LongTermMemoryConduitMySQL::getAllConcepts()
 {
   vector<Concept> concepts;
-  string query =
-    "SELECT * FROM entity_attributes_bool "
-    "WHERE attribute_name = 'is_concept' "
-    "AND attribute_value = true ";
+  string query = "SELECT * FROM entity_attributes_bool "
+                 "WHERE attribute_name = 'is_concept' "
+                 "AND attribute_value = true ";
   std::vector<EntityAttribute> result;
   selectQuery<bool>(query, result);
   transform(result.begin(), result.end(), back_inserter(concepts),
-            [this](EntityAttribute & attr)
-  {
-    return Concept(attr.entity_id, *this);
-  });
+            [this](EntityAttribute& attr) { return Concept(attr.entity_id, *this); });
   return concepts;
 }
 /**
@@ -336,23 +320,20 @@ std::vector<Concept> LongTermMemoryConduitMySQL::getAllConcepts()
 std::vector<Instance> LongTermMemoryConduitMySQL::getAllInstances()
 {
   vector<Instance> concepts;
-  string query =
-    "SELECT * FROM entity_attributes_bool "
-    "WHERE attribute_name = 'is_concept' "
-    "AND attribute_value = false ";
+  string query = "SELECT * FROM entity_attributes_bool "
+                 "WHERE attribute_name = 'is_concept' "
+                 "AND attribute_value = false ";
   std::vector<EntityAttribute> result;
   selectQuery<bool>(query, result);
   transform(result.begin(), result.end(), back_inserter(concepts),
-            [this](EntityAttribute & attr)
-  {
-    return Instance(attr.entity_id, *this);
-  });
+            [this](EntityAttribute& attr) { return Instance(attr.entity_id, *this); });
   return concepts;
 }
 
 /**
  * @brief Retrieves all attributes
- * @return a list of tuples. First element of each is the attribute name, the second is a bitmask representing acceptable
+ * @return a list of tuples. First element of each is the attribute name, the second is a bitmask representing
+ * acceptable
  * types for that attribute
  */
 vector<std::pair<string, int> > LongTermMemoryConduitMySQL::getAllAttributes() const
@@ -360,10 +341,8 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::getAllAttributes() c
   vector<std::pair<string, int> > attribute_names;
   Table entities = db->getTable("attributes");
   RowResult rows = entities.select("*").execute();
-  transform(rows.begin(), rows.end(), back_inserter(attribute_names), [this](Row row)
-  {
-    return std::make_pair(row[0], row[1]);
-  });
+  transform(rows.begin(), rows.end(), back_inserter(attribute_names),
+            [this](Row row) { return std::make_pair(row[0], row[1]); });
   return attribute_names;
 }
 
@@ -371,7 +350,7 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::getAllAttributes() c
  * @brief Deletes an entity and any other entities and relations that rely on it.
  * @return true if the entity was deleted. False if it could not be, or already was
  */
-bool LongTermMemoryConduitMySQL::deleteEntity(Entity &entity)
+bool LongTermMemoryConduitMySQL::deleteEntity(Entity& entity)
 {
   // TODO(nickswalker): Handle failure
   // TODO(nickswalker): Recursively remove entities that are members of directional relations
@@ -389,8 +368,8 @@ bool LongTermMemoryConduitMySQL::deleteEntity(Entity &entity)
   return true;
 }
 
-bool LongTermMemoryConduitMySQL::addAttribute(
-    LTMCEntity<LongTermMemoryConduitMySQL> &entity, const std::string &attribute_name, const float float_val)
+bool LongTermMemoryConduitMySQL::addAttribute(LTMCEntity<LongTermMemoryConduitMySQL>& entity,
+                                              const std::string& attribute_name, const float float_val)
 {
   if (!attributeExists(attribute_name))
   {
@@ -403,7 +382,7 @@ bool LongTermMemoryConduitMySQL::addAttribute(
   {
     inserter.execute();
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cerr << "Tried to add attribute " << attribute_name << " with value " << float_val << endl;
     cerr << "ERROR: " << err << endl;
@@ -412,8 +391,7 @@ bool LongTermMemoryConduitMySQL::addAttribute(
   return true;
 }
 
-
-bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string &attribute_name, const bool bool_val)
+bool LongTermMemoryConduitMySQL::addAttribute(Entity& entity, const std::string& attribute_name, const bool bool_val)
 {
   if (!attributeExists(attribute_name))
   {
@@ -426,7 +404,7 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   {
     inserter.execute();
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cerr << "Tried to add " << entity.entity_id << " " << attribute_name << " " << bool_val << endl;
     cerr << "ERROR: " << err << endl;
@@ -435,9 +413,8 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   return true;
 }
 
-
-bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string &attribute_name,
-    const uint other_entity_id)
+bool LongTermMemoryConduitMySQL::addAttribute(Entity& entity, const std::string& attribute_name,
+                                              const uint other_entity_id)
 {
   if (!attributeExists(attribute_name))
   {
@@ -450,7 +427,7 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   {
     inserter.execute();
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cerr << "Tried to add attribute " << attribute_name << " with value " << other_entity_id << endl;
     cerr << "ERROR: " << err << endl;
@@ -460,8 +437,8 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   return true;
 }
 
-bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string &attribute_name,
-    const std::string &string_val)
+bool LongTermMemoryConduitMySQL::addAttribute(Entity& entity, const std::string& attribute_name,
+                                              const std::string& string_val)
 {
   if (!attributeExists(attribute_name))
   {
@@ -474,7 +451,7 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   {
     inserter.execute();
   }
-  catch (const mysqlx::Error &err)
+  catch (const mysqlx::Error& err)
   {
     cerr << "Tried to add attribute " << attribute_name << " with value " << string_val << endl;
     cerr << "Message: " << err << endl;
@@ -483,69 +460,68 @@ bool LongTermMemoryConduitMySQL::addAttribute(Entity &entity, const std::string 
   return true;
 }
 
-int LongTermMemoryConduitMySQL::removeAttribute(Entity &entity, const std::string &attribute_name)
+int LongTermMemoryConduitMySQL::removeAttribute(Entity& entity, const std::string& attribute_name)
 {
   int removed_count = 0;
-  for (const auto &table_name : table_names)
+  for (const auto& table_name : table_names)
   {
     // TODO(nickswalker): Rewrite this as SQL query to delete from a join across attribute_name
     Table entity_attributes = db->getTable(table_name);
     TableRemove remover = entity_attributes.remove();
-    remover.where("entity_id = :id and attribute_name = :name").bind("id", entity.entity_id).bind("name",
-        attribute_name);
+    remover.where("entity_id = :id and attribute_name = :name")
+        .bind("id", entity.entity_id)
+        .bind("name", attribute_name);
     auto result = remover.execute();
     removed_count += result.getAffectedItemsCount();
   }
   return removed_count;
 }
 
-int LongTermMemoryConduitMySQL::removeAttributeOfValue(Entity &entity,
-    const std::string &attribute_name, const Entity &other_entity)
+int LongTermMemoryConduitMySQL::removeAttributeOfValue(Entity& entity, const std::string& attribute_name,
+                                                       const Entity& other_entity)
 {
   Table entity_attributes = db->getTable("entity_attributes_id");
   TableRemove remover = entity_attributes.remove();
   remover.where("entity_id = :id and attribute_name = :name and attribute_value = :value")
-  .bind("id", entity.entity_id).bind("name",
-      attribute_name).bind("value", other_entity.entity_id);
+      .bind("id", entity.entity_id)
+      .bind("name", attribute_name)
+      .bind("value", other_entity.entity_id);
   auto result = remover.execute();
   return result.getAffectedItemsCount();
 }
 
-
-vector<EntityAttribute>
-LongTermMemoryConduitMySQL::getAttributes(const Entity &entity) const
+vector<EntityAttribute> LongTermMemoryConduitMySQL::getAttributes(const Entity& entity) const
 {
   vector<EntityAttribute> attributes;
-  for (const auto &name : table_names)
+  for (const auto& name : table_names)
   {
     Table entity_attributes = db->getTable(name);
     RowResult result = entity_attributes.select("*").where("entity_id = :id").bind("id", entity.entity_id).execute();
     auto result_rows = result.fetchAll();
 
-    vector<EntityAttribute> table_attributes =
-        unwrapAttributeRows(name, result_rows);
+    vector<EntityAttribute> table_attributes = unwrapAttributeRows(name, result_rows);
     attributes.insert(attributes.end(), table_attributes.begin(), table_attributes.end());
   }
 
   return attributes;
 }
 
-std::vector<EntityAttribute>
-LongTermMemoryConduitMySQL::getAttributes(const Entity &entity, const std::string &attribute_name) const
+std::vector<EntityAttribute> LongTermMemoryConduitMySQL::getAttributes(const Entity& entity,
+                                                                       const std::string& attribute_name) const
 {
   vector<EntityAttribute> attributes;
-  for (const auto &name : table_names)
+  for (const auto& name : table_names)
   {
     Table entity_attributes = db->getTable(name);
-    RowResult result = entity_attributes.select("*").where("entity_id = :id and attribute_name = :attr").bind(
-                         "id",
-                         entity.entity_id).bind(
-                         "attr", attribute_name).execute();
+    RowResult result = entity_attributes.select("*")
+                           .where("entity_id = :id and attribute_name = :attr")
+                           .bind("id", entity.entity_id)
+                           .bind("attr", attribute_name)
+                           .execute();
 
     auto result_rows = result.fetchAll();
 
-    vector<EntityAttribute> table_attributes =
-        unwrapAttributeRows(name, result_rows);
+    vector<EntityAttribute> table_attributes = unwrapAttributeRows(name, result_rows);
     attributes.insert(attributes.end(), table_attributes.begin(), table_attributes.end());
   }
   return attributes;
@@ -557,11 +533,10 @@ LongTermMemoryConduitMySQL::getAttributes(const Entity &entity, const std::strin
  * it is removed as a result of other helpers that delete entities.
  * @return whether the entity is valid
  */
-bool LongTermMemoryConduitMySQL::isValid(const Entity &entity) const
+bool LongTermMemoryConduitMySQL::isValid(const Entity& entity) const
 {
   return entityExists(entity.entity_id);
 }
-
 
 /**
  * @brief Get all concepts that this instance is transitively an instance of
@@ -569,16 +544,13 @@ bool LongTermMemoryConduitMySQL::isValid(const Entity &entity) const
  * then getConcepts will return the concepts of both apple and fruit.
  * @return
  */
-std::vector<Concept> LongTermMemoryConduitMySQL::get_concepts(const Instance &instance)
+std::vector<Concept> LongTermMemoryConduitMySQL::get_concepts(const Instance& instance)
 {
   auto results = sess->sql("CALL get_concepts(?)").bind(instance.entity_id).execute();
   auto rows = results.fetchAll();
   std::vector<Concept> concepts{};
-  std::transform(rows.begin(), rows.end(), std::back_inserter(concepts), [this](const mysqlx::Row & row)
-  {
-    return Concept(row[0], *this);
-  });
+  std::transform(rows.begin(), rows.end(), std::back_inserter(concepts),
+                 [this](const mysqlx::Row& row) { return Concept(row[0], *this); });
   return concepts;
 }
 }  // namespace knowledge_rep
-
