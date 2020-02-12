@@ -10,6 +10,7 @@ find_package(FLEX)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+        roslint
         )
 find_package(Boost REQUIRED COMPONENTS python)
 
@@ -123,6 +124,21 @@ install(TARGETS _libknowledge_rep_wrapper_cpp
 install(DIRECTORY include/${PROJECT_NAME}
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
         FILES_MATCHING PATTERN "*.h")
+
+file(GLOB_RECURSE ${PROJECT_NAME}_CPP_SRC
+        RELATIVE ${PROJECT_SOURCE_DIR} src/lib${PROJECT_NAME}/*.cpp src/libknowledge_rep/*.h include/${PROJECT_NAME}/*.h test/*.cpp)
+set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-build/header_guard,-runtime/references,-build/c++11,-whitespace/braces")
+roslint_cpp(${${PROJECT_NAME}_CPP_SRC})
+
+# Lint Python modules for PEP8 compatibility
+file(GLOB_RECURSE ${PROJECT_NAME}_PY_SCRIPTS
+        RELATIVE ${PROJECT_SOURCE_DIR} scripts/*)
+list(FILTER ${PROJECT_NAME}_PY_SCRIPTS EXCLUDE REGEX ".*.sh")
+file(GLOB_RECURSE ${PROJECT_NAME}_PY_SRC
+        RELATIVE ${PROJECT_SOURCE_DIR} src/${PROJECT_NAME}/*.py)
+set(ROSLINT_PYTHON_OPTS "--max-line-length=120")
+roslint_python(${${PROJECT_NAME}_PY_SCRIPTS})
+roslint_python(${${PROJECT_NAME}_PY_SRC})
 
 ### TEST TARGETS
 if(CATKIN_ENABLE_TESTING)

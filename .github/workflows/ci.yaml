@@ -6,6 +6,7 @@ jobs:
   industrial_ci:
     env:
       AFTER_INSTALL_TARGET_DEPENDENCIES: scripts/configure_postgresql.sh
+      AFTER_SCRIPT: 'builder_run_build "$target_ws/install" "$target_ws" --cmake-target-skip-unavailable --cmake-target roslint'
       CATKIN_LINT: true
       ROS_REPO: main
     strategy:
