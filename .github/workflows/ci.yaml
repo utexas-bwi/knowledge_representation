@@ -8,6 +8,9 @@ jobs:
       AFTER_INSTALL_TARGET_DEPENDENCIES: scripts/configure_postgresql.sh
       AFTER_SCRIPT: 'cd $target_ws && rosenv && catkin build $(catkin_topological_order "${TARGET_REPO_PATH}" --only-names) --no-deps --no-status --verbose --make-args roslint'
       CATKIN_LINT: true
+      CLANG_FORMAT_CHECK: file
+      CLANG_FORMAT_VERSION: 3.9
+      CLANG_TIDY: true
       ROS_REPO: main
     strategy:
       matrix:
