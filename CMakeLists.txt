@@ -132,8 +132,10 @@ roslint_cpp(${${PROJECT_NAME}_CPP_SRC})
 
 # Lint Python modules for PEP8 compatibility
 file(GLOB_RECURSE ${PROJECT_NAME}_PY_SCRIPTS
-        RELATIVE ${PROJECT_SOURCE_DIR} scripts/*)
-list(FILTER ${PROJECT_NAME}_PY_SCRIPTS EXCLUDE REGEX ".*.sh")
+        RELATIVE ${PROJECT_SOURCE_DIR} scripts/populate_* scripts/test_ltmc scripts/dump_to_owl)
+
+# List FILTER isn't supported in 16.04's CMake
+# list(FILTER ${PROJECT_NAME}_PY_SCRIPTS EXCLUDE REGEX ".*.sh")
 file(GLOB_RECURSE ${PROJECT_NAME}_PY_SRC
         RELATIVE ${PROJECT_SOURCE_DIR} src/${PROJECT_NAME}/*.py)
 set(ROSLINT_PYTHON_OPTS "--max-line-length=120")
