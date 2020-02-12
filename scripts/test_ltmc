@@ -8,7 +8,6 @@ coke = ltmc.add_entity()
 assert coke.is_valid()
 assert ltmc.entity_exists(coke.entity_id)
 
-
 nsb_concept = ltmc.get_concept("never seen before")
 nsb_concept.remove_instances()
 

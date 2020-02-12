@@ -13,37 +13,39 @@ class LocationParser(object):
         TODO: Figure what to do if can't find it, currently returns []
         This works for where is located the ? and In which room is the ? questions
     """
+
     def where_is_located(self, obj_name):
         location_list = []
-        #get root (rooms in this case)
+        # get root (rooms in this case)
         root = self.tree.getroot()
-        #for each room in rooms check if it has child with name equal to location_obj
+        # for each room in rooms check if it has child with name equal to location_obj
         for room in root.findall("./room"):
-            #print room.tag, room.attrib
+            # print room.tag, room.attrib
             for thing in room:
                 if normalize(thing.attrib['name']) == obj_name:
                     location_list.append(room.attrib['name'])
         return location_list
-        
+
     """query Locations.xml file to get number of doors of room
         Note that this needs to be manually entered into the Locations.xml file given
         Returns number of doors or None is room not found
     """
+
     def how_many_doors(self, room_name):
-        #get root (rooms in this case)
+        # get root (rooms in this case)
         root = self.tree.getroot()
-        #find room that matches room_name and get num doors
+        # find room that matches room_name and get num doors
         for room in root.findall("./room"):
             if normalize(room.attrib['name']) == room_name:
                 return room.attrib['doors']
         return None
-        
-    def how_many_location_in_room(self,location_name, room_name):
+
+    def how_many_location_in_room(self, location_name, room_name):
         object_cnt = 0
         found_room = False
-        #get root (rooms in this case)
+        # get root (rooms in this case)
         root = self.tree.getroot()
-        #for each room in rooms check if it has child with name equal to location_obj
+        # for each room in rooms check if it has child with name equal to location_obj
         for room in root.findall("./room"):
             if normalize(room.attrib['name']) == room_name:
                 found_room = True
@@ -56,10 +58,10 @@ class LocationParser(object):
             return None
 
     def get_all_locations(self):
-        locations = []    
-        #parse xml
+        locations = []
+        # parse xml
         root = self.tree.getroot()
-        #for each room in rooms check if it has child with name equal to location_obj
+        # for each room in rooms check if it has child with name equal to location_obj
         for location in root.findall("./room/location"):
             locations.append(location.attrib['name'])
         return locations
@@ -94,12 +96,12 @@ class LocationParser(object):
 
 def main():
     location_parser = LocationParser("../../resources/Locations_mod.xml")
-    #example usage
-    print (location_parser.where_is_located("living shelf"))
-    print (location_parser.how_many_doors("corridor"))
-    print ("how many desk in bathroom?", location_parser.how_many_location_in_room("desk","bathroom"))
-    print (location_parser.get_all_locations())
-    
+    # example usage
+    print(location_parser.where_is_located("living shelf"))
+    print(location_parser.how_many_doors("corridor"))
+    print("how many desk in bathroom?", location_parser.how_many_location_in_room("desk", "bathroom"))
+    print(location_parser.get_all_locations())
+
+
 if __name__ == "__main__":
     main()
-

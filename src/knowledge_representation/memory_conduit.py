@@ -1,6 +1,7 @@
 import rospy
 from knowledge_representation.srv import GetCloud, GetCloudRequest, GetCloudResponse
 
+
 class MemoryConduit:
     def __init__(self):
         pass

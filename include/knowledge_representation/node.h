@@ -1,85 +1,128 @@
 #pragma once
 #include <string>
 
-namespace knowledge_rep {
-
-class Node {
+namespace knowledge_rep
+{
+class Node
+{
 public:
-  Node(){}
-  virtual ~Node() {}
+  Node()
+  {
+  }
+  virtual ~Node()
+  {
+  }
 };
 
-class Query : public Node {
+class Query : public Node
+{
 };
 
-class Valuable : public Node {
+class Valuable : public Node
+{
 };
 
-class Idable : public Node {
+class Idable : public Node
+{
 };
 
-class FreeVar : public Node {
-  FreeVar(){}
+class FreeVar : public Node
+{
+  FreeVar()
+  {
+  }
 };
 
-class VId : public Valuable {
+class VId : public Valuable
+{
 public:
-  VId(){}
-  VId(int value) : value(value) {}
+  VId()
+  {
+  }
+  explicit  VId(int value) : value(value)
+  {
+  }
 
   int value{};
 };
 
-class VFloat : public Valuable {
+class VFloat : public Valuable
+{
 public:
-  VFloat(){}
-  VFloat(float value) : value(value) {}
+  VFloat()
+  {
+  }
+  explicit VFloat(float value) : value(value)
+  {
+  }
 
   float value;
 };
 
-class VBool : public Valuable {
+class VBool : public Valuable
+{
 public:
-  VBool(){}
-  VBool(bool value) : value(value) {}
+  VBool()
+  {
+  }
+  explicit VBool(bool value) : value(value)
+  {
+  }
 
   bool value;
 };
 
-class VString : public Valuable {
+class VString : public Valuable
+{
 public:
-  VString(){}
-  VString(const std::string &value) : value(value) {}
+  VString()
+  {
+  }
+  explicit VString(const std::string& value) : value(value)
+  {
+  }
 
   std::string value;
 };
 
-class AttributeName : public Node {
+class AttributeName : public Node
+{
 public:
-  AttributeName(){}
-  AttributeName(const std::string &name) : name(name) {}
+  AttributeName()
+  {
+  }
+  explicit AttributeName(const std::string& name) : name(name)
+  {
+  }
 
-  AttributeName& build(){
+  AttributeName& build()
+  {
     return *new AttributeName();
   }
 
   std::string name;
 };
 
-class QueryId : public Query, public Idable {
+class QueryId : public Query, public Idable
+{
 public:
-  QueryId(){}
-  FreeVar *var;
-  AttributeName *name;
-  Valuable *value;
+  QueryId()
+  {
+  }
+  FreeVar* var;
+  AttributeName* name;
+  Valuable* value;
 };
 
-class QueryValue : public Query, public Valuable {
+class QueryValue : public Query, public Valuable
+{
 public:
-  QueryValue(){}
-  //VId id;
-  //AttributeName name;
-  //FreeVar var;
+  QueryValue()
+  {
+  }
+  // VId id;
+  // AttributeName name;
+  // FreeVar var;
 };
 
-}
+}  // namespace knowledge_rep

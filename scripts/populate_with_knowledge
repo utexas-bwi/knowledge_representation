@@ -6,6 +6,7 @@ import sys
 import os
 import yaml
 
+
 def add_attribute_entry(entity, entry, ltmc):
     keys = entry.keys()
     if "concept_name" in keys:
@@ -31,7 +32,7 @@ def add_attribute_entry(entity, entry, ltmc):
 def populate(ltmc, file_path):
     if not os.path.isfile(file_path):
         print(
-                "File not found at " + file_path + ".")
+            "File not found at " + file_path + ".")
         return False
     data = read_yaml_from_file(file_path)
 
@@ -75,6 +76,7 @@ def main():
         success = populate(ltmc, path)
     exit_code = 0 if success else 1
     exit(exit_code)
+
 
 if __name__ == "__main__":
     main()

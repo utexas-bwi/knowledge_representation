@@ -5,10 +5,8 @@
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LongTermMemoryConduit.h>
 
-
-namespace knowledge_rep {
-
-
-LongTermMemoryConduit get_default_ltmc();
+namespace knowledge_rep
+{
+LongTermMemoryConduit getDefaultLTMC();
 
 }

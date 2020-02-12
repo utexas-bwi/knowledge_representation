@@ -64,7 +64,7 @@ type_to_parser = {"rooms": room_parser,
 def populate(ltmc, file_path):
     file_name = os.path.basename(file_path)
 
-    if not ".xml" in file_name:
+    if ".xml" not in file_name:
         return False
     tree = ET.parse(file_path)
     root = tree.getroot()
@@ -73,8 +73,7 @@ def populate(ltmc, file_path):
         return False
     parser(ltmc, root)
     return True
-        #print("Not sure how to parse the top level tag: {}".format(root.tag))
-
+    # print("Not sure how to parse the top level tag: {}".format(root.tag))
 
 
 def main():
@@ -88,6 +87,7 @@ def main():
         success = populate(ltmc, file_path)
     exit_code = 0 if success else 1
     exit(exit_code)
+
 
 if __name__ == "__main__":
     main()

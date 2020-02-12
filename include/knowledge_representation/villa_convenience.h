@@ -3,9 +3,11 @@
 
 #include "LongTermMemoryConduit.h"
 
-namespace knowledge_rep {
-    namespace villa {
-        LongTermMemoryConduit get_default_ltmc();
-    }
+namespace knowledge_rep
+{
+namespace villa
+{
+LongTermMemoryConduit getDefaultLTMC();
 }
-#endif //KNOWLEDGE_REPRESENTATION_CONVENIENCE_H
+}  // namespace knowledge_rep
+#endif  // KNOWLEDGE_REPRESENTATION_CONVENIENCE_H

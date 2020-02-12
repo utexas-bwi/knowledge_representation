@@ -21,28 +21,27 @@
 // * If we had used a pure virtual interface, we'd have to go through a pointer to the objects (LTMC, Entity, etc)
 //   and we'd still have a vtable lookup
 // The outside still sees
-namespace knowledge_rep {
-
-template<typename ConLTMCImpl>
+namespace knowledge_rep
+{
+template <typename ConLTMCImpl>
 class LTMCConcept;
 
-template<typename InsLTMCImpl>
+template <typename InsLTMCImpl>
 class LTMCInstance;
 
-template<typename EntLTMCImpl>
+template <typename EntLTMCImpl>
 class LTMCEntity;
 
 class EntityAttribute;
 
 enum AttributeValueType;
 
-
-template<typename Impl>
-class LongTermMemoryConduitInterface {
+template <typename Impl>
+class LongTermMemoryConduitInterface
+{
   using LTMC = LongTermMemoryConduitInterface;
 
 public:
-
   using EntityImpl = LTMCEntity<Impl>;
   using InstanceImpl = LTMCInstance<Impl>;
   using ConceptImpl = LTMCConcept<Impl>;
@@ -52,166 +51,191 @@ public:
   friend ConceptImpl;
   friend Impl;
 
-  LongTermMemoryConduitInterface(LongTermMemoryConduitInterface &&that) noexcept = default;
+  LongTermMemoryConduitInterface(LongTermMemoryConduitInterface&& that) noexcept = default;
 
+  LongTermMemoryConduitInterface& operator=(LongTermMemoryConduitInterface&& that) noexcept = default;
 
-  LongTermMemoryConduitInterface &operator=(LongTermMemoryConduitInterface &&that) noexcept = default;
-
-  bool add_attribute(const std::string &name, const AttributeValueType type) {
-    return static_cast<Impl *>(this)->add_attribute(name, type);
+  bool addAttribute(const std::string& name, const AttributeValueType type)
+  {
+    return static_cast<Impl*>(this)->addAttribute(name, type);
   };
 
   std::vector<EntityImpl>
-  get_entities_with_attribute_of_value(const std::string &attribute_name, const uint other_entity_id) {
-    return static_cast<Impl *>(this)->get_entities_with_attribute_of_value(attribute_name, other_entity_id);
+  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                               const uint other_entity_id)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, other_entity_id);
   };
 
   std::vector<EntityImpl>
-  get_entities_with_attribute_of_value(const std::string &attribute_name, const bool bool_val) {
-    return static_cast<Impl *>(this)->get_entities_with_attribute_of_value(attribute_name, bool_val);
+  getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, bool_val);
   }
 
   std::vector<EntityImpl>
-  get_entities_with_attribute_of_value(const std::string &attribute_name, const std::string &string_val) {
-    return static_cast<Impl *>(this)->get_entities_with_attribute_of_value(attribute_name, string_val);
+  getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                               const std::string& string_val)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, string_val);
   }
 
-  bool entity_exists(uint id) const {
-    return static_cast<const Impl *>(this)->entity_exists(id);
+  bool entityExists(uint id) const
+  {
+    return static_cast<const Impl*>(this)->entityExists(id);
   };
 
-  bool delete_attribute(const std::string &name) {
-    return static_cast<Impl *>(this)->delete_attribute(name);
+  bool deleteAttribute(const std::string& name)
+  {
+    return static_cast<Impl*>(this)->deleteAttribute(name);
   }
 
-  bool attribute_exists(const std::string &name) const {
-    return static_cast<const Impl *>(this)->attribute_exists(name);
+  bool attributeExists(const std::string& name) const
+  {
+    return static_cast<const Impl*>(this)->attributeExists(name);
   };
 
-  uint delete_all_entities() {
-    return static_cast<Impl *>(this)->delete_all_entities();
+  uint deleteAllEntities()
+  {
+    return static_cast<Impl*>(this)->deleteAllEntities();
   }
 
-  uint delete_all_attributes() {
-    return static_cast<Impl *>(this)->delete_all_attributes();
+  uint deleteAllAttributes()
+  {
+    return static_cast<Impl*>(this)->deleteAllAttributes();
   }
 
-  std::vector<EntityImpl> get_all_entities() {
-    return static_cast<Impl *>(this)->get_all_entities();
+  std::vector<EntityImpl> getAllEntities()
+  {
+    return static_cast<Impl*>(this)->getAllEntities();
   }
 
-  std::vector<ConceptImpl> get_all_concepts() {
-    return static_cast<Impl *>(this)->get_all_concepts();
+  std::vector<ConceptImpl> getAllConcepts()
+  {
+    return static_cast<Impl*>(this)->getAllConcepts();
   };
 
-  std::vector<InstanceImpl> get_all_instances() {
-    return static_cast<Impl *>(this)->get_all_instances();
+  std::vector<InstanceImpl> getAllInstances()
+  {
+    return static_cast<Impl*>(this)->getAllInstances();
   }
 
-  std::vector<std::pair<std::string, int>> get_all_attributes() const {
-    return static_cast<const Impl *>(this)->get_all_attributes();
+  std::vector<std::pair<std::string, int>> getAllAttributes() const
+  {
+    return static_cast<const Impl*>(this)->getAllAttributes();
   }
 
-
-  bool select_query_int(const std::string &sql_query, std::vector<EntityAttribute> &result) const {
-    return static_cast<const Impl *>(this)->select_query_int(sql_query, result);
+  bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryInt(sql_query, result);
   }
 
-  bool select_query_float(const std::string &sql_query, std::vector<EntityAttribute> &result) const {
-    return static_cast<const Impl *>(this)->select_query_float(sql_query, result);
+  bool selectQueryFloat(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryFloat(sql_query, result);
   }
 
-  bool select_query_string(const std::string &sql_query, std::vector<EntityAttribute> &result) const {
-    return static_cast<const Impl *>(this)->select_query_string(sql_query, result);
+  bool selectQueryString(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryString(sql_query, result);
   }
 
-  bool select_query_bool(const std::string &sql_query, std::vector<EntityAttribute> &result) const {
-    return static_cast<const Impl *>(this)->select_query_bool(sql_query, result);
+  bool selectQueryBool(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
   }
 
-//// CONVENIENCE
-  ConceptImpl get_concept(const std::string &name) {
-    return static_cast<Impl *>(this)->get_concept(name);
+  //// CONVENIENCE
+  ConceptImpl getConcept(const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getConcept(name);
   };
 
-  InstanceImpl get_instance_named(const std::string &name) {
-    return static_cast<Impl *>(this)->get_instance_named(name);
+  InstanceImpl getInstanceNamed(const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getInstanceNamed(name);
   };
 
-  InstanceImpl get_robot() {
-    return static_cast<Impl *>(this)->get_robot();
+  InstanceImpl getRobot()
+  {
+    return static_cast<Impl*>(this)->getRobot();
   };
 
-  EntityImpl add_entity() {
-    return static_cast<Impl *>(this)->add_entity();
+  EntityImpl addEntity()
+  {
+    return static_cast<Impl*>(this)->addEntity();
   };
 
-  bool add_entity(int id) {
-    return static_cast<Impl *>(this)->add_entity(id);
+  bool addEntity(int id)
+  {
+    return static_cast<Impl*>(this)->addEntity(id);
   };
 
-  boost::optional<EntityImpl> get_entity(int entity_id) {
-    return static_cast<Impl *>(this)->get_entity(entity_id);
-
+  boost::optional<EntityImpl> getEntity(int entity_id)
+  {
+    return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
 protected:
-  bool delete_entity(EntityImpl &entity) {
-    return static_cast<Impl *>(this)->delete_entity(entity);
+  bool deleteEntity(EntityImpl& entity)
+  {
+    return static_cast<Impl*>(this)->deleteEntity(entity);
   }
 
-  bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
-                     const float float_val) {
-    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, float_val);
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const float float_val)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, float_val);
   }
 
-
-  bool add_attribute(EntityImpl &entity, const std::string &attribute_name, const bool bool_val) {
-    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, bool_val);
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const bool bool_val)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, bool_val);
   }
 
-  bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
-                     const uint other_entity_id) {
-    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, static_cast<const uint>(other_entity_id));
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const uint other_entity_id)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, static_cast<const uint>(other_entity_id));
   }
 
-  bool add_attribute(EntityImpl &entity, const std::string &attribute_name,
-                     const std::string &string_val) {
-    return static_cast<Impl *>(this)->add_attribute(entity, attribute_name, string_val);
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const std::string& string_val)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, string_val);
   }
 
-
-  int remove_attribute(EntityImpl &entity, const std::string &attribute_name) {
-    return static_cast<Impl *>(this)->remove_attribute(entity, attribute_name);
+  int removeAttribute(EntityImpl& entity, const std::string& attribute_name)
+  {
+    return static_cast<Impl*>(this)->removeAttribute(entity, attribute_name);
   }
 
-  int remove_attribute_of_value(EntityImpl &entity, const std::string &attribute_name, const EntityImpl &other_entity) {
-    return static_cast<Impl *>(this)->remove_attribute_of_value(entity, attribute_name, other_entity);
+  int removeAttributeOfValue(EntityImpl& entity, const std::string& attribute_name, const EntityImpl& other_entity)
+  {
+    return static_cast<Impl*>(this)->removeAttributeOfValue(entity, attribute_name, other_entity);
   }
 
+  std::vector<EntityAttribute> getAttributes(const EntityImpl& entity) const
+  {
+    return static_cast<const Impl*>(this)->getAttributes(entity);
+  }
 
   std::vector<EntityAttribute>
-  get_attributes(const EntityImpl &entity) const {
-    return static_cast<const Impl *>(this)->get_attributes(entity);
+  getAttributes(const EntityImpl& entity, const std::string& attribute_name) const
+  {
+    return static_cast<const Impl*>(this)->getAttributes(entity, attribute_name);
   }
 
-  std::vector<EntityAttribute>
-  get_attributes(const EntityImpl &entity, const std::string &attribute_name) const {
-    return static_cast<const Impl *>(this)->get_attributes(entity, attribute_name);
+  bool isValid(const EntityImpl& entity) const
+  {
+    return static_cast<const Impl*>(this)->isValid(entity);
   }
 
-  bool is_valid(const EntityImpl &entity) const {
-    return static_cast<const Impl *>(this)->is_valid(entity);
-  }
-
-  std::vector<ConceptImpl> get_concepts(const InstanceImpl &instance) {
-    return static_cast<Impl *>(this)->get_concepts(instance);
+  std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance)
+  {
+    return static_cast<Impl*>(this)->getConcepts(instance);
   }
 
 private:
   // We make the constructor private to make sure people can't build this interface type directly
-  LongTermMemoryConduitInterface() = default;;
+  LongTermMemoryConduitInterface() = default;
 };
 
-
-}
+}  // namespace knowledge_rep
