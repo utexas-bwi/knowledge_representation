@@ -71,7 +71,7 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
   EXPECT_EQ(ltmc.getAllEntities().size(), 2);
   EXPECT_EQ(ltmc.getAllConcepts().size(), 1);
   EXPECT_EQ(ltmc.getAllInstances().size(), 1);
-  EXPECT_EQ(ltmc.getAllAttributes().size(), 16);
+  EXPECT_EQ(ltmc.getAllAttributes().size(), 17);
 }
 
 TEST_F(LTMCTest, GetConceptWorks)

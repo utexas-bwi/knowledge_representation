@@ -189,6 +189,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("entity_exists", &LTMC::entityExists)
       .def("attribute_exists", &LTMC::attributeExists)
       .def("delete_all_entities", &LTMC::deleteAllEntities)
+      .def("delete_all_attributes", &LTMC::deleteAllAttributes)
       .def("get_entities_with_attribute_of_value",
            static_cast<vector<Entity> (LTMC::*)(const string&, const uint)>(&LTMC::getEntitiesWithAttributeOfValue))
       .def("select_query_int",
