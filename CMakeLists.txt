@@ -147,6 +147,8 @@ if(CATKIN_ENABLE_TESTING)
     catkin_add_gtest(test_ltmc test/ltmc.cpp)
     target_link_libraries(test_ltmc knowledge_rep ${catkin_LIBRARIES})
 
+    catkin_add_nosetests(test/ltmc.py)
+
 #    catkin_add_gtest(test_parser test/parser.cpp)
 #    target_link_libraries(test_parser knowledge_rep ${catkin_LIBRARIES})
 endif()

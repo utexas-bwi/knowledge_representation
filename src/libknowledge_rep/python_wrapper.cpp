@@ -136,7 +136,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("is_valid", &Entity::isValid);
 
   class_<Concept, bases<Entity>>("Concept", init<uint, LTMC&>())
-      .def("remove_nstances", &Concept::removeInstances)
+      .def("remove_instances", &Concept::removeInstances)
       .def("remove_references", &Concept::removeReferences)
       .def("get_instances", &Concept::getInstances)
       .def("get_name", &Concept::getName)
