@@ -1,4 +1,5 @@
 #include <boost/python.hpp>
+#include <boost/python/enum.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/mpl/if.hpp>
@@ -16,6 +17,7 @@
 namespace python = boost::python;
 using python::bases;
 using python::class_;
+using python::enum_;
 using python::init;
 using python::vector_indexing_suite;
 using knowledge_rep::LongTermMemoryConduit;
@@ -24,6 +26,7 @@ using knowledge_rep::Concept;
 using knowledge_rep::Instance;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::AttributeValue;
+using knowledge_rep::AttributeValueType;
 using std::string;
 using std::vector;
 
@@ -120,6 +123,12 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
   class_<vector<Concept>>("PyConceptList").def(vector_indexing_suite<vector<Concept>>());
 
   class_<vector<Instance>>("PyInstanceList").def(vector_indexing_suite<vector<Instance>>());
+
+  enum_<AttributeValueType>("AttributeValueType")
+      .value("int", AttributeValueType::Int)
+      .value("str", AttributeValueType::Str)
+      .value("bool", AttributeValueType::Bool)
+      .value("float", AttributeValueType::Float);
 
   class_<Entity>("Entity", init<uint, LTMC&>())
       .def_readonly("entity_id", &Entity::entity_id)

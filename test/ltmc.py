@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import unittest
-from knowledge_representation import PyAttributeList
+from knowledge_representation import PyAttributeList, AttributeValueType
 import knowledge_representation
 
 ltmc = knowledge_representation.get_default_ltmc()
@@ -22,9 +22,11 @@ class TestLTMC(unittest.TestCase):
     def test_create_instance(self):
         nsb_concept = ltmc.get_concept("never seen before")
         instance = nsb_concept.create_instance()
+        self.assertTrue(instance)
 
     def test_get_entities_with_attribute_of_value(self):
         nsb_concept = ltmc.get_concept("never seen before")
+        instance = nsb_concept.create_instance()
         instance_list = ltmc.get_entities_with_attribute_of_value("instance_of", nsb_concept.entity_id)
         assert len(instance_list) == 1
 
@@ -38,10 +40,11 @@ class TestLTMC(unittest.TestCase):
         ltmc.select_query_string("SELECT * FROM entity_attributes_str", result_list)
 
     def test_add_attribute(self):
+        nsb_concept = ltmc.get_concept("never seen before")
         instance = nsb_concept.create_instance("nsb")
         assert instance
 
-        result = ltmc.add_new_attribute("new attribute", "string")
+        result = ltmc.add_new_attribute("new attribute", AttributeValueType.str)
         assert result
         assert ltmc.attribute_exists("new attribute")
         result = instance.add_attribute_str("new attribute", "as")

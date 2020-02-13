@@ -1,10 +1,10 @@
-from xml.etree import ElementTree as et
+from xml.etree import ElementTree as ElTree
 
 
 class ObjectParser:
     def __init__(self, object_xml_file):
         self.object_file = object_xml_file
-        self.tree = et.parse(object_xml_file)
+        self.tree = ElTree.parse(object_xml_file)
 
     def all_objects(self):
         all_objects = []
@@ -27,7 +27,7 @@ class ObjectParser:
 
     def get_categories(self):
         # parse xml
-        tree = et.parse(self.object_file)
+        tree = ElTree.parse(self.object_file)
         # get root (rooms in this case)
         root = tree.getroot()
 
@@ -41,7 +41,7 @@ class ObjectParser:
         return categories
 
     def get_object_color(self, object_name):
-        tree = et.parse(self.object_file)
+        tree = ElTree.parse(self.object_file)
         root = tree.getroot()
         for cat in root.findall("./category"):
             for obj in cat:
@@ -54,7 +54,7 @@ class LocationParser(object):
 
     def __init__(self, location_xml_file):
         self.location_file = location_xml_file
-        self.tree = et.parse(self.location_file)
+        self.tree = ElTree.parse(self.location_file)
 
     '''return dictionary of room:location_list'''
 
@@ -109,7 +109,7 @@ class LocationParser(object):
 
 class QuestionParser:
     def __init__(self, questions_xml_file):
-        self.tree = et.parse(questions_xml_file)
+        self.tree = ElTree.parse(questions_xml_file)
 
     def get_question_answer_dict(self):
         qa_dictionary = {}
@@ -129,7 +129,7 @@ class QuestionParser:
 
 class GesturesParser:
     def __init__(self, gestures_xml_file):
-        self.tree = et.parse(gestures_xml_file)
+        self.tree = ElTree.parse(gestures_xml_file)
 
     def get_gestures(self):
         gestures = set()
@@ -142,7 +142,7 @@ class GesturesParser:
 
 class NameParser:
     def __init__(self, names_xml_file):
-        self.tree = et.parse(names_xml_file)
+        self.tree = ElTree.parse(names_xml_file)
 
     def all_names(self):
         all_names = []
