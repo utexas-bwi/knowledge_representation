@@ -57,8 +57,6 @@ CREATE TABLE entity_attributes_str
     CONSTRAINT CHK_name_unique CHECK (NumSameNames() = 0)*/
 );
 
-
-
 CREATE TABLE entity_attributes_float
 (
     entity_id       int         NOT NULL,
@@ -87,6 +85,53 @@ CREATE TABLE entity_attributes_bool
         ON UPDATE CASCADE,
     FOREIGN KEY (attribute_name)
         REFERENCES attributes (attribute_name)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+/******************* MAPS */
+
+CREATE TABLE points_of_interest
+(
+    entity_id int NOT NULL,
+    point point NOT NULL,
+    PRIMARY KEY (entity_id),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE regions_of_interest
+(
+    entity_id int NOT NULL,
+    region polygon NOT NULL,
+    PRIMARY KEY (entity_id),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+/*TODO(nickswalker): These can have magnitude normalization*/
+CREATE TABLE poses_of_interest
+(
+    entity_id int NOT NULL,
+    pose lseg NOT NULL,
+    PRIMARY KEY (entity_id),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE doors
+(
+    entity_id int NOT NULL,
+    door lseg NOT NULL,
+    PRIMARY KEY (entity_id),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -181,33 +226,35 @@ VALUES ('answer_to', 'int');
 INSERT INTO attributes
 VALUES ('default_location', 'int');
 INSERT INTO attributes
-VALUES ('has', 'int');
+VALUES ('has', 'id');
 INSERT INTO attributes
 VALUES ('height', 'float');
 INSERT INTO attributes
-VALUES ('instance_of', 'int');
+VALUES ('instance_of', 'id');
 INSERT INTO attributes
 VALUES ('is_a', 'int');
 INSERT INTO attributes
 VALUES ('is_concept', 'bool');
 INSERT INTO attributes
-VALUES ('is_connected', 'int');
+VALUES ('is_connected', 'id');
 INSERT INTO attributes
-VALUES ('is_delivered', 'int');
+VALUES ('is_delivered', 'id');
 INSERT INTO attributes
-VALUES ('is_facing', 'int');
+VALUES ('is_facing', 'id');
 INSERT INTO attributes
-VALUES ('is_holding', 'int');
+VALUES ('is_holding', 'id');
 INSERT INTO attributes
-VALUES ('is_in', 'int');
+VALUES ('is_in', 'id');
 INSERT INTO attributes
-VALUES ('is_near', 'int');
+VALUES ('is_near', 'id');
 INSERT INTO attributes
 VALUES ('is_open', 'bool');
 INSERT INTO attributes
-VALUES ('is_placed', 'int');
+VALUES ('is_placed', 'id');
 INSERT INTO attributes
 VALUES ('name', 'str');
+INSERT INTO attributes
+VALUES ('part_of', 'id')
 $$;
 
 /***** DEFAULT VALUES */
