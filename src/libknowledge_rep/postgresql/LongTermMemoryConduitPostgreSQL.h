@@ -7,9 +7,9 @@
 
 namespace knowledge_rep
 {
-static const char* table_names[] = { "entity_attributes_id", "entity_attributes_str",
-                                     "entity_attributes_bool",     // NOLINT
-                                     "entity_attributes_float" };  // NOLINT
+static const char* TABLE_NAMES[] = {"entity_attributes_id", "entity_attributes_str",
+                                    "entity_attributes_bool",
+                                    "entity_attributes_float" };
 
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
 {
@@ -145,5 +145,8 @@ protected:
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
 typedef LTMCConcept<LongTermMemoryConduitPostgreSQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;
+typedef LTMCPoint<LongTermMemoryConduitPostgreSQL> Point;
+typedef LTMCPose<LongTermMemoryConduitPostgreSQL> Pose;
+typedef LTMCRegion<LongTermMemoryConduitPostgreSQL> Region;
 typedef LongTermMemoryConduitPostgreSQL LongTermMemoryConduit;
 }  // namespace knowledge_rep

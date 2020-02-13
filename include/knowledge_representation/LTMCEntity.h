@@ -9,9 +9,10 @@ template <typename LTMCImpl>
 class LTMCEntity
 {
 public:
-  uint entity_id;
+  using EntityId = uint;
+  EntityId entity_id;
 
-  LTMCEntity(uint entity_id, LongTermMemoryConduitInterface<LTMCImpl>& ltmc) : entity_id(entity_id), ltmc(ltmc)
+  LTMCEntity(EntityId entity_id, LongTermMemoryConduitInterface<LTMCImpl>& ltmc) : entity_id(entity_id), ltmc(ltmc)
   {
   }
 
@@ -35,7 +36,7 @@ public:
     return ltmc.get().addAttribute(*this, attribute_name, bool_val);
   };
 
-  bool addAttribute(const std::string& attribute_name, uint other_entity_id)
+  bool addAttribute(const std::string& attribute_name, EntityId other_entity_id)
   {
     return ltmc.get().addAttribute(*this, attribute_name, other_entity_id);
   };

@@ -10,32 +10,34 @@
 #include <vector>
 #include "EntityAttribute.h"
 
-// Requirements
-// * Be able to staticly select which database backend
-// * No external dependency on which backend is available
-// Options
-// Non-requirements:
-// * ABI compatibility. We will continue to assume source builds
-//
-// Solution: Static polymorphism w/ CRTP switched via a compile flag (?)
-// * If we had used a pure virtual interface, we'd have to go through a pointer to the objects (LTMC, Entity, etc)
-//   and we'd still have a vtable lookup
-// The outside still sees
 namespace knowledge_rep
 {
+template <typename EntLTMCImpl>
+class LTMCEntity;
+
 template <typename ConLTMCImpl>
 class LTMCConcept;
 
 template <typename InsLTMCImpl>
 class LTMCInstance;
 
-template <typename EntLTMCImpl>
-class LTMCEntity;
+template <typename PointLTMCImpl>
+class LTMCPoint;
+
+template <typename PoseLTMCImpl>
+class LTMCPose;
+
+template <typename RegionLTMCImpl>
+class LTMCRegion;
 
 class EntityAttribute;
 
 enum AttributeValueType;
 
+/// This is an instance of the Curiously Recurring Template Pattern (CRTP), which
+/// we're leveraging to enable multiple backend implementations while maintaining
+/// a static interface with no runtime dispatch. You can read more about this pattern
+/// here: https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/
 template <typename Impl>
 class LongTermMemoryConduitInterface
 {
@@ -45,6 +47,9 @@ public:
   using EntityImpl = LTMCEntity<Impl>;
   using InstanceImpl = LTMCInstance<Impl>;
   using ConceptImpl = LTMCConcept<Impl>;
+  using PointImpl = LTMCPoint<Impl>;
+  using RegionImpl = LTMCRegion<Impl>;
+
 
   friend EntityImpl;
   friend InstanceImpl;

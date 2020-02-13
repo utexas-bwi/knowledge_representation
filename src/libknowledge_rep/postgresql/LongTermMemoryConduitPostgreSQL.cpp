@@ -521,7 +521,7 @@ void unwrap_attribute_rows(pqxx::result rows, vector<EntityAttribute>& entity_at
 vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(const Entity& entity) const
 {
   vector<EntityAttribute> attributes;
-  for (const auto& name : table_names)
+  for (const auto& name : TABLE_NAMES)
   {
     try
     {
@@ -544,7 +544,7 @@ std::vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(cons
                                                                             const std::string& attribute_name) const
 {
   vector<EntityAttribute> attributes;
-  for (const auto& name : table_names)
+  for (const auto& name : TABLE_NAMES)
   {
     try
     {

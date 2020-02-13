@@ -10,6 +10,9 @@
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
+#include <knowledge_representation/LTMCPose.h>
+#include <knowledge_representation/LTMCPoint.h>
+#include <knowledge_representation/LTMCRegion.h>
 #include <knowledge_representation/convenience.h>
 #include <vector>
 #include <string>
@@ -27,6 +30,9 @@ using knowledge_rep::Instance;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::AttributeValue;
 using knowledge_rep::AttributeValueType;
+using knowledge_rep::Point;
+using knowledge_rep::Pose;
+using knowledge_rep::Region;
 using std::string;
 using std::vector;
 
@@ -170,6 +176,12 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_string_value", &EntityAttribute::getStringValue);
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
+
+  class_<Point>("Point", init<uint, const string&, uint, LTMC&>());
+
+  class_<Pose>("Pose", init<uint, const string&, uint, LTMC&>());
+
+  class_<Region>("Region", init<uint, const string&, uint, LTMC&>());
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
       .def("add_entity", static_cast<Entity (LTMC::*)()>(&LTMC::addEntity))
