@@ -183,7 +183,7 @@ public:
     return static_cast<Impl*>(this)->addEntity();
   };
 
-  bool addEntity(int id)
+  bool addEntity(uint id)
   {
     return static_cast<Impl*>(this)->addEntity(id);
   };

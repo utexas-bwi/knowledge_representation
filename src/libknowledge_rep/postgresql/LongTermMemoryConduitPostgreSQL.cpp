@@ -32,13 +32,14 @@ LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& d
 
 LongTermMemoryConduitPostgreSQL::~LongTermMemoryConduitPostgreSQL() = default;
 
-bool LongTermMemoryConduitPostgreSQL::addEntity(int id)
+bool LongTermMemoryConduitPostgreSQL::addEntity(uint id)
 {
   pqxx::work txn{ *conn };
   pqxx::result result = txn.exec("INSERT INTO entities "
                                  "VALUES (" +
-                                 txn.quote(id) + ") "
-                                                 "ON CONFLICT DO NOTHING RETURNING entity_id");
+                                 txn.quote(id) +
+                                 ") "
+                                 "ON CONFLICT DO NOTHING RETURNING entity_id");
   txn.commit();
   return result.size() == 1;
 }
@@ -202,10 +203,11 @@ Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
   pqxx::work txn{ *conn, "getConcept" };
   string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
                  "AND attribute_value = " +
-                 txn.quote(name) + " "
-                                   "AND entity_id IN "
-                                   "(SELECT entity_id FROM entity_attributes_bool "
-                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
+                 txn.quote(name) +
+                 " "
+                 "AND entity_id IN "
+                 "(SELECT entity_id FROM entity_attributes_bool "
+                 "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
   auto result = txn.exec(query);
   txn.commit();
 
@@ -234,10 +236,10 @@ Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const string& name)
   pqxx::work txn{ *conn, "getInstanceNamed" };
   string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
                  "AND attribute_value = " +
-                 txn.quote(name) + " "
-                                   "AND entity_id NOT IN "
-                                   "(SELECT entity_id FROM entity_attributes_bool "
-                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
+                 txn.quote(name) +
+                 "AND entity_id NOT IN "
+                 "(SELECT entity_id FROM entity_attributes_bool "
+                 "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
 
   // If there's no "is_concept" marker on an entity, we assume it is not a concept
   auto q_result = txn.exec(query);
@@ -340,9 +342,9 @@ std::vector<Instance> LongTermMemoryConduitPostgreSQL::getAllInstances()
  * @return a list of tuples. First element of each is the attribute name,
  * the second is the allowed type for the attribute
  */
-vector<std::pair<string, AttributeValueType> > LongTermMemoryConduitPostgreSQL::getAllAttributes() const
+vector<std::pair<string, AttributeValueType>> LongTermMemoryConduitPostgreSQL::getAllAttributes() const
 {
-  vector<std::pair<string, AttributeValueType> > attribute_names;
+  vector<std::pair<string, AttributeValueType>> attribute_names;
   pqxx::work txn{ *conn, "getAllAttributes" };
   auto result = txn.exec("TABLE attributes");
   txn.commit();
@@ -359,7 +361,8 @@ Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
 {
   auto map_concept = getConcept("map");
   auto map = getInstanceNamed(name);
-  assert(map.hasConcept(map_concept));
+  // FIXME(nickswalker): This can turn any named instance into a map... May want to throw if the named doesn't exist?
+  map.makeInstanceOf(map_concept);
   return { map.entity_id, name, *this };
 }
 
@@ -565,8 +568,9 @@ std::vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(cons
     try
     {
       pqxx::work txn{ *conn, "getAttributes" };
-      auto result = txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " +
-                             txn.quote(entity.entity_id) + " AND attribute_name = " + txn.quote(attribute_name));
+      auto result =
+          txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " + txn.quote(entity.entity_id) +
+                   " AND attribute_name = " + txn.quote(attribute_name));
       txn.commit();
       unwrap_attribute_rows(result, attributes);
     }
@@ -620,12 +624,12 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
 /// MAP BACKERS
 Point LongTermMemoryConduitPostgreSQL::addPoint(Map& map, const std::string& name, float x, float y)
 {
-  pqxx::work txn{ *conn, "addPoint" };
   auto point_concept = getConcept("point");
   auto point = point_concept.createInstance(name).get();
   map.addAttribute("has", point);
-  auto result = txn.exec("INSERT INTO points VALUES (" + txn.quote(point.entity_id) + ", (" + txn.quote(x) + ", " +
-                         txn.quote(y) + ")) RETURNING entity_id");
+  pqxx::work txn{ *conn, "addPoint" };
+  auto result = txn.exec("INSERT INTO points VALUES (" + txn.quote(point.entity_id) + ", '(" + std::to_string(x) +
+                         ", " + std::to_string(y) + ")') RETURNING entity_id");
   txn.commit();
   return { point.entity_id, name, map, *this };
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <knowledge_representation/LongTermMemoryConduitInterface.h>
 #include <pqxx/pqxx>
 #include <string>
@@ -23,6 +24,10 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   friend EntityImpl;
   friend InstanceImpl;
   friend ConceptImpl;
+  friend MapImpl;
+  friend PointImpl;
+  friend PoseImpl;
+  friend RegionImpl;
 
   friend class LongTermMemoryConduitInterface;
 
@@ -115,7 +120,7 @@ public:
   MapImpl getMap(const std::string& name);
 
   /// CONVENIENCE
-  LTMCConcept<LongTermMemoryConduitPostgreSQL> getConcept(const std::string& name);
+  ConceptImpl getConcept(const std::string& name);
 
   InstanceImpl getInstanceNamed(const std::string& name);
 
@@ -123,7 +128,7 @@ public:
 
   EntityImpl addEntity();
 
-  bool addEntity(int id);
+  bool addEntity(uint id);
 
   boost::optional<EntityImpl> getEntity(uint entity_id);
 

@@ -1,15 +1,25 @@
-#include <knowledge_representation/LongTermMemoryConduitInterface.h>
+#include <knowledge_representation/LongTermMemoryConduit.h>
 #include <string>
 #include <vector>
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>
+#include <knowledge_representation/LTMCEntity.h>
+#include <knowledge_representation/LTMCConcept.h>
+#include <knowledge_representation/LTMCInstance.h>
+#include <knowledge_representation/LTMCMap.h>
+#include <knowledge_representation/LTMCPoint.h>
+#include <knowledge_representation/LTMCPose.h>
 
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
 using knowledge_rep::Entity;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::Instance;
+using knowledge_rep::Map;
+using knowledge_rep::Point;
+using knowledge_rep::Pose;
+using knowledge_rep::Region;
 using std::cout;
 using std::endl;
 using std::string;
@@ -43,13 +53,14 @@ protected:
   {
   }
 
-  void SetUp() override
-  {
-  }
-
-  void TearDown() override
+  ~EntityTest()
   {
     entity.deleteEntity();
+    parent_concept.deleteEntity();
+    concept.deleteEntity();
+    instance.deleteEntity();
+    ltmc.deleteAllEntities();
+    ltmc.deleteAllAttributes();
   }
 
   knowledge_rep::LongTermMemoryConduit ltmc;
@@ -57,6 +68,22 @@ protected:
   knowledge_rep::Concept concept;
   knowledge_rep::Concept parent_concept;
   knowledge_rep::Instance instance;
+};
+
+class MapTest : public ::testing::Test
+{
+protected:
+  MapTest() : ltmc(knowledge_rep::getDefaultLTMC()), map(ltmc.getMap("test map"))
+  {
+  }
+
+  void TearDown() override
+  {
+    map.deleteEntity();
+  }
+
+  knowledge_rep::LongTermMemoryConduit ltmc;
+  knowledge_rep::Map map;
 };
 
 // Declare a test
@@ -274,6 +301,18 @@ TEST_F(EntityTest, CantRemoveEntityAttributeTwice)
   entity.addAttribute("is_concept", true);
   ASSERT_TRUE(entity.removeAttribute("is_concept"));
   ASSERT_FALSE(entity.removeAttribute("is_concept"));
+}
+
+TEST_F(MapTest, getMap)
+{
+  ASSERT_EQ(ltmc.getMap("test map"), map);
+  ASSERT_TRUE(map.hasConcept(ltmc.getConcept("map")));
+}
+
+TEST_F(MapTest, AddPointWorks)
+{
+  auto point = map.addPoint("test point", 1.0, 2.0);
+  ASSERT_TRUE(point.hasConcept(ltmc.getConcept("point")));
 }
 
 // Run all the tests

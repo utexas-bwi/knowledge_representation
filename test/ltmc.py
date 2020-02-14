@@ -62,4 +62,4 @@ class TestLTMC(unittest.TestCase):
 if __name__ == '__main__':
     import rosunit
 
-    rosunit.unitrun(PKG, 'test_bare_bones', TestBareBones)
+    rosunit.unitrun("knowledge_representation", 'test_bare_bones', TestLTMC)

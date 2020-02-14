@@ -49,7 +49,10 @@ public:
   {
     return this->ltmc.get().getConcepts(*this);
   }
-
+  /**
+   * @brief whether instance descends from the concept
+   * @return
+   */
   bool hasConcept(const LTMCConcept<LTMCImpl>& concept)
   {
     auto concepts = this->getConcepts();
