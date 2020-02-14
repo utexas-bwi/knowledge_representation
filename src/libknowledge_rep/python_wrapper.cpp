@@ -18,6 +18,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+
 namespace python = boost::python;
 using knowledge_rep::AttributeValue;
 using knowledge_rep::AttributeValueType;
@@ -43,18 +44,18 @@ namespace detail
 /// @brief Type trait that determines if the provided type is
 ///        a boost::optional.
 template <typename T>
-struct is_optional : boost::false_type
+struct IsOptional : boost::false_type
 {
 };
 
 template <typename T>
-struct is_optional<boost::optional<T>> : boost::true_type
+struct IsOptional<boost::optional<T>> : boost::true_type
 {
 };
 
 /// @brief Type used to provide meaningful compiler errors.
 template <typename>
-struct return_optional_requires_a_optional_return_type
+struct ReturnOptionalRequiresAOptionalReturnType
 {
 };
 
@@ -62,13 +63,13 @@ struct return_optional_requires_a_optional_return_type
 ///        Python None if the object is empty (i.e. boost::none) or defers
 ///        to Boost.Python to convert object to a Python object.
 template <typename T>
-struct to_python_optional
+struct ToPythonOptional
 {
   /// @brief Only supports converting Boost.Optional types.
   /// @note This is checked at runtime.
   bool convertible() const
   {
-    return detail::is_optional<T>::value;
+    return detail::IsOptional<T>::value;
   }
 
   /// @brief Convert boost::optional object to Python None or a
@@ -90,9 +91,9 @@ struct to_python_optional
   }
 
   /// @brief Used for documentation.
-  const PyTypeObject* get_pytype() const
+  const PyTypeObject* get_pytype() const  // NOLINT
   {
-    return 0;
+    return nullptr;
   }
 };
 
@@ -101,17 +102,17 @@ struct to_python_optional
 /// @brief Converts a boost::optional to Python None if the object is
 ///        equal to boost::none.  Otherwise, defers to the registered
 ///        type converter to returs a Boost.Python object.
-struct return_optional
+struct ReturnOptional
 {
   template <class T>
-  struct apply
+  struct apply  //  NOLINT
   {
     // The to_python_optional ResultConverter only checks if T is convertible
     // at runtime.  However, the following MPL branch cause a compile time
     // error if T is not a boost::optional by providing a type that is not a
     // ResultConverter model.
-    typedef typename boost::mpl::if_<detail::is_optional<T>, detail::to_python_optional<T>,
-                                     detail::return_optional_requires_a_optional_return_type<T>>::type type;
+    typedef typename boost::mpl::if_<detail::IsOptional<T>, detail::ToPythonOptional<T>,
+                                     detail::ReturnOptionalRequiresAOptionalReturnType<T>>::type type;
   };  // apply
 };    // return_optional
 
@@ -161,11 +162,11 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("create_instance", static_cast<Instance (Concept::*)()>(&Concept::createInstance))
       .def("create_instance",
            static_cast<boost::optional<Instance> (Concept::*)(const string&)>(&Concept::createInstance),
-           python::return_value_policy<return_optional>());
+           python::return_value_policy<ReturnOptional>());
 
   class_<Instance, bases<Entity>>("Instance", init<uint, LTMC&>())
       .def("make_instance_of", &Instance::makeInstanceOf)
-      .def("get_name", &Instance::getName, python::return_value_policy<return_optional>())
+      .def("get_name", &Instance::getName, python::return_value_policy<ReturnOptional>())
       .def("get_concepts", &Instance::getConcepts)
       .def("has_concept", &Instance::hasConcept);
 

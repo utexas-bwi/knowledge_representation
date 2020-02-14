@@ -37,9 +37,7 @@ bool LongTermMemoryConduitPostgreSQL::addEntity(uint id)
   pqxx::work txn{ *conn };
   pqxx::result result = txn.exec("INSERT INTO entities "
                                  "VALUES (" +
-                                 txn.quote(id) +
-                                 ") "
-                                 "ON CONFLICT DO NOTHING RETURNING entity_id");
+                                 txn.quote(id) + ") ON CONFLICT DO NOTHING RETURNING entity_id");
   txn.commit();
   return result.size() == 1;
 }
@@ -203,11 +201,10 @@ Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
   pqxx::work txn{ *conn, "getConcept" };
   string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
                  "AND attribute_value = " +
-                 txn.quote(name) +
-                 " "
-                 "AND entity_id IN "
-                 "(SELECT entity_id FROM entity_attributes_bool "
-                 "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
+                 txn.quote(name) + " "
+                                   "AND entity_id IN "
+                                   "(SELECT entity_id FROM entity_attributes_bool "
+                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
   auto result = txn.exec(query);
   txn.commit();
 
@@ -236,10 +233,9 @@ Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const string& name)
   pqxx::work txn{ *conn, "getInstanceNamed" };
   string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
                  "AND attribute_value = " +
-                 txn.quote(name) +
-                 "AND entity_id NOT IN "
-                 "(SELECT entity_id FROM entity_attributes_bool "
-                 "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
+                 txn.quote(name) + "AND entity_id NOT IN "
+                                   "(SELECT entity_id FROM entity_attributes_bool "
+                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
 
   // If there's no "is_concept" marker on an entity, we assume it is not a concept
   auto q_result = txn.exec(query);
@@ -568,9 +564,8 @@ std::vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(cons
     try
     {
       pqxx::work txn{ *conn, "getAttributes" };
-      auto result =
-          txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " + txn.quote(entity.entity_id) +
-                   " AND attribute_name = " + txn.quote(attribute_name));
+      auto result = txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " +
+                             txn.quote(entity.entity_id) + " AND attribute_name = " + txn.quote(attribute_name));
       txn.commit();
       unwrap_attribute_rows(result, attributes);
     }
