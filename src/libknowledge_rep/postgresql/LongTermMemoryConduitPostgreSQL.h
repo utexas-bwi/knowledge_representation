@@ -7,15 +7,18 @@
 
 namespace knowledge_rep
 {
-static const char* TABLE_NAMES[] = {"entity_attributes_id", "entity_attributes_str",
-                                    "entity_attributes_bool",
-                                    "entity_attributes_float" };
+static const char* TABLE_NAMES[] = { "entity_attributes_id", "entity_attributes_str", "entity_attributes_bool",
+                                     "entity_attributes_float" };
 
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
 {
   using EntityImpl = LTMCEntity<LongTermMemoryConduitPostgreSQL>;
   using InstanceImpl = LTMCInstance<LongTermMemoryConduitPostgreSQL>;
   using ConceptImpl = LTMCConcept<LongTermMemoryConduitPostgreSQL>;
+  using MapImpl = LTMCMap<LongTermMemoryConduitPostgreSQL>;
+  using PointImpl = LTMCPoint<LongTermMemoryConduitPostgreSQL>;
+  using PoseImpl = LTMCPose<LongTermMemoryConduitPostgreSQL>;
+  using RegionImpl = LTMCRegion<LongTermMemoryConduitPostgreSQL>;
 
   friend EntityImpl;
   friend InstanceImpl;
@@ -36,6 +39,8 @@ public:
   // Move assignment
   LongTermMemoryConduitPostgreSQL& operator=(LongTermMemoryConduitPostgreSQL&& that) noexcept = default;
 
+  // TODO(nickswalker): Expose this in the interface once we know what run-time attribute
+  // operations are useful.
   bool addNewAttribute(const std::string& name, const AttributeValueType type);
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
@@ -48,7 +53,7 @@ public:
 
   bool entityExists(uint id) const;
 
-  bool deleteAttribute(std::string& name);
+  bool deleteAttribute(const std::string& name);
 
   bool attributeExists(const std::string& name) const;
 
@@ -84,6 +89,7 @@ public:
     }
     return true;
   }
+  /// RAW QUERIES
 
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
@@ -105,7 +111,10 @@ public:
     return selectQuery<bool>(sql_query, result);
   }
 
-  //// CONVENIENCE
+  /// MAP
+  MapImpl getMap(const std::string& name);
+
+  /// CONVENIENCE
   LTMCConcept<LongTermMemoryConduitPostgreSQL> getConcept(const std::string& name);
 
   InstanceImpl getInstanceNamed(const std::string& name);
@@ -140,6 +149,13 @@ protected:
   bool isValid(const EntityImpl& entity) const;
 
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance);
+
+  /// MAP BACKERS
+  PointImpl addPoint(MapImpl& map, const std::string& name, float x, float y);
+
+  PoseImpl addPose(MapImpl& map, const std::string& name, float x, float y, float theta);
+
+  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<float, float>>& points);
 };
 
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
@@ -148,5 +164,6 @@ typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;
 typedef LTMCPoint<LongTermMemoryConduitPostgreSQL> Point;
 typedef LTMCPose<LongTermMemoryConduitPostgreSQL> Pose;
 typedef LTMCRegion<LongTermMemoryConduitPostgreSQL> Region;
+typedef LTMCMap<LongTermMemoryConduitPostgreSQL> Map;
 typedef LongTermMemoryConduitPostgreSQL LongTermMemoryConduit;
 }  // namespace knowledge_rep

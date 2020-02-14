@@ -10,6 +10,7 @@
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
+#include <knowledge_representation/LTMCMap.h>
 #include <knowledge_representation/LTMCPose.h>
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCRegion.h>
@@ -18,21 +19,22 @@
 #include <string>
 #include <utility>
 namespace python = boost::python;
+using knowledge_rep::AttributeValue;
+using knowledge_rep::AttributeValueType;
+using knowledge_rep::Concept;
+using knowledge_rep::Entity;
+using knowledge_rep::EntityAttribute;
+using knowledge_rep::Instance;
+using knowledge_rep::LongTermMemoryConduit;
+using knowledge_rep::Map;
+using knowledge_rep::Point;
+using knowledge_rep::Pose;
+using knowledge_rep::Region;
 using python::bases;
 using python::class_;
 using python::enum_;
 using python::init;
 using python::vector_indexing_suite;
-using knowledge_rep::LongTermMemoryConduit;
-using knowledge_rep::Entity;
-using knowledge_rep::Concept;
-using knowledge_rep::Instance;
-using knowledge_rep::EntityAttribute;
-using knowledge_rep::AttributeValue;
-using knowledge_rep::AttributeValueType;
-using knowledge_rep::Point;
-using knowledge_rep::Pose;
-using knowledge_rep::Region;
 using std::string;
 using std::vector;
 
@@ -177,11 +179,16 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
 
-  class_<Point>("Point", init<uint, const string&, uint, LTMC&>());
+  class_<Map>("Map", init<uint, string, LTMC&>())
+      .def("add_point", &Map::addPoint)
+      .def("add_region", &Map::addRegion)
+      .def("add_pose", &Map::addPose);
 
-  class_<Pose>("Pose", init<uint, const string&, uint, LTMC&>());
+  class_<Point>("Point", init<uint, string, Map, LTMC&>());
 
-  class_<Region>("Region", init<uint, const string&, uint, LTMC&>());
+  class_<Pose>("Pose", init<uint, string, Map, LTMC&>());
+
+  class_<Region>("Region", init<uint, string, Map, LTMC&>());
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
       .def("add_entity", static_cast<Entity (LTMC::*)()>(&LTMC::addEntity))
@@ -200,6 +207,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
            static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryFloat))
       .def("select_query_string",
            static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryString))
+      .def("get_map", &LTMC::getMap)
       .def("get_all_entities", &LTMC::getAllEntities)
       .def("get_all_concepts", &LTMC::getAllConcepts)
       .def("get_all_instances", &LTMC::getAllInstances)

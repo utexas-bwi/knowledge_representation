@@ -91,7 +91,7 @@ CREATE TABLE entity_attributes_bool
 
 /******************* MAPS */
 
-CREATE TABLE points_of_interest
+CREATE TABLE points
 (
     entity_id int NOT NULL,
     point point NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE points_of_interest
         ON UPDATE CASCADE
 );
 
-CREATE TABLE regions_of_interest
+CREATE TABLE regions
 (
     entity_id int NOT NULL,
     region polygon NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE regions_of_interest
 );
 
 /*TODO(nickswalker): These can have magnitude normalization*/
-CREATE TABLE poses_of_interest
+CREATE TABLE poses
 (
     entity_id int NOT NULL,
     pose lseg NOT NULL,

@@ -21,6 +21,9 @@ class LTMCConcept;
 template <typename InsLTMCImpl>
 class LTMCInstance;
 
+template <typename MapLTMCImpl>
+class LTMCMap;
+
 template <typename PointLTMCImpl>
 class LTMCPoint;
 
@@ -47,13 +50,18 @@ public:
   using EntityImpl = LTMCEntity<Impl>;
   using InstanceImpl = LTMCInstance<Impl>;
   using ConceptImpl = LTMCConcept<Impl>;
+  using MapImpl = LTMCMap<Impl>;
   using PointImpl = LTMCPoint<Impl>;
+  using PoseImpl = LTMCPose<Impl>;
   using RegionImpl = LTMCRegion<Impl>;
-
 
   friend EntityImpl;
   friend InstanceImpl;
   friend ConceptImpl;
+  friend MapImpl;
+  friend PointImpl;
+  friend PoseImpl;
+  friend RegionImpl;
   friend Impl;
 
   LongTermMemoryConduitInterface(LongTermMemoryConduitInterface&& that) noexcept = default;
@@ -126,6 +134,8 @@ public:
     return static_cast<const Impl*>(this)->getAllAttributes();
   }
 
+  /// RAW QUERIES
+
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return static_cast<const Impl*>(this)->selectQueryInt(sql_query, result);
@@ -146,7 +156,13 @@ public:
     return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
   }
 
-  //// CONVENIENCE
+  /// MAP
+  MapImpl getMap(const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getMap(name);
+  }
+
+  /// CONVENIENCE
   ConceptImpl getConcept(const std::string& name)
   {
     return static_cast<Impl*>(this)->getConcept(name);
@@ -172,12 +188,16 @@ public:
     return static_cast<Impl*>(this)->addEntity(id);
   };
 
-  boost::optional<EntityImpl> getEntity(int entity_id)
+  boost::optional<EntityImpl> getEntity(uint entity_id)
   {
     return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
 protected:
+  /// ENTITY BACKERS
+  // These provide implementation for entity level operations. We want these to be centralized
+  // with the rest of the database access code for ease of reimplementation in another backend,
+  // but the users should see a nice API through the Entity class.
   bool deleteEntity(EntityImpl& entity)
   {
     return static_cast<Impl*>(this)->deleteEntity(entity);
@@ -228,9 +248,27 @@ protected:
     return static_cast<const Impl*>(this)->isValid(entity);
   }
 
+  /// INSTANCE BACKERS
+
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance)
   {
     return static_cast<Impl*>(this)->getConcepts(instance);
+  }
+
+  /// MAP BACKERS
+  PointImpl addPoint(MapImpl& map, const std::string& name, float x, float y)
+  {
+    return static_cast<Impl*>(this)->addPoint(map, name, x, y);
+  }
+
+  PoseImpl addPose(MapImpl& map, const std::string& name, float x, float y, float theta)
+  {
+    return static_cast<Impl*>(this)->addPose(map, name, x, y, theta);
+  }
+
+  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<float, float>>& points)
+  {
+    return static_cast<Impl*>(this)->addRegion(map, name, points);
   }
 
 private:

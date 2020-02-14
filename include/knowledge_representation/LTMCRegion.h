@@ -2,6 +2,7 @@
 
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCInstance.h>
+#include <knowledge_representation/LTMCMap.h>
 #include <utility>
 #include <vector>
 #include <string>
@@ -14,14 +15,13 @@ class LTMCRegion : public LTMCInstance<LTMCImpl>
 {
   using EntityImpl = LTMCEntity<LTMCImpl>;
   using InstanceImpl = LTMCInstance<LTMCImpl>;
-  std::string name;
-  InstanceImpl parent_map;
+  using MapImpl = LTMCMap<LTMCImpl>;
+  MapImpl parent_map;
 
 public:
-  LTMCRegion(uint entity_id, std::string name, uint parent_map_entity_id, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
-      : name(std::move(name)), parent_map(parent_map_entity_id, ltmc), InstanceImpl(entity_id, ltmc)
+  LTMCRegion(uint entity_id, std::string name, MapImpl parent_map, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
+    : parent_map(parent_map), InstanceImpl(entity_id, name, ltmc)
   {
   }
-
 };
 }  // namespace knowledge_rep

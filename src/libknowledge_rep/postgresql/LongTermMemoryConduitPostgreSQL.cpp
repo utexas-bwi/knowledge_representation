@@ -4,6 +4,10 @@
 #include <string>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
+#include <knowledge_representation/LTMCMap.h>
+#include <knowledge_representation/LTMCPoint.h>
+#include <knowledge_representation/LTMCPose.h>
+#include <knowledge_representation/LTMCRegion.h>
 #include <vector>
 #include <utility>
 
@@ -11,9 +15,13 @@ using std::string;
 using std::vector;
 namespace knowledge_rep
 {
+typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
 typedef LTMCConcept<LongTermMemoryConduitPostgreSQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;
-typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
+typedef LTMCPoint<LongTermMemoryConduitPostgreSQL> Point;
+typedef LTMCPose<LongTermMemoryConduitPostgreSQL> Pose;
+typedef LTMCRegion<LongTermMemoryConduitPostgreSQL> Region;
+typedef LTMCMap<LongTermMemoryConduitPostgreSQL> Map;
 
 LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& db_name)
   : LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>()
@@ -165,7 +173,7 @@ uint LongTermMemoryConduitPostgreSQL::deleteAllEntities()
   return num_deleted;
 }
 
-bool LongTermMemoryConduitPostgreSQL::deleteAttribute(string& name)
+bool LongTermMemoryConduitPostgreSQL::deleteAttribute(const string& name)
 {
   pqxx::work txn{ *conn };
 
@@ -346,6 +354,15 @@ vector<std::pair<string, AttributeValueType> > LongTermMemoryConduitPostgreSQL::
   return attribute_names;
 }
 
+/// MAP
+Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
+{
+  auto map_concept = getConcept("map");
+  auto map = getInstanceNamed(name);
+  assert(map.hasConcept(map_concept));
+  return { map.entity_id, name, *this };
+}
+
 /**
  * @brief Deletes an entity and any other entities and relations that rely on it.
  * @return true if the entity was deleted. False if it could not be, or already was
@@ -453,7 +470,6 @@ bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::st
 
 int LongTermMemoryConduitPostgreSQL::removeAttribute(Entity& entity, const std::string& attribute_name)
 {
-  int removed_count = 0;
   string query;
   pqxx::work txn{ *conn, "removeAttribute" };
   try
@@ -600,4 +616,27 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
     return {};
   }
 }
+
+/// MAP BACKERS
+Point LongTermMemoryConduitPostgreSQL::addPoint(Map& map, const std::string& name, float x, float y)
+{
+  pqxx::work txn{ *conn, "addPoint" };
+  auto point_concept = getConcept("point");
+  auto point = point_concept.createInstance(name).get();
+  map.addAttribute("has", point);
+  auto result = txn.exec("INSERT INTO points VALUES (" + txn.quote(point.entity_id) + ", (" + txn.quote(x) + ", " +
+                         txn.quote(y) + ")) RETURNING entity_id");
+  txn.commit();
+  return { point.entity_id, name, map, *this };
+}
+
+Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const std::string& name, float x, float y, float theta)
+{
+}
+
+Region LongTermMemoryConduitPostgreSQL::addRegion(Map& map, const std::string& name,
+                                                  const std::vector<std::pair<float, float>>& points)
+{
+}
+
 }  // namespace knowledge_rep
