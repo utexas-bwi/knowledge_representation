@@ -9,6 +9,7 @@ jobs:
       AFTER_SCRIPT: 'cd $target_ws && rosenv && catkin build $(catkin_topological_order "${TARGET_REPO_PATH}" --only-names) --no-deps --no-status --verbose --make-args roslint'
       CATKIN_LINT: true
       CLANG_FORMAT_VERSION: 3.9
+      PARALLEL_TESTS: false
       ROS_REPO: main
     strategy:
       matrix:
