@@ -95,8 +95,14 @@ public:
     return this->entity_id == other.entity_id;
   }
 
+  bool operator!=(const LTMCEntity& other) const
+  {
+    return this->entity_id != other.entity_id;
+  }
+
   LTMCEntity& operator=(const LTMCEntity& that)
   {
+    // FIXME(nickswalker): Handle self-assignment correctly (see clang tidy)
     this->entity_id = that.entity_id;
     this->ltmc = that.ltmc;
   }

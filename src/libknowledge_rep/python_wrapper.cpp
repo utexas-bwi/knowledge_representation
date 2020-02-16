@@ -133,6 +133,10 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<Instance>>("PyInstanceList").def(vector_indexing_suite<vector<Instance>>());
 
+  class_<vector<Point>>("PyPointList").def(vector_indexing_suite<vector<Point>>());
+
+  class_<vector<Pose>>("PyPoseList").def(vector_indexing_suite<vector<Pose>>());
+
   enum_<AttributeValueType>("AttributeValueType")
       .value("int", AttributeValueType::Int)
       .value("str", AttributeValueType::Str)
@@ -183,13 +187,22 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
   class_<Map>("Map", init<uint, string, LTMC&>())
       .def("add_point", &Map::addPoint)
       .def("add_region", &Map::addRegion)
-      .def("add_pose", &Map::addPose);
+      .def("add_pose", &Map::addPose)
+      .def("get_point", &Map::getPoint)
+      .def("get_pose", &Map::getPose)
+      .def("get_region", &Map::getRegion)
+      .def("get_all_points", &Map::getAllPoints)
+      .def("get_all_poses", &Map::getAllPoses)
+      .def("get_all_regions", &Map::getAllRegions);
 
-  class_<Point>("Point", init<uint, string, Map, LTMC&>());
+  class_<Point>("Point", init<uint, string, double, double, Map, LTMC&>())
+      .def("get_containing_regions", &Point::getContainingRegions);
 
-  class_<Pose>("Pose", init<uint, string, Map, LTMC&>());
+  class_<Pose>("Pose", init<uint, string, double, double, double, Map, LTMC&>());
 
-  class_<Region>("Region", init<uint, string, Map, LTMC&>());
+  class_<Region>("Region", init<uint, string, Map, LTMC&>())
+      .def("get_contained_points", &Region::getContainedPoints)
+      .def("get_contained_poses", &Region::getContainedPoses);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
       .def("add_entity", static_cast<Entity (LTMC::*)()>(&LTMC::addEntity))

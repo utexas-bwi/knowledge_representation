@@ -156,11 +156,23 @@ protected:
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance);
 
   /// MAP BACKERS
-  PointImpl addPoint(MapImpl& map, const std::string& name, float x, float y);
+  PointImpl addPoint(MapImpl& map, const std::string& name, double x, double y);
 
-  PoseImpl addPose(MapImpl& map, const std::string& name, float x, float y, float theta);
+  PoseImpl addPose(MapImpl& map, const std::string& name, double x, double y, double theta);
 
-  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<float, float>>& points);
+  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<double, double>>& points);
+
+  boost::optional<PointImpl> getPoint(MapImpl& map, const std::string& name);
+
+  boost::optional<PoseImpl> getPose(MapImpl& map, const std::string& name);
+
+  boost::optional<RegionImpl> getRegion(MapImpl& map, const std::string& name);
+
+  std::vector<PointImpl> getAllPoints(MapImpl& map);
+
+  std::vector<PoseImpl> getAllPoses(MapImpl& map);
+
+  std::vector<RegionImpl> getAllRegions(MapImpl& map);
 };
 
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;

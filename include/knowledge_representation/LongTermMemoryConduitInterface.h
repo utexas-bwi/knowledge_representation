@@ -256,20 +256,51 @@ protected:
   }
 
   /// MAP BACKERS
-  PointImpl addPoint(MapImpl& map, const std::string& name, float x, float y)
+  PointImpl addPoint(MapImpl& map, const std::string& name, double x, double y)
   {
     return static_cast<Impl*>(this)->addPoint(map, name, x, y);
   }
 
-  PoseImpl addPose(MapImpl& map, const std::string& name, float x, float y, float theta)
+  PoseImpl addPose(MapImpl& map, const std::string& name, double x, double y, double theta)
   {
     return static_cast<Impl*>(this)->addPose(map, name, x, y, theta);
   }
 
-  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<float, float>>& points)
+  RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<double, double>>& points)
   {
     return static_cast<Impl*>(this)->addRegion(map, name, points);
   }
+
+  boost::optional<PointImpl> getPoint(MapImpl& map, const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getPoint(map, name);
+  }
+
+  boost::optional<PoseImpl> getPose(MapImpl& map, const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getPose(map, name);
+  }
+
+  boost::optional<RegionImpl> getRegion(MapImpl& map, const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getRegion(map, name);
+  }
+  std::vector<PointImpl> getAllPoints(MapImpl& map)
+  {
+    return static_cast<Impl*>(this)->getAllPoints(map);
+  }
+
+  std::vector<PoseImpl> getAllPoses(MapImpl& map)
+  {
+    return static_cast<Impl*>(this)->getAllPoses(map);
+  }
+
+  std::vector<RegionImpl> getAllRegions(MapImpl& map)
+  {
+    return static_cast<Impl*>(this)->getAllRegions(map);
+  }
+
+  /// GEOMETRY BACKERS
 
 private:
   // We make the constructor private to make sure people can't build this interface type directly

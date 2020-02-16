@@ -12,6 +12,8 @@ class LTMCInstance : public LTMCEntity<LTMCImpl>
 {
   template <typename ConLTMCImpl>
   class Concept;
+
+protected:
   std::string name;
 
 public:
