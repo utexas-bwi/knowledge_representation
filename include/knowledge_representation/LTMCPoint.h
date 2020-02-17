@@ -21,11 +21,12 @@ class LTMCPoint : public LTMCInstance<LTMCImpl>
   using InstanceImpl = LTMCInstance<LTMCImpl>;
   using MapImpl = LTMCMap<LTMCImpl>;
   using RegionImpl = LTMCRegion<LTMCImpl>;
+
+public:
   MapImpl parent_map;
   double x;
   double y;
 
-public:
   LTMCPoint(uint entity_id, std::string name, double x, double y, MapImpl parent_map,
             LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : parent_map(parent_map), x(x), y(y), InstanceImpl(entity_id, name, ltmc)

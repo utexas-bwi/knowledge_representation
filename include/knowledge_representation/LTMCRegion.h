@@ -22,9 +22,10 @@ class LTMCRegion : public LTMCInstance<LTMCImpl>
   using MapImpl = LTMCMap<LTMCImpl>;
   using PointImpl = LTMCPoint<LTMCImpl>;
   using PoseImpl = LTMCPose<LTMCImpl>;
-  MapImpl parent_map;
 
 public:
+  MapImpl parent_map;
+  std::vector<std::pair<double, double>> points;
   LTMCRegion(uint entity_id, std::string name, MapImpl parent_map, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : parent_map(parent_map), InstanceImpl(entity_id, name, ltmc)
   {

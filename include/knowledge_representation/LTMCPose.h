@@ -20,19 +20,19 @@ class LTMCPose : public LTMCInstance<LTMCImpl>
   using InstanceImpl = LTMCInstance<LTMCImpl>;
   using MapImpl = LTMCMap<LTMCImpl>;
   using RegionImpl = LTMCRegion<LTMCImpl>;
+
+public:
   MapImpl parent_map;
   double x;
   double y;
   double theta;
-
-public:
   LTMCPose(uint entity_id, std::string name, double x, double y, double theta, MapImpl parent_map,
            LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : parent_map(parent_map), x(x), y(y), theta(theta), InstanceImpl(entity_id, name, ltmc)
   {
   }
 
-  std::vector<std::string, RegionImpl> getContainingRegions()
+  std::vector<RegionImpl> getContainingRegions()
   {
     assert(false);
   }

@@ -124,8 +124,15 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readwrite("first", &std::pair<string, string>::first)
       .def_readwrite("second", &std::pair<string, string>::second);
 
+  class_<std::pair<double, double>>("DoublePair")
+      .def_readwrite("first", &std::pair<double, double>::first)
+      .def_readwrite("second", &std::pair<double, double>::second);
+
   class_<vector<std::pair<string, string>>>("PyPairList")
       .def(vector_indexing_suite<vector<std::pair<string, string>>>());
+
+  class_<vector<std::pair<double, double>>>("PyDoublePairList")
+      .def(vector_indexing_suite<vector<std::pair<double, double>>>());
 
   class_<vector<Entity>>("PyEntityList").def(vector_indexing_suite<vector<Entity>>());
 
@@ -188,19 +195,26 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("add_point", &Map::addPoint)
       .def("add_region", &Map::addRegion)
       .def("add_pose", &Map::addPose)
-      .def("get_point", &Map::getPoint)
-      .def("get_pose", &Map::getPose)
-      .def("get_region", &Map::getRegion)
+      .def("get_point", &Map::getPoint, python::return_value_policy<ReturnOptional>())
+      .def("get_pose", &Map::getPose, python::return_value_policy<ReturnOptional>())
+      .def("get_region", &Map::getRegion, python::return_value_policy<ReturnOptional>())
       .def("get_all_points", &Map::getAllPoints)
       .def("get_all_poses", &Map::getAllPoses)
       .def("get_all_regions", &Map::getAllRegions);
 
   class_<Point>("Point", init<uint, string, double, double, Map, LTMC&>())
+      .def_readonly("x", &Point::x)
+      .def_readonly("y", &Point::y)
       .def("get_containing_regions", &Point::getContainingRegions);
 
-  class_<Pose>("Pose", init<uint, string, double, double, double, Map, LTMC&>());
+  class_<Pose>("Pose", init<uint, string, double, double, double, Map, LTMC&>())
+      .def_readonly("x", &Pose::x)
+      .def_readonly("y", &Pose::y)
+      .def_readonly("theta", &Pose::theta)
+      .def("get_containing_regions", &Pose::getContainingRegions);
 
   class_<Region>("Region", init<uint, string, Map, LTMC&>())
+      .def_readonly("points", &Region::points)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses);
 
