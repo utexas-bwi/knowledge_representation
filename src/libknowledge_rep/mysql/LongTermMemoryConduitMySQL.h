@@ -61,7 +61,8 @@ public:
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val);
 
-  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const std::string& string_val);
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
+                                                          const std::string& string_val);
 
   bool entityExists(int id) const;
 
