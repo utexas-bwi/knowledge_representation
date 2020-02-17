@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-using ::mysqlx::Error;
+using ::mysqlx::SessionSettings;
 using ::mysqlx::Error;
 using ::mysqlx::Session;
 using ::mysqlx::Schema;
@@ -130,12 +130,12 @@ vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const
 }
 
 vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                                           uint other_entity_id)
+                                                                           const bool bool_val)
 {
   Table entity_attributes = db->getTable("entity_attributes_bool");
   RowResult result = entity_attributes.select("*")
                          .where("attribute_value = :val and attribute_name = :attr")
-                         .bind("val", other_entity_id)
+                         .bind("val", bool_val)
                          .bind("attr", attribute_name)
                          .execute();
   std::list<Row> rows = result.fetchAll();
@@ -148,12 +148,12 @@ vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const
 }
 
 vector<Entity> LongTermMemoryConduitMySQL::getEntitiesWithAttributeOfValue(const std::string& attribute_name,
-                                                                           uint other_entity_id)
+                                                                           const std::string& string_val)
 {
   Table entity_attributes = db->getTable("entity_attributes_str");
   RowResult result = entity_attributes.select("*")
                          .where("attribute_value = :val and attribute_name = :attr")
-                         .bind("val", other_entity_id)
+                         .bind("val", string_val)
                          .bind("attr", attribute_name)
                          .execute();
   std::list<Row> rows = result.fetchAll();
@@ -186,7 +186,7 @@ void LongTermMemoryConduitMySQL::deleteAllEntities()
   addEntity(1);
   auto robot = Entity(1, *this);
   Concept robot_con = getConcept("robot");
-  robot.add_attribute("instance_of", robot_con);
+  robot.addAttribute("instance_of", robot_con);
   assert(entityExists(1));
 }
 
@@ -222,8 +222,8 @@ Concept LongTermMemoryConduitMySQL::getConcept(const std::string& name)
   if (result.empty())
   {
     Entity new_concept = addEntity();
-    new_concept.add_attribute("name", name);
-    new_concept.add_attribute("is_concept", true);
+    new_concept.addAttribute("name", name);
+    new_concept.addAttribute("is_concept", true);
     return { new_concept.entity_id, name, *this };
   }
   else
@@ -251,8 +251,8 @@ Instance LongTermMemoryConduitMySQL::getInstanceNamed(const std::string& name)
   if (result.empty())
   {
     Instance new_entity = Instance(addEntity().entity_id, *this);
-    new_entity.add_attribute("name", name);
-    new_entity.add_attribute("is_concept", false);
+    new_entity.addAttribute("name", name);
+    new_entity.addAttribute("is_concept", false);
     return new_entity;
   }
   else
@@ -282,7 +282,7 @@ boost::optional<Entity> LongTermMemoryConduitMySQL::getEntity(int entity_id)
 Instance LongTermMemoryConduitMySQL::getRobot()
 {
   Instance robot = Instance(1, *this);
-  assert(robot.is_valid());
+  assert(robot.isValid());
   return robot;
 }
 
@@ -354,7 +354,7 @@ bool LongTermMemoryConduitMySQL::deleteEntity(Entity& entity)
 {
   // TODO(nickswalker): Handle failure
   // TODO(nickswalker): Recursively remove entities that are members of directional relations
-  if (!entity.is_valid())
+  if (!entity.isValid())
   {
     return false;
   }

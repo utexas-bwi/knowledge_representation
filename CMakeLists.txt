@@ -43,7 +43,7 @@ endif()
 catkin_python_setup()
 
 catkin_package(
-        INCLUDE_DIRS include
+        INCLUDE_DIRS include ${DB_INCLUDES}
         LIBRARIES knowledge_rep ${DB_LIBS}
         CATKIN_DEPENDS
 )

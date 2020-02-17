@@ -32,4 +32,4 @@ sudo mv libmysqlcppconn* /usr/lib/x86_64-linux-gnu/
 sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY ''"
 sudo mysql -u root -p -e "INSTALL PLUGIN mysqlx SONAME 'mysqlx.so';"
 roscd knowledge_representation
-mysql -u root -p -e "source sql/create_database.sql"
+mysql -u root -p -e "source sql/schema_mysql.sql"
