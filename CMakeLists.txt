@@ -28,12 +28,14 @@ if(mysql)
     message("Found MySQL")
     set(MYSQL_AVAILABLE true)
     set(DB_INCLUDES /usr/local/mysql/connector-c++-8.0/include)
+    set(EXTRA_EXPORTED_INCLUDES ${DB_INCLUDES})
     set(DB_LIBS ${mysql})
     add_definitions(-DUSE_MYSQL)
 elseif(POSTGRESQL_FOUND OR libpqxx)
     message(WARNING "MySQL Connector C++ 8.0 was not found. Using PostgreSQL.")
     set(POSTGRES_AVAILABLE true)
     set(DB_INCLUDES ${PostgreSQL_INCLUDE_DIRS})
+    set(EXTRA_EXPORTED_INCLUDES "")
     set(DB_LIBS ${PostgreSQL_LIBRARIES} ${libpqxx})
     add_definitions(-DUSE_POSTGRESQL)
 else()
@@ -43,7 +45,7 @@ endif()
 catkin_python_setup()
 
 catkin_package(
-        INCLUDE_DIRS include ${DB_INCLUDES}
+        INCLUDE_DIRS include ${EXTRA_EXPORTED_INCLUDES}
         LIBRARIES knowledge_rep ${DB_LIBS}
         CATKIN_DEPENDS
 )
