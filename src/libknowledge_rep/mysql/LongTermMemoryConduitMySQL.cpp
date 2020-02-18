@@ -347,6 +347,20 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::getAllAttributes() c
 }
 
 /**
+ * @brief Retrieves all entity attributes
+ * @return a list of entity attributes
+ */
+vector<EntityAttribute> LongTermMemoryConduitMySQL::getAllEntityAttributes() const
+{
+  for (const auto entity: this->getAllEntities()) {
+    auto attrs = entity.get_attributes();
+    obj_attrs.insert(obj_attrs.end(), attrs.begin(), attrs.end());
+  }
+  return obj_attrs;
+}
+
+
+/**
  * @brief Deletes an entity and any other entities and relations that rely on it.
  * @return true if the entity was deleted. False if it could not be, or already was
  */

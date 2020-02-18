@@ -121,6 +121,11 @@ public:
     return static_cast<const Impl*>(this)->getAllAttributes();
   }
 
+  std::vector<EntityAttribute> getAllEntityAttributes() const
+  {
+    return static_cast<const Impl*>(this)->getAllEntityAttributes();
+  }
+
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return static_cast<const Impl*>(this)->selectQueryInt(sql_query, result);
