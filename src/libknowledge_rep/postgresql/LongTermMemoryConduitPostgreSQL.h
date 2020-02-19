@@ -74,6 +74,8 @@ public:
 
   std::vector<std::pair<std::string, AttributeValueType>> getAllAttributes() const;
 
+  std::vector<EntityAttribute> getAllEntityAttributes();
+
   template <typename T>
   bool selectQuery(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
