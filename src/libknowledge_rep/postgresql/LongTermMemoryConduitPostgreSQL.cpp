@@ -347,6 +347,20 @@ vector<std::pair<string, AttributeValueType> > LongTermMemoryConduitPostgreSQL::
 }
 
 /**
+ * @brief Retrieves all entity attributes
+ * @return a list of entity attributes
+ */
+vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAllEntityAttributes()
+{
+  std::vector<EntityAttribute> entity_attrs;
+  for (const auto entity: this->getAllEntities()) {
+    auto attrs = entity.getAttributes();
+    entity_attrs.insert(entity_attrs.end(), attrs.begin(), attrs.end());
+  }
+  return entity_attrs;
+}
+
+/**
  * @brief Deletes an entity and any other entities and relations that rely on it.
  * @return true if the entity was deleted. False if it could not be, or already was
  */

@@ -121,7 +121,7 @@ public:
     return static_cast<const Impl*>(this)->getAllAttributes();
   }
 
-  std::vector<EntityAttribute> getAllEntityAttributes() const
+  std::vector<EntityAttribute> getAllEntityAttributes()
   {
     return static_cast<const Impl*>(this)->getAllEntityAttributes();
   }
