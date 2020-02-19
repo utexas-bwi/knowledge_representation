@@ -353,13 +353,13 @@ vector<std::pair<string, int> > LongTermMemoryConduitMySQL::getAllAttributes() c
 vector<EntityAttribute> LongTermMemoryConduitMySQL::getAllEntityAttributes()
 {
   std::vector<EntityAttribute> entity_attrs;
-  for (const auto entity: this->getAllEntities()) {
+  for (const auto entity : this->getAllEntities())
+  {
     auto attrs = entity.getAttributes();
     entity_attrs.insert(entity_attrs.end(), attrs.begin(), attrs.end());
   }
   return entity_attrs;
 }
-
 
 /**
  * @brief Deletes an entity and any other entities and relations that rely on it.

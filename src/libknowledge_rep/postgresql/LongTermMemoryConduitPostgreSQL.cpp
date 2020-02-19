@@ -369,7 +369,8 @@ Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
 vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAllEntityAttributes()
 {
   std::vector<EntityAttribute> entity_attrs;
-  for (const auto entity: this->getAllEntities()) {
+  for (const auto entity : this->getAllEntities())
+  {
     auto attrs = entity.getAttributes();
     entity_attrs.insert(entity_attrs.end(), attrs.begin(), attrs.end());
   }
