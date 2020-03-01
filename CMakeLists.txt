@@ -146,7 +146,7 @@ roslint_python(${${PROJECT_NAME}_PY_SRC})
 
 ### TEST TARGETS
 if(CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(test_ltmc test/ltmc.cpp)
+    catkin_add_gtest(test_ltmc test/ltmc.cpp test/map_types.cpp)
     target_link_libraries(test_ltmc knowledge_rep ${catkin_LIBRARIES})
 
     catkin_add_nosetests(test/ltmc.py)
