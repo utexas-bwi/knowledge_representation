@@ -22,34 +22,22 @@ public:
   {
   }
 
-  LTMCConcept(uint entity_id, LongTermMemoryConduitInterface<LTMCImpl>& ltmc) : EntityImpl(entity_id, ltmc)
+  std::string getName() const
   {
+    return name;
   }
-
-  std::string getName()
-  {
-    if (!name.empty())
-    {
-      return name;
-    }
-    // There should only be one
-    auto name_attrs = this->ltmc.get().getAttributes(*this, "name");
-    if (!name_attrs.empty())
-    {
-      name = boost::get<std::string>(name_attrs[0].value);
-      return name;
-    }
-    // Shouldn't be an unnamed concept
-    assert(false);
-  }
-
+  /**
+   * @brief Get entities that directly instantiate this concept
+   * @return
+   */
   std::vector<InstanceImpl> getInstances() const
   {
-    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue("instance_of", this->entity_id);
-    std::vector<InstanceImpl> instances;
-    transform(entities.begin(), entities.end(), std::back_inserter(instances),
-              [this](const EntityImpl& entity) { return InstanceImpl(entity.entity_id, this->ltmc.get()); });
-    return instances;
+    return this->ltmc.get().getInstances(*this);
+  }
+
+  int removeInstances() const
+  {
+    return this->ltmc.get().removeInstances(*this);
   }
 
   /**
@@ -59,31 +47,17 @@ public:
    * remove all instances of apple.
    * @return the number of instances removed
    */
-  int removeInstances()
+  int removeInstancesRecursive() const
   {
-    std::vector<EntityImpl> child_concepts = this->ltmc.get().getEntitiesWithAttributeOfValue("is_a", this->entity_id);
-    std::vector<EntityImpl> instances_of_concept =
-        this->ltmc.get().getEntitiesWithAttributeOfValue("instance_of", this->entity_id);
-
-    int total_removed = 0;
-    for (const auto& child : child_concepts)
-    {
-      total_removed += LTMCConcept(child.entity_id, this->ltmc).removeInstances();
-    }
-    for (auto& instance : instances_of_concept)
-    {
-      instance.deleteEntity();
-    }
-
-    total_removed += instances_of_concept.size();
-    return total_removed;
+    return this->ltmc.get().removeInstancesRecursive(*this);
   }
 
-  InstanceImpl createInstance()
+  InstanceImpl createInstance() const
   {
-    auto instance = this->ltmc.get().addEntity();
-    instance.addAttribute("instance_of", this->entity_id);
-    return { instance.entity_id, this->ltmc.get() };
+    auto fresh_entity = this->ltmc.get().addEntity();
+    InstanceImpl as_instance = { fresh_entity.entity_id, this->ltmc.get() };
+    this->ltmc.get().makeInstanceOf(as_instance, *this);
+    return as_instance;
   }
 
   /**
@@ -91,13 +65,13 @@ public:
    * @param name the name to give the instance
    * @return the created instance, or empty if the instance cannot be created (as when the name is taken)
    */
-  boost::optional<InstanceImpl> createInstance(const std::string& name)
+  boost::optional<InstanceImpl> createInstance(const std::string& name) const
   {
-    auto instance = InstanceImpl(this->ltmc.get().addEntity().entity_id, this->ltmc);
-    instance.addAttribute("instance_of", this->entity_id);
+    auto instance = createInstance();
     bool added_name = instance.addAttribute("name", name);
     if (!added_name)
     {
+      instance.deleteEntity();
       return {};
     }
     return instance;
@@ -110,12 +84,12 @@ public:
    */
   std::vector<LTMCConcept> getChildren() const
   {
-    // Is a should only apply to concepts
-    auto entities = this->ltmc.get().getEntitiesWithAttributeOfValue("is_a", this->entity_id);
-    std::vector<LTMCConcept> as_concept{};
-    std::transform(entities.begin(), entities.end(), std::back_inserter(as_concept),
-                   [this](const EntityImpl& entity) { return LTMCConcept<LTMCImpl>(entity.entity_id, this->ltmc); });
-    return as_concept;
+    return this->ltmc.get().getChildren(*this);
+  }
+
+  std::vector<LTMCConcept> getChildrenRecursive() const
+  {
+    return this->ltmc.get().getChildrenRecursive(*this);
   }
 
   /**
@@ -138,8 +112,9 @@ public:
         return false;
       }
     }
+
     // The current entity should still be valid (because we recreated it), so make it a concept again
-    this->addAttribute("is_concept", true);
+    this->ltmc.get().makeConcept(this->entity_id, name);
     return true;
   }
 };

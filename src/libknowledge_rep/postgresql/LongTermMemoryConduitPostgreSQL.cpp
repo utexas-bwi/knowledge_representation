@@ -191,33 +191,27 @@ bool LongTermMemoryConduitPostgreSQL::attributeExists(const string& name) const
 }
 
 /**
- * @brief Retrieves a concept of the given name, or creates one with the name if no such instance exists
+ * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
  * @param name
- * @return the existing concept, or the newly created one. In either case, the instance will at least have the name
+ * @return the existing concept, or the newly created one. In either case, the concept will at least have the name
  *         passed as a parameter.
  */
 Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
 {
   pqxx::work txn{ *conn, "getConcept" };
-  string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
-                 "AND attribute_value = " +
-                 txn.quote(name) + " "
-                                   "AND entity_id IN "
-                                   "(SELECT entity_id FROM entity_attributes_bool "
-                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
-  auto result = txn.exec(query);
+  auto result = txn.exec("SELECT entity_id FROM concepts WHERE concept_name =" + txn.quote(name));
   txn.commit();
 
   if (result.empty())
   {
     Entity new_concept = addEntity();
-    new_concept.addAttribute("name", name);
-    new_concept.addAttribute("is_concept", true);
+    pqxx::work txn{ *conn, "getConcept" };
+    auto result = txn.parameterized("INSERT INTO concepts VALUES ($1, $2)")(new_concept.entity_id)(name).exec();
+    txn.commit();
     return { new_concept.entity_id, name, *this };
   }
   else
   {
-    assert(result.size() == 1);
     return { result[0]["entity_id"].as<uint>(), name, *this };
   }
 }
@@ -301,15 +295,12 @@ Entity LongTermMemoryConduitPostgreSQL::addEntity()
 std::vector<Concept> LongTermMemoryConduitPostgreSQL::getAllConcepts()
 {
   pqxx::work txn{ *conn, "getAllConcepts" };
-  string query = "SELECT entity_id FROM entity_attributes_bool "
-                 "WHERE attribute_name = 'is_concept' "
-                 "AND attribute_value = true ";
-  auto result = txn.exec(query);
+  auto result = txn.exec("SELECT entity_id, concept_name FROM concepts");
   txn.commit();
   vector<Concept> concepts;
   for (const auto& row : result)
   {
-    concepts.emplace_back(row["entity_id"].as<uint>(), *this);
+    concepts.emplace_back(row["entity_id"].as<uint>(), row["concept_name"].as<string>(), *this);
   }
   return concepts;
 }
@@ -322,8 +313,7 @@ std::vector<Instance> LongTermMemoryConduitPostgreSQL::getAllInstances()
 {
   pqxx::work txn{ *conn, "getAllInstances" };
   auto result = txn.exec("SELECT entity_id FROM entities WHERE entity_id NOT IN ("
-                         "SELECT entity_id FROM entity_attributes_bool "
-                         "WHERE attribute_name = 'is_concept' AND attribute_value = true)");
+                         "SELECT entity_id FROM concepts)");
   txn.commit();
   vector<Instance> instances;
   for (const auto& row : result)
@@ -376,6 +366,26 @@ vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAllEntityAttributes(
   }
   return entity_attrs;
 }
+
+/// PROMOTERS
+
+bool LongTermMemoryConduitPostgreSQL::makeConcept(uint id, std::string name)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "makeConcept" };
+    auto result = txn.parameterized("INSERT INTO concepts VALUES ($1, $2)")(id)(name).exec();
+    txn.commit();
+    return result.affected_rows() == 1;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return false;
+  }
+}
+
+/// ENTITY BACKERS
 
 /**
  * @brief Deletes an entity and any other entities and relations that rely on it.
@@ -604,6 +614,8 @@ bool LongTermMemoryConduitPostgreSQL::isValid(const Entity& entity) const
   return entityExists(entity.entity_id);
 }
 
+// INSTANCE BACKERS
+
 /**
  * @brief Get all concepts that this instance is transitively an instance of
  * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
@@ -615,12 +627,15 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
   try
   {
     pqxx::work txn{ *conn, "getConcepts" };
-    auto result = txn.exec("SELECT get_concepts(" + txn.quote(instance.entity_id) + ") AS concept_id");
+    auto result = txn.parameterized("SELECT concepts.entity_id, concepts.concept_name FROM instance_of "
+                                    "INNER JOIN concepts ON concepts.concept_name = instance_of.concept_name "
+                                    "WHERE instance_of.entity_id = $1")(instance.entity_id)
+                      .exec();
     txn.commit();
     std::vector<Concept> concepts{};
     for (const auto& row : result)
     {
-      concepts.emplace_back(row["concept_id"].as<uint>(), *this);
+      concepts.emplace_back(row["entity_id"].as<uint>(), row["concept_name"].as<string>(), *this);
     }
     return concepts;
   }
@@ -629,6 +644,140 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
     std::cerr << e.what() << std::endl;
     return {};
   }
+}
+
+/**
+ * @brief Get all concepts that this instance is transitively an instance of
+ * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
+ * then getConcepts will return the concepts of both apple and fruit.
+ * @return
+ */
+std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConceptsRecursive(const Instance& instance)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getConceptsRecursive" };
+    auto result = txn.parameterized("SELECT * FROM get_concepts_recursive($1)")(instance.entity_id).exec();
+    txn.commit();
+    std::vector<Concept> concepts{};
+    for (const auto& row : result)
+    {
+      concepts.emplace_back(row["entity_id"].as<uint>(), row["concept_name"].as<string>(), *this);
+    }
+    return concepts;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+bool LongTermMemoryConduitPostgreSQL::makeInstanceOf(Instance& instance, const Concept& concept)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "makeInstanceOf" };
+    auto result =
+        txn.parameterized("INSERT INTO instance_of VALUES ($1,$2) ")(instance.entity_id)(concept.getName()).exec();
+    txn.commit();
+    return result.affected_rows() == 1;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return false;
+  }
+}
+
+/// CONCEPT BACKERS
+
+vector<Concept> LongTermMemoryConduitPostgreSQL::getChildren(const Concept& concept)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getChildren" };
+    auto result = txn.parameterized("SELECT concepts.entity_id, concept_name FROM entity_attributes_id eai"
+                                    " INNER JOIN concepts ON eai.entity_id = concepts.entity_id WHERE attribute_name = "
+                                    "'is_a' AND attribute_value = $1")(concept.entity_id)
+                      .exec();
+    txn.commit();
+    std::vector<Concept> concepts{};
+    for (const auto& row : result)
+    {
+      concepts.emplace_back(row["entity_id"].as<uint>(), row["concept_name"].as<string>(), *this);
+    }
+    return concepts;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+vector<Concept> LongTermMemoryConduitPostgreSQL::getChildrenRecursive(const Concept& concept)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getChildrenRecursive" };
+    auto result = txn.parameterized("SELECT * FROM get_all_concept_descendants($1)")(concept.entity_id).exec();
+    txn.commit();
+    std::vector<Concept> concepts{};
+    for (const auto& row : result)
+    {
+      concepts.emplace_back(row["entity_id"].as<uint>(), row["concept_name"].as<string>(), *this);
+    }
+    return concepts;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+std::vector<Instance> LongTermMemoryConduitPostgreSQL::getInstances(const ConceptImpl& concept)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getInstances" };
+    auto result =
+        txn.parameterized("SELECT entity_id FROM instance_of WHERE concept_name = $1")(concept.getName()).exec();
+    txn.commit();
+    std::vector<Instance> instances{};
+    for (const auto& row : result)
+    {
+      instances.emplace_back(row["entity_id"].as<uint>(), *this);
+    }
+    return instances;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+int LongTermMemoryConduitPostgreSQL::removeInstances(const Concept& concept)
+{
+  pqxx::work txn{ *conn, "removeInstances" };
+  auto result = txn.parameterized("DELETE FROM entities WHERE entity_id IN "
+                                  "(SELECT entity_id FROM instance_of WHERE concept_name = $1)")(concept.getName())
+                    .exec();
+  txn.commit();
+  return result.affected_rows();
+}
+
+int LongTermMemoryConduitPostgreSQL::removeInstancesRecursive(const Concept& concept)
+{
+  pqxx::work txn{ *conn, "removeInstancesRecursive" };
+  auto result =
+      txn.parameterized("DELETE FROM entities WHERE entity_id IN "
+                        "(SELECT entity_id FROM get_all_instances_of_concept_recursive($1))")(concept.entity_id)
+          .exec();
+  txn.commit();
+  return result.affected_rows();
 }
 
 /// MAP BACKERS

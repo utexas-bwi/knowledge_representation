@@ -197,6 +197,13 @@ public:
     return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
+  /// PROMOTERS
+
+  bool makeConcept(uint id, std::string name)
+  {
+    return static_cast<Impl*>(this)->makeConcept(id, name);
+  }
+
 protected:
   /// ENTITY BACKERS
   // These provide implementation for entity level operations. We want these to be centralized
@@ -257,6 +264,43 @@ protected:
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance)
   {
     return static_cast<Impl*>(this)->getConcepts(instance);
+  }
+
+  std::vector<ConceptImpl> getConceptsRecursive(const InstanceImpl& instance)
+  {
+    return static_cast<Impl*>(this)->getConceptsRecursive(instance);
+  }
+
+  bool makeInstanceOf(InstanceImpl& instance, const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->makeInstanceOf(instance, concept);
+  }
+
+  /// CONCEPT BACKERS
+
+  std::vector<ConceptImpl> getChildren(const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->getChildren(concept);
+  }
+
+  std::vector<ConceptImpl> getChildrenRecursive(const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->getChildrenRecursive(concept);
+  }
+
+  std::vector<InstanceImpl> getInstances(const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->getInstances(concept);
+  }
+
+  int removeInstances(const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->removeInstances(concept);
+  }
+
+  int removeInstancesRecursive(const ConceptImpl& concept)
+  {
+    return static_cast<Impl*>(this)->removeInstancesRecursive(concept);
   }
 
   /// MAP BACKERS

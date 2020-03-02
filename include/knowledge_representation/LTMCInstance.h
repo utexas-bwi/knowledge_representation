@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+#include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCEntity.h>
 
 namespace knowledge_rep
@@ -10,9 +11,6 @@ namespace knowledge_rep
 template <typename LTMCImpl>
 class LTMCInstance : public LTMCEntity<LTMCImpl>
 {
-  template <typename ConLTMCImpl>
-  class Concept;
-
 protected:
   std::string name;
 
@@ -44,20 +42,34 @@ public:
 
   bool makeInstanceOf(const LTMCConcept<LTMCImpl>& concept)
   {
-    return this->addAttribute("instance_of", concept.entity_id);
+    return this->ltmc.get().makeInstanceOf(*this, concept);
   }
 
   std::vector<LTMCConcept<LTMCImpl>> getConcepts() const
   {
     return this->ltmc.get().getConcepts(*this);
   }
+
+  std::vector<LTMCConcept<LTMCImpl>> getConceptsRecursive() const
+  {
+    return this->ltmc.get().getConceptsRecursive(*this);
+  }
   /**
-   * @brief whether instance descends from the concept
-   * @return
-   */
-  bool hasConcept(const LTMCConcept<LTMCImpl>& concept)
+ * @brief whether instance descends from the concept recursively
+ * @return
+ */
+  bool hasConcept(const LTMCConcept<LTMCImpl>& concept) const
   {
     auto concepts = this->getConcepts();
+    return std::find(concepts.begin(), concepts.end(), concept) != concepts.end();
+  }
+  /**
+   * @brief whether instance descends from the concept recursively
+   * @return
+   */
+  bool hasConceptRecursively(const LTMCConcept<LTMCImpl>& concept) const
+  {
+    auto concepts = this->getConceptsRecursive();
     return std::find(concepts.begin(), concepts.end(), concept) != concepts.end();
   }
 };

@@ -164,22 +164,26 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("delete", &Entity::deleteEntity)
       .def("is_valid", &Entity::isValid);
 
-  class_<Concept, bases<Entity>>("Concept", init<uint, LTMC&>())
+  class_<Concept, bases<Entity>>("Concept", init<uint, string, LTMC&>())
       .def("remove_instances", &Concept::removeInstances)
+      .def("remove_instances_recursive", &Concept::removeInstancesRecursive)
       .def("remove_references", &Concept::removeReferences)
       .def("get_instances", &Concept::getInstances)
       .def("get_name", &Concept::getName)
       .def("get_children", &Concept::getChildren)
-      .def("create_instance", static_cast<Instance (Concept::*)()>(&Concept::createInstance))
+      .def("get_children_recursive", &Concept::getChildrenRecursive)
+      .def("create_instance", static_cast<Instance (Concept::*)() const>(&Concept::createInstance))
       .def("create_instance",
-           static_cast<boost::optional<Instance> (Concept::*)(const string&)>(&Concept::createInstance),
+           static_cast<boost::optional<Instance> (Concept::*)(const string&) const>(&Concept::createInstance),
            python::return_value_policy<ReturnOptional>());
 
   class_<Instance, bases<Entity>>("Instance", init<uint, LTMC&>())
       .def("make_instance_of", &Instance::makeInstanceOf)
       .def("get_name", &Instance::getName, python::return_value_policy<ReturnOptional>())
       .def("get_concepts", &Instance::getConcepts)
-      .def("has_concept", &Instance::hasConcept);
+      .def("get_concepts_recursive", &Instance::getConceptsRecursive)
+      .def("has_concept", &Instance::hasConcept)
+      .def("has_concept_recursively", &Instance::hasConceptRecursively);
 
   class_<EntityAttribute>("EntityAttribute", init<uint, string, AttributeValue>())
       .def_readonly("entity_id", &EntityAttribute::entity_id)

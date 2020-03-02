@@ -134,7 +134,13 @@ public:
 
   boost::optional<EntityImpl> getEntity(uint entity_id);
 
+  /// PROMOTERS
+
+  bool makeConcept(uint id, std::string name);
+
 protected:
+
+  /// ENTITY BACKERS
   bool deleteEntity(EntityImpl& entity);
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const float float_val);
@@ -155,7 +161,24 @@ protected:
 
   bool isValid(const EntityImpl& entity) const;
 
+  // INSTANCE BACKERS
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance);
+
+  std::vector<ConceptImpl> getConceptsRecursive(const InstanceImpl& instance);
+
+  bool makeInstanceOf(InstanceImpl& instance, const ConceptImpl& concept);
+
+  // CONCEPT BACKERS
+
+  std::vector<ConceptImpl> getChildren(const ConceptImpl& concept);
+
+  std::vector<ConceptImpl> getChildrenRecursive(const ConceptImpl& concept);
+
+  std::vector<InstanceImpl> getInstances(const ConceptImpl& concept);
+
+  int removeInstances(const ConceptImpl& concept);
+
+  int removeInstancesRecursive(const ConceptImpl& concept);
 
   /// MAP BACKERS
   PointImpl addPoint(MapImpl& map, const std::string& name, double x, double y);
