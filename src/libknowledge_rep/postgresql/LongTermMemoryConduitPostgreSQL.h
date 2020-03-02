@@ -139,7 +139,6 @@ public:
   bool makeConcept(uint id, std::string name);
 
 protected:
-
   /// ENTITY BACKERS
   bool deleteEntity(EntityImpl& entity);
 

@@ -46,20 +46,20 @@ protected:
 
 TEST_F(MapTest, GetMap)
 {
-  EXPECT_EQ( map, ltmc.getMap("test map"));
+  EXPECT_EQ(map, ltmc.getMap("test map"));
   EXPECT_TRUE(map.hasConcept(ltmc.getConcept("map")));
-  EXPECT_NE( map, ltmc.getMap("another map"));
+  EXPECT_NE(map, ltmc.getMap("another map"));
 }
 
 TEST_F(MapTest, AddPointWorks)
 {
   auto point = map.addPoint("test point", 1.0, 2.0);
-  EXPECT_EQ(1.0,point.x);
+  EXPECT_EQ(1.0, point.x);
   EXPECT_EQ(2.0, point.y);
   EXPECT_EQ("test point", point.getName().get());
   EXPECT_TRUE(point.hasConcept(ltmc.getConcept("point")));
   auto second_point = map.addPoint("another point", 1.0, 2.0);
-  EXPECT_EQ("another point",second_point.getName().get());
+  EXPECT_EQ("another point", second_point.getName().get());
 }
 
 TEST_F(MapTest, GetAllPointsWorks)
