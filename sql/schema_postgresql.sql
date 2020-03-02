@@ -117,13 +117,31 @@ CREATE TABLE entity_attributes_bool
 
 /******************* MAPS */
 
+CREATE TABLE maps
+(
+    entity_id int NOT NULL,
+    map_name varchar(24) NOT NULL UNIQUE,
+    PRIMARY KEY (entity_id, map_name),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 CREATE TABLE points
 (
     entity_id int NOT NULL,
+    point_name varchar(24) NOT NULL,
+    parent_map_name varchar(24) NOT NULL,
     point point NOT NULL,
-    PRIMARY KEY (entity_id),
+    PRIMARY KEY (entity_id, point_name, parent_map_name),
+    UNIQUE (point_name, parent_map_name),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (parent_map_name)
+        REFERENCES maps (map_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -131,10 +149,17 @@ CREATE TABLE points
 CREATE TABLE regions
 (
     entity_id int NOT NULL,
+    region_name varchar(24) NOT NULL,
+    parent_map_name varchar(24) NOT NULL,
     region polygon NOT NULL,
-    PRIMARY KEY (entity_id),
+    PRIMARY KEY (entity_id, region_name, parent_map_name),
+    UNIQUE (region_name, parent_map_name),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (parent_map_name)
+        REFERENCES maps (map_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -143,10 +168,17 @@ CREATE TABLE regions
 CREATE TABLE poses
 (
     entity_id int NOT NULL,
+    pose_name varchar(24) NOT NULL,
+    parent_map_name varchar(24) NOT NULL,
     pose lseg NOT NULL,
-    PRIMARY KEY (entity_id),
+    PRIMARY KEY (entity_id, pose_name, parent_map_name),
+    UNIQUE (pose_name, parent_map_name),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (parent_map_name)
+        REFERENCES maps (map_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -154,10 +186,17 @@ CREATE TABLE poses
 CREATE TABLE doors
 (
     entity_id int NOT NULL,
+    door_name varchar(24) NOT NULL,
+    parent_map_name varchar(24) NOT NULL,
     door lseg NOT NULL,
-    PRIMARY KEY (entity_id),
+    PRIMARY KEY (entity_id, door_name, parent_map_name),
+    UNIQUE (door_name, parent_map_name),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (parent_map_name)
+        REFERENCES maps (map_name)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );

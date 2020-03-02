@@ -345,11 +345,23 @@ vector<std::pair<string, AttributeValueType>> LongTermMemoryConduitPostgreSQL::g
 /// MAP
 Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
 {
-  auto map_concept = getConcept("map");
-  auto map = getInstanceNamed(name);
-  // FIXME(nickswalker): This can turn any named instance into a map... May want to throw if the named doesn't exist?
-  map.makeInstanceOf(map_concept);
-  return { map.entity_id, name, *this };
+  pqxx::work txn{ *conn, "getMap" };
+  auto result = txn.parameterized("SELECT entity_id FROM maps WHERE map_name = $1")(name).exec();
+  txn.commit();
+
+  if (result.empty())
+  {
+    Concept map_concept = getConcept("map");
+    Instance new_map = map_concept.createInstance();
+    pqxx::work txn{ *conn, "getMap" };
+    auto result = txn.parameterized("INSERT INTO maps VALUES ($1, $2)")(new_map.entity_id)(name).exec();
+    txn.commit();
+    return { new_map.entity_id, name, *this };
+  }
+  else
+  {
+    return { result[0]["entity_id"].as<uint>(), name, *this };
+  }
 }
 
 /**
@@ -787,9 +799,9 @@ Point LongTermMemoryConduitPostgreSQL::addPoint(Map& map, const std::string& nam
   auto point = point_concept.createInstance(name).get();
   map.addAttribute("has", point);
   pqxx::work txn{ *conn, "addPoint" };
-  auto result =
-      txn.parameterized("INSERT INTO points VALUES ($1, point($2 ,$3)) RETURNING entity_id")(point.entity_id)(x)(y)
-          .exec();
+  auto result = txn.parameterized("INSERT INTO points VALUES ($1, $2, $3, point($4 ,$5)) RETURNING entity_id")(
+                       point.entity_id)(name)(map.getName())(x)(y)
+                    .exec();
   txn.commit();
   // TODO(nickswalker): We have to reconstruct to promote the instance to a point. Is there a better way?
   return { point.entity_id, name, x, y, map, *this };
@@ -801,9 +813,10 @@ Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const std::string& name,
   auto pose = pose_concept.createInstance(name).get();
   map.addAttribute("has", pose);
   pqxx::work txn{ *conn, "addPose" };
-  auto result = txn.parameterized("INSERT INTO poses SELECT $1, lseg(point($2, $3),point($2+COS($4),$3+SIN($4)))")(
-                       pose.entity_id)(x)(y)(theta)
-                    .exec();
+  auto result =
+      txn.parameterized("INSERT INTO poses SELECT $1, $2, $3, lseg(point($4, $5),point($4+COS($6),$5+SIN($6)))")(
+             pose.entity_id)(name)(map.getName())(x)(y)(theta)
+          .exec();
   txn.commit();
   return { pose.entity_id, name, x, y, theta, map, *this };
 }
@@ -817,12 +830,10 @@ Region LongTermMemoryConduitPostgreSQL::addRegion(Map& map, const std::string& n
 boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const std::string& name)
 {
   pqxx::work txn{ *conn, "getPoint" };
-  string query = "SELECT entity_id, point[0] AS x, point[1] AS y FROM points WHERE entity_id IN (SELECT entity_id FROM "
-                 "entity_attributes_str WHERE attribute_name = 'name' "
-                 "AND attribute_value = " +
-                 txn.quote(name) + ")";
 
-  auto q_result = txn.exec(query);
+  auto q_result = txn.parameterized("SELECT entity_id, point[0] AS x, point[1] AS y FROM points WHERE parent_map_name "
+                                    "= $1 AND point_name = $2")(map.getName())(name)
+                      .exec();
   txn.commit();
   assert(q_result.size() <= 1);
   if (q_result.size() == 1)
@@ -836,13 +847,12 @@ boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const
 boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const std::string& name)
 {
   pqxx::work txn{ *conn, "getPose" };
-  string query = "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
-                 "as theta FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point FROM poses WHERE entity_id "
-                 "IN (SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
-                 "AND attribute_value = " +
-                 txn.quote(name) + ")) AS test";
+  string query =
+      "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
+      "as theta FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point FROM poses WHERE parent_map_name "
+      "= $1 AND pose_name = $2) AS dummy_sub_alias";
 
-  auto q_result = txn.exec(query);
+  auto q_result = txn.parameterized(query)(map.getName())(name).exec();
   txn.commit();
   assert(q_result.size() <= 1);
   if (q_result.size() == 1)
@@ -866,12 +876,37 @@ boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, con
 
 vector<Point> LongTermMemoryConduitPostgreSQL::getAllPoints(Map& map)
 {
-  assert(false);
+  pqxx::work txn{ *conn, "getAllPoints" };
+  auto q_result = txn.parameterized("SELECT entity_id, point[0] AS x, point[1] AS y, point_name FROM points WHERE "
+                                    "parent_map_name = $1")(map.getName())
+                      .exec();
+  txn.commit();
+  vector<Point> points;
+  for (const auto& row : q_result)
+  {
+    points.emplace_back(row["entity_id"].as<uint>(), row["point_name"].as<string>(), row["x"].as<double>(),
+                        row["y"].as<double>(), map, *this);
+  }
+  return points;
 }
 
 vector<Pose> LongTermMemoryConduitPostgreSQL::getAllPoses(Map& map)
 {
-  assert(false);
+  pqxx::work txn{ *conn, "getAllPoses" };
+  string query = "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
+                 "as theta, pose_name FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point, pose_name FROM "
+                 "poses WHERE parent_map_name "
+                 "= $1) AS dummy_sub_alias";
+
+  auto q_result = txn.parameterized(query)(map.getName()).exec();
+  txn.commit();
+  vector<Pose> poses;
+  for (const auto& row : q_result)
+  {
+    poses.emplace_back(row["entity_id"].as<uint>(), row["pose_name"].as<string>(), row["x"].as<double>(),
+                       row["y"].as<double>(), row["theta"].as<double>(), map, *this);
+  }
+  return poses;
 }
 
 vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)

@@ -46,60 +46,80 @@ protected:
 
 TEST_F(MapTest, GetMap)
 {
-  ASSERT_EQ(ltmc.getMap("test map"), map);
-  ASSERT_TRUE(map.hasConcept(ltmc.getConcept("map")));
-  ASSERT_NE(ltmc.getMap("another map"), map);
+  EXPECT_EQ( map, ltmc.getMap("test map"));
+  EXPECT_TRUE(map.hasConcept(ltmc.getConcept("map")));
+  EXPECT_NE( map, ltmc.getMap("another map"));
 }
 
 TEST_F(MapTest, AddPointWorks)
 {
-auto point = map.addPoint("test point", 1.0, 2.0);
-ASSERT_TRUE(point.hasConcept(ltmc.getConcept("point")));
+  auto point = map.addPoint("test point", 1.0, 2.0);
+  EXPECT_EQ(1.0,point.x);
+  EXPECT_EQ(2.0, point.y);
+  EXPECT_EQ("test point", point.getName().get());
+  EXPECT_TRUE(point.hasConcept(ltmc.getConcept("point")));
+  auto second_point = map.addPoint("another point", 1.0, 2.0);
+  EXPECT_EQ("another point",second_point.getName().get());
+}
+
+TEST_F(MapTest, GetAllPointsWorks)
+{
+  auto point = map.addPoint("test point", 1.0, 2.0);
+  EXPECT_EQ(1, map.getAllPoints().size());
+  point.deleteEntity();
+  EXPECT_EQ(0, map.getAllPoints().size());
 }
 
 TEST_F(MapTest, DoubleAddPointFails)
 {
   auto point = map.addPoint("test point", 1.0, 2.0);
-  // TODO(nickswalker): Making this throw depends on sorting out whether name attribute is allowed to have duplicates
-  // EXPECT_ANY_THROW(map.addPoint("test point", 2.0, 3.0));
+  EXPECT_ANY_THROW(map.addPoint("test point", 2.0, 3.0));
 }
 
 TEST_F(MapTest, PointEqualityWorks)
 {
   auto point = map.addPoint("test point", 1.0, 2.0);
   auto same_point = Point(point.entity_id, "test point", 1.0, 2.0, map, ltmc);
-  ASSERT_EQ(same_point, point);
+  EXPECT_EQ(point, same_point);
 }
 
 TEST_F(MapTest, GetPointWorks)
 {
   auto added = map.addPoint("test point", 1.0, 2.0);
   auto retrieved = map.getPoint("test point");
-  ASSERT_EQ(retrieved, added);
+  EXPECT_EQ(added, retrieved);
 }
 
 TEST_F(MapTest, AddPoseWorks)
 {
   auto pose = map.addPose("test point", 1.0, 2.0, 3.14);
-  ASSERT_TRUE(pose.hasConcept(ltmc.getConcept("pose")));
+  EXPECT_TRUE(pose.hasConcept(ltmc.getConcept("pose")));
 }
 
 TEST_F(MapTest, GetPoseWorks)
 {
   auto added = map.addPose("test pose", 1.0, 2.0, 3.14);
   auto retrieved = map.getPose("test pose");
-  ASSERT_EQ(retrieved, added);
+  EXPECT_EQ(added, retrieved);
+}
+
+TEST_F(MapTest, GetAllPosesWorks)
+{
+  auto pose = map.addPose("test pose", 1.0, 2.0, 3.14);
+  EXPECT_EQ(1, map.getAllPoses().size());
+  pose.deleteEntity();
+  EXPECT_EQ(0, map.getAllPoses().size());
 }
 
 /*TEST_F(MapTest, AddRegionWorks)
 {
   auto region = map.addRegion("test region", {{1.0, 2.0}, {3.0, 4.0}});
-  ASSERT_TRUE(region.hasConcept(ltmc.getConcept("region")));
+  EXPECT_TRUE(region.hasConcept(ltmc.getConcept("region")));
 }
 
 TEST_F(MapTest, GetRegionWorks)
 {
   auto added = map.addRegion("test region", {{1.0, 2.0}, {3.0, 4.0}});
   auto retrieved = map.getRegion("test region");
-  ASSERT_EQ(retrieved, added);
+  EXPECT_EQ(retrieved, added);
 }*/

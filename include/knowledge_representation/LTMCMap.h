@@ -23,6 +23,10 @@ public:
     : InstanceImpl(entity_id, name, ltmc)
   {
   }
+  std::string getName()
+  {
+    return this->name;
+  }
   PointImpl addPoint(const std::string& name, double x, double y)
   {
     return this->ltmc.get().addPoint(*this, name, x, y);
