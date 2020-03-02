@@ -6,9 +6,6 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(BISON)
 find_package(FLEX)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
         roslint
         )
@@ -24,24 +21,28 @@ find_library(mysql NAMES libmysqlcppconn8.so)
 
 
 # Check to see if we have the right version of MySQL Cpp Connector installed
-if(mysql)
-    message("Found MySQL")
-    set(MYSQL_AVAILABLE true)
-    set(DB_INCLUDES /usr/local/mysql/connector-c++-8.0/include)
-    set(EXTRA_EXPORTED_INCLUDES ${DB_INCLUDES})
-    set(DB_LIBS ${mysql})
-    add_definitions(-DUSE_MYSQL)
-elseif(POSTGRESQL_FOUND OR libpqxx)
-    message(WARNING "MySQL Connector C++ 8.0 was not found. Using PostgreSQL.")
+if(POSTGRESQL_FOUND OR libpqxx)
+
     set(POSTGRES_AVAILABLE true)
     set(DB_INCLUDES ${PostgreSQL_INCLUDE_DIRS})
     set(EXTRA_EXPORTED_INCLUDES "")
     set(DB_LIBS ${PostgreSQL_LIBRARIES} ${libpqxx})
     add_definitions(-DUSE_POSTGRESQL)
+elseif(mysql)
+    message(WARNING "PostgreSQL not found. Using incomplete MySQL implementation.")
+    set(MYSQL_AVAILABLE true)
+    set(DB_INCLUDES /usr/local/mysql/connector-c++-8.0/include)
+    set(EXTRA_EXPORTED_INCLUDES ${DB_INCLUDES})
+    set(DB_LIBS ${mysql})
+    add_definitions(-DUSE_MYSQL)
 else()
     message(FATAL_ERROR "Neither MySQL nor PostgreSQL found. Please install one.")
 endif()
 
+# Trick catkin lint into being okay with MySQL include exports
+if(POSTGRESQL_FOUND OR libpqxx)
+    set(EXTRA_EXPORTED_INCLUDES "")
+endif()
 catkin_python_setup()
 
 catkin_package(
