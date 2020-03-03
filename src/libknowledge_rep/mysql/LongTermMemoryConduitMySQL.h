@@ -64,7 +64,7 @@ public:
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
                                                           const std::string& string_val);
 
-  bool entityExists(int id) const;
+  bool entityExists(uint id) const;
 
   bool deleteAttribute(std::string& name);
 
@@ -143,9 +143,9 @@ public:
 
   EntityImpl addEntity();
 
-  bool addEntity(int id);
+  bool addEntity(uint id);
 
-  boost::optional<EntityImpl> getEntity(int entity_id);
+  boost::optional<EntityImpl> getEntity(uint entity_id);
 
 protected:
   template <typename T>
@@ -211,6 +211,11 @@ protected:
 typedef LTMCEntity<LongTermMemoryConduitMySQL> Entity;
 typedef LTMCConcept<LongTermMemoryConduitMySQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitMySQL> Instance;
+
+typedef LTMCMap<LongTermMemoryConduitMySQL> Map;
+typedef LTMCRegion<LongTermMemoryConduitMySQL> Region;
+typedef LTMCPose<LongTermMemoryConduitMySQL> Pose;
+typedef LTMCPoint<LongTermMemoryConduitMySQL> Point;
 typedef LongTermMemoryConduitMySQL LongTermMemoryConduit;
 
 }  // namespace knowledge_rep

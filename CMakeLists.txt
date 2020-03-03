@@ -17,38 +17,35 @@ find_package(PostgreSQL)
 
 find_library(libpqxx NAMES pqxx)
 
-find_library(mysql NAMES libmysqlcppconn8.so)
-
+find_library(mysqlcppconn NAMES libmysqlcppconn8.so)
 
 # Check to see if we have the right version of MySQL Cpp Connector installed
 if(POSTGRESQL_FOUND OR libpqxx)
-
     set(POSTGRES_AVAILABLE true)
     set(DB_INCLUDES ${PostgreSQL_INCLUDE_DIRS})
-    set(EXTRA_EXPORTED_INCLUDES "")
     set(DB_LIBS ${PostgreSQL_LIBRARIES} ${libpqxx})
+    set(EXPORTED_DEPEND "")
     add_definitions(-DUSE_POSTGRESQL)
-elseif(mysql)
+elseif(mysqlcppconn)
     message(WARNING "PostgreSQL not found. Using incomplete MySQL implementation.")
     set(MYSQL_AVAILABLE true)
-    set(DB_INCLUDES /usr/local/mysql/connector-c++-8.0/include)
-    set(EXTRA_EXPORTED_INCLUDES ${DB_INCLUDES})
-    set(DB_LIBS ${mysql})
+    find_path(DB_INCLUDES mysqlx/xdevapi.h HINT /usr/local/mysql/connector-c++-8.0/include)
+    set(mysqlcppconn_INCLUDE_DIRS ${DB_INCLUDES})
+    set(mysqlcppconn_LIBRARIES ${mysqlcppconn})
+    set(DB_LIBS ${mysqlcppconn})
+    set(EXPORTED_DEPEND mysqlcppconn)
     add_definitions(-DUSE_MYSQL)
 else()
     message(FATAL_ERROR "Neither MySQL nor PostgreSQL found. Please install one.")
 endif()
 
-# Trick catkin lint into being okay with MySQL include exports
-if(POSTGRESQL_FOUND OR libpqxx)
-    set(EXTRA_EXPORTED_INCLUDES "")
-endif()
 catkin_python_setup()
 
 catkin_package(
-        INCLUDE_DIRS include ${EXTRA_EXPORTED_INCLUDES}
+        INCLUDE_DIRS include
         LIBRARIES knowledge_rep ${DB_LIBS}
         CATKIN_DEPENDS
+        DEPENDS ${EXPORTED_DEPEND}
 )
 
 include_directories(

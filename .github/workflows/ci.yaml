@@ -16,6 +16,7 @@ jobs:
         env:
           - {ROS_DISTRO: kinetic}
           - {ROS_DISTRO: melodic}
+          - {ROS_DISTRO: melodic, GITHUB_LABEL: mysql, AFTER_INSTALL_TARGET_DEPENDENCIES: scripts/configure_mysql.sh}
           - {ROS_DISTRO: melodic, GITHUB_LABEL: clang-format, CLANG_FORMAT_CHECK: file, AFTER_SCRIPT: ""}
           - {ROS_DISTRO: melodic, GITHUB_LABEL: clang-tidy, CLANG_TIDY: true, NOT_TEST_BUILD: true, CATKIN_LINT: false, AFTER_SCRIPT: ""}
     runs-on: ubuntu-latest
@@ -23,6 +24,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{matrix.env}}
+        continue-on-error: ${{ matrix.env.GITHUB_LABEL == 'mysql' }}
   python-lint:
     runs-on: ubuntu-latest
     steps:

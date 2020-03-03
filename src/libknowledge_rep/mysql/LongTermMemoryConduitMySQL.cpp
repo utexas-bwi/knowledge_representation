@@ -63,7 +63,7 @@ LongTermMemoryConduitMySQL::LongTermMemoryConduitMySQL(const string& db_name = "
 
 LongTermMemoryConduitMySQL::~LongTermMemoryConduitMySQL() = default;
 
-bool LongTermMemoryConduitMySQL::addEntity(int id)
+bool LongTermMemoryConduitMySQL::addEntity(uint id)
 {
   if (entityExists(id))
   {
@@ -104,7 +104,7 @@ bool LongTermMemoryConduitMySQL::addNewAttribute(const std::string& name, const 
 }
 
 /// \return true if an entity exists with the given ID
-bool LongTermMemoryConduitMySQL::entityExists(int id) const
+bool LongTermMemoryConduitMySQL::entityExists(uint id) const
 {
   Table entities = db->getTable("entities");
   auto result = entities.select("entity_id").where("entity_id = :id").bind("id", id).execute();
@@ -266,7 +266,7 @@ Instance LongTermMemoryConduitMySQL::getInstanceNamed(const std::string& name)
  * @param entity_id the ID of the entity to fetch
  * @return the entity requested, or an empty optional if no such entity exists
  */
-boost::optional<Entity> LongTermMemoryConduitMySQL::getEntity(int entity_id)
+boost::optional<Entity> LongTermMemoryConduitMySQL::getEntity(uint entity_id)
 {
   if (entityExists(entity_id))
   {
@@ -294,7 +294,7 @@ Entity LongTermMemoryConduitMySQL::addEntity()
 {
   Table entities = db->getTable("entities");
   Result result = entities.insert("entity_id").values(NULL).execute();
-  return { static_cast<int>(result.getAutoIncrementValue()), *this };
+  return { static_cast<uint>(result.getAutoIncrementValue()), *this };
 }
 
 /**
@@ -303,15 +303,7 @@ Entity LongTermMemoryConduitMySQL::addEntity()
  */
 std::vector<Concept> LongTermMemoryConduitMySQL::getAllConcepts()
 {
-  vector<Concept> concepts;
-  string query = "SELECT * FROM entity_attributes_bool "
-                 "WHERE attribute_name = 'is_concept' "
-                 "AND attribute_value = true ";
-  std::vector<EntityAttribute> result;
-  selectQuery<bool>(query, result);
-  transform(result.begin(), result.end(), back_inserter(concepts),
-            [this](EntityAttribute& attr) { return Concept(attr.entity_id, *this); });
-  return concepts;
+  assert(false);
 }
 /**
  * @brief Queries for all entities that are identified as instances
@@ -565,7 +557,7 @@ std::vector<Concept> LongTermMemoryConduitMySQL::get_concepts(const Instance& in
   auto rows = results.fetchAll();
   std::vector<Concept> concepts{};
   std::transform(rows.begin(), rows.end(), std::back_inserter(concepts),
-                 [this](const mysqlx::Row& row) { return Concept(row[0], *this); });
+                 [this](const mysqlx::Row& row) { return Concept(row[0], row[1], *this); });
   return concepts;
 }
 }  // namespace knowledge_rep
