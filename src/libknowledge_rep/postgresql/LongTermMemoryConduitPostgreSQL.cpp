@@ -26,8 +26,7 @@ typedef LTMCMap<LongTermMemoryConduitPostgreSQL> Map;
 LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& db_name)
   : LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>()
 {
-  conn =
-      std::unique_ptr<pqxx::connection>(new pqxx::connection("postgresql://postgres:nopass@localhost/knowledge_base"));
+  conn = std::unique_ptr<pqxx::connection>(new pqxx::connection("postgresql://postgres@localhost/" + db_name));
 }
 
 LongTermMemoryConduitPostgreSQL::~LongTermMemoryConduitPostgreSQL() = default;
