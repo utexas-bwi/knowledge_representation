@@ -9,6 +9,7 @@
 
 namespace knowledge_rep
 {
+/// \brief An instance of the Map concept, which represents a single 2D frame of reference
 template <typename LTMCImpl>
 class LTMCMap : public LTMCInstance<LTMCImpl>
 {

@@ -1,9 +1,9 @@
 # knowledge_representation [![CI](https://github.com/utexas-bwi/knowledge_representation/workflows/CI/badge.svg)](https://github.com/utexas-bwi/knowledge_representation/actions?query=workflow%3ACI)
 
-Mechanisms for storing and querying information about the world. You can think of this package as a nicely packaged [database schema](https://en.wikipedia.org/wiki/Database_schema); it's an opinionated take on how to structure the kinds of knowledge that a robot might need and tools for [CRUD operations](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) within that structure.
+Mechanisms for storing and querying information about the world. You can think of this as a nicely packaged [database schema](https://en.wikipedia.org/wiki/Database_schema); it's an opinionated take on how to structure the kinds of knowledge that a robot might need and tools for [CRUD operations](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) within that structure.
 
 * Persistent storage backed by a local PostgreSQL or MySQL database
-* Convenient API's for common queries, like getting all instances of a class of object
+* Convenient APIs for common queries, like getting all instances of a type of object
 * Link directly against your C++ code, or import a Python binding
 
 ## Representation

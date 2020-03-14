@@ -8,6 +8,10 @@
 
 namespace knowledge_rep
 {
+/// \brief Represents an Entity that is an Instance of some Concept.
+
+/// Instances like regular entities, but they always have a "name," and have
+/// at least one Concept which they are directly an instance of.
 template <typename LTMCImpl>
 class LTMCInstance : public LTMCEntity<LTMCImpl>
 {
@@ -40,16 +44,37 @@ public:
     return {};
   };
 
+  /**
+   * @brief Attemps to make this instance also an instance of the given concept
+   *
+   * Fails if this instance is already an instance of the concept.
+   * @param concept The concept to make this entity an instance of
+   * @return whether this instance was newly made an instance of the given concept
+   */
   bool makeInstanceOf(const LTMCConcept<LTMCImpl>& concept)
   {
     return this->ltmc.get().makeInstanceOf(*this, concept);
   }
 
+  /**
+   * @brief Get all concepts that this instance is transitively an instance of
+   *
+   * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
+   * then getConcepts will return the concepts of both apple and fruit.
+   * @return
+   */
   std::vector<LTMCConcept<LTMCImpl>> getConcepts() const
   {
     return this->ltmc.get().getConcepts(*this);
   }
 
+  /**
+   * @brief Get all concepts that this instance is transitively an instance of
+   *
+   * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
+   * then getConcepts will return the concepts of both apple and fruit.
+   * @return
+   */
   std::vector<LTMCConcept<LTMCImpl>> getConceptsRecursive() const
   {
     return this->ltmc.get().getConceptsRecursive(*this);

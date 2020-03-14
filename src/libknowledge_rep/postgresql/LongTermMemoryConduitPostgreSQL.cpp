@@ -65,7 +65,6 @@ bool LongTermMemoryConduitPostgreSQL::addNewAttribute(const string& name, const 
   }
 }
 
-/// \return true if an entity exists with the given ID
 bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
 {
   pqxx::work txn{ *conn };
@@ -141,9 +140,6 @@ std::vector<Entity> LongTermMemoryConduitPostgreSQL::getAllEntities()
   return entities;
 }
 
-/**
- * @brief Remove all attributes except those defined in the schema as defaults
- */
 uint LongTermMemoryConduitPostgreSQL::deleteAllAttributes()
 {
   pqxx::work txn{ *conn };
@@ -156,9 +152,6 @@ uint LongTermMemoryConduitPostgreSQL::deleteAllAttributes()
   return num_deleted;
 }
 
-/**
- * @brief Remove all entities and all entity attributes except for the robot
- */
 uint LongTermMemoryConduitPostgreSQL::deleteAllEntities()
 {
   pqxx::work txn{ *conn };
@@ -175,8 +168,6 @@ uint LongTermMemoryConduitPostgreSQL::deleteAllEntities()
 bool LongTermMemoryConduitPostgreSQL::deleteAttribute(const string& name)
 {
   pqxx::work txn{ *conn };
-
-  // Remove all entities
   uint num_deleted = txn.exec("DELETE FROM attributes WHERE attribute_name = " + txn.quote(name)).affected_rows();
   txn.commit();
   return num_deleted;
@@ -190,12 +181,6 @@ bool LongTermMemoryConduitPostgreSQL::attributeExists(const string& name) const
   return result.size() == 1;
 }
 
-/**
- * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
- * @param name
- * @return the existing concept, or the newly created one. In either case, the concept will at least have the name
- *         passed as a parameter.
- */
 Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
 {
   pqxx::work txn{ *conn, "getConcept" };
@@ -216,12 +201,6 @@ Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
   }
 }
 
-/**
- * @brief Retrieves an instance of the given name, or creates one with the name if no such instance exists
- * @param name
- * @return the existing instance, or the newly created one. In either case, the instance will at least have the name
- *         passed as a parameter.
- */
 Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const string& name)
 {
   pqxx::work txn{ *conn, "getInstanceNamed" };
@@ -250,11 +229,6 @@ Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const string& name)
   }
 }
 
-/**
- * @brief Returns an entity with the given ID, if it exists
- * @param entity_id the ID of the entity to fetch
- * @return the entity requested, or an empty optional if no such entity exists
- */
 boost::optional<Entity> LongTermMemoryConduitPostgreSQL::getEntity(uint entity_id)
 {
   if (entityExists(entity_id))
@@ -264,10 +238,6 @@ boost::optional<Entity> LongTermMemoryConduitPostgreSQL::getEntity(uint entity_i
   return {};
 }
 
-/**
- * @brief Gets the instance representing the robot
- * @return an instance representing the robot the LTMC is running on
- */
 Instance LongTermMemoryConduitPostgreSQL::getRobot()
 {
   Instance robot = Instance(1, *this);
@@ -275,10 +245,6 @@ Instance LongTermMemoryConduitPostgreSQL::getRobot()
   return robot;
 }
 
-/**
- * @brief Inserts a new entity into the database. Returns the entity's ID so it can be manipulated with other methods.
- * @return the new entity
- */
 Entity LongTermMemoryConduitPostgreSQL::addEntity()
 {
   pqxx::work txn{ *conn, "addEntity" };
@@ -288,10 +254,6 @@ Entity LongTermMemoryConduitPostgreSQL::addEntity()
   return { result[0]["entity_id"].as<uint>(), *this };
 }
 
-/**
- * @brief Queries for all entities that are marked as concepts
- * @return all concepts in the LTMC
- */
 std::vector<Concept> LongTermMemoryConduitPostgreSQL::getAllConcepts()
 {
   pqxx::work txn{ *conn, "getAllConcepts" };
@@ -305,10 +267,6 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getAllConcepts()
   return concepts;
 }
 
-/**
- * @brief Queries for all entities that are identified as instances
- * @return all instances in the LTMC
- */
 std::vector<Instance> LongTermMemoryConduitPostgreSQL::getAllInstances()
 {
   pqxx::work txn{ *conn, "getAllInstances" };
@@ -323,11 +281,6 @@ std::vector<Instance> LongTermMemoryConduitPostgreSQL::getAllInstances()
   return instances;
 }
 
-/**
- * @brief Retrieves all attributes
- * @return a list of tuples. First element of each is the attribute name,
- * the second is the allowed type for the attribute
- */
 vector<std::pair<string, AttributeValueType>> LongTermMemoryConduitPostgreSQL::getAllAttributes() const
 {
   vector<std::pair<string, AttributeValueType>> attribute_names;
@@ -342,7 +295,7 @@ vector<std::pair<string, AttributeValueType>> LongTermMemoryConduitPostgreSQL::g
   return attribute_names;
 }
 
-/// MAP
+// MAP
 Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
 {
   pqxx::work txn{ *conn, "getMap" };
@@ -364,10 +317,6 @@ Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
   }
 }
 
-/**
- * @brief Retrieves all entity attributes
- * @return a list of entity attributes
- */
 vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAllEntityAttributes()
 {
   std::vector<EntityAttribute> entity_attrs;
@@ -379,7 +328,7 @@ vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAllEntityAttributes(
   return entity_attrs;
 }
 
-/// PROMOTERS
+// PROMOTERS
 
 bool LongTermMemoryConduitPostgreSQL::makeConcept(uint id, std::string name)
 {
@@ -397,12 +346,8 @@ bool LongTermMemoryConduitPostgreSQL::makeConcept(uint id, std::string name)
   }
 }
 
-/// ENTITY BACKERS
+// ENTITY BACKERS
 
-/**
- * @brief Deletes an entity and any other entities and relations that rely on it.
- * @return true if the entity was deleted. False if it could not be, or already was
- */
 bool LongTermMemoryConduitPostgreSQL::deleteEntity(Entity& entity)
 {
   // TODO(nickswalker): Recursively remove entities that are members of directional relations
@@ -615,12 +560,6 @@ std::vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(cons
   return attributes;
 }
 
-/**
- * @brief Verifies that the entity still exists in the LTMC
- * An entity can be invalidated if it is explicitly deleted from the LTMC, or if
- * it is removed as a result of other helpers that delete entities.
- * @return whether the entity is valid
- */
 bool LongTermMemoryConduitPostgreSQL::isValid(const Entity& entity) const
 {
   return entityExists(entity.entity_id);
@@ -628,12 +567,6 @@ bool LongTermMemoryConduitPostgreSQL::isValid(const Entity& entity) const
 
 // INSTANCE BACKERS
 
-/**
- * @brief Get all concepts that this instance is transitively an instance of
- * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
- * then getConcepts will return the concepts of both apple and fruit.
- * @return
- */
 std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance& instance)
 {
   try
@@ -658,12 +591,6 @@ std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConcepts(const Instance
   }
 }
 
-/**
- * @brief Get all concepts that this instance is transitively an instance of
- * For example, if an entity A "instance_of" concept named apple, and apple "is_a" concept of fruit,
- * then getConcepts will return the concepts of both apple and fruit.
- * @return
- */
 std::vector<Concept> LongTermMemoryConduitPostgreSQL::getConceptsRecursive(const Instance& instance)
 {
   try
@@ -702,7 +629,7 @@ bool LongTermMemoryConduitPostgreSQL::makeInstanceOf(Instance& instance, const C
   }
 }
 
-/// CONCEPT BACKERS
+// CONCEPT BACKERS
 
 vector<Concept> LongTermMemoryConduitPostgreSQL::getChildren(const Concept& concept)
 {
@@ -792,7 +719,7 @@ int LongTermMemoryConduitPostgreSQL::removeInstancesRecursive(const Concept& con
   return result.affected_rows();
 }
 
-/// MAP BACKERS
+// MAP BACKERS
 Point LongTermMemoryConduitPostgreSQL::addPoint(Map& map, const std::string& name, double x, double y)
 {
   auto point_concept = getConcept("point");

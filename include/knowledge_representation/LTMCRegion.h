@@ -14,7 +14,7 @@ template <typename LTMCImpl>
 class LTMCPoint;
 template <typename LTMCImpl>
 class LTMCPose;
-
+/// \brief An instance of the "region" concept which represents a closed polygon on some LTMCMap
 template <typename LTMCImpl>
 class LTMCRegion : public LTMCInstance<LTMCImpl>
 {

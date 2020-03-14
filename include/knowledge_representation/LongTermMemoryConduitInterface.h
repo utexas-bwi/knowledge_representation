@@ -37,10 +37,20 @@ class EntityAttribute;
 
 enum AttributeValueType;
 
-/// This is an instance of the Curiously Recurring Template Pattern (CRTP), which
-/// we're leveraging to enable multiple backend implementations while maintaining
-/// a static interface with no runtime dispatch. You can read more about this pattern
-/// here: https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/
+/**
+ * @brief Interface that defines the primary means of interacting with the knowledge base.
+ *
+ * This class implements the Curiously Recurring Template Pattern (CRTP) to enable multiple database backend
+ * implementations
+ * while maintaining
+ * a static interface with no runtime dispatch. You can read more about this pattern
+ * here: https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/
+ *
+ * As a result, the implementation of the knowledgebase is completely defined in subclasses of this interface, one for
+ * each backend implementation. These are expected to behave essentially identically, so documentation is presented
+ * here.
+ */
+
 template <typename Impl>
 class LongTermMemoryConduitInterface
 {
@@ -89,56 +99,103 @@ public:
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, string_val);
   }
 
+  /**
+   * @brief Check whether an entity ID is currently tracked in the database
+   * @param id the ID to check for
+   * @return whether there is an entity with the given ID
+   */
   bool entityExists(uint id) const
   {
     return static_cast<const Impl*>(this)->entityExists(id);
   };
 
+  /**
+   * @brief Remove an attribute from the schema
+   *
+   * This will also remove all uses of this attribute.
+   * @param name
+   * @return whether the attribute was removed
+   */
   bool deleteAttribute(const std::string& name)
   {
     return static_cast<Impl*>(this)->deleteAttribute(name);
   }
 
+  /**
+   * @brief Check whether an attribute exists in the current schema
+   *
+   * @param name
+   * @return
+   */
   bool attributeExists(const std::string& name) const
   {
     return static_cast<const Impl*>(this)->attributeExists(name);
   };
 
+  /**
+   * @brief Remove all entities and all entity attributes except for the robot
+   * @return The number of entities removed
+   */
   uint deleteAllEntities()
   {
     return static_cast<Impl*>(this)->deleteAllEntities();
   }
 
+  /**
+   * @brief Remove all attributes except those defined in the schema as defaults
+   * @return The number of attributes removed
+   */
   uint deleteAllAttributes()
   {
     return static_cast<Impl*>(this)->deleteAllAttributes();
   }
 
+  /**
+   * @brief Get all current valid entities
+   * @return list of all entities
+   */
   std::vector<EntityImpl> getAllEntities()
   {
     return static_cast<Impl*>(this)->getAllEntities();
   }
 
+  /**
+   * @brief Queries for all entities that are marked as concepts
+   * @return list of all concepts in the LTMC
+   */
   std::vector<ConceptImpl> getAllConcepts()
   {
     return static_cast<Impl*>(this)->getAllConcepts();
   };
 
+  /**
+   * @brief Queries for all entities that are identified as instances
+   * @return all instances in the LTMC
+   */
   std::vector<InstanceImpl> getAllInstances()
   {
     return static_cast<Impl*>(this)->getAllInstances();
   }
 
+  /**
+   * @brief Retrieves all attributes
+   * @return a list of tuples. First element of each is the attribute name,
+   * the second is the allowed type for the attribute
+   */
   std::vector<std::pair<std::string, int>> getAllAttributes() const
   {
     return static_cast<const Impl*>(this)->getAllAttributes();
   }
 
+  /**
+   * @brief Retrieves all entity attributes
+   * @return a list of entity attributes
+   */
   std::vector<EntityAttribute> getAllEntityAttributes()
   {
     return static_cast<const Impl*>(this)->getAllEntityAttributes();
   }
-  /// RAW QUERIES
+  // RAW QUERIES
 
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
@@ -160,52 +217,93 @@ public:
     return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
   }
 
-  /// MAP
+  // MAP
+
+  /**
+   * @brief Retrieves a map of the given name, or creates one with the name if no such map exists.
+   * @param name
+   * @return
+   */
   MapImpl getMap(const std::string& name)
   {
     return static_cast<Impl*>(this)->getMap(name);
   }
 
-  /// CONVENIENCE
+  // CONVENIENCE
+  /**
+ * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
+ * @param name
+ * @return the existing concept, or the newly created one. In either case, the concept will at least have the name
+ *         passed as a parameter.
+ */
   ConceptImpl getConcept(const std::string& name)
   {
     return static_cast<Impl*>(this)->getConcept(name);
   };
 
+  /**
+   * @brief Retrieves an instance of the given name, or creates one with the name if no such instance exists
+   * @param name
+   * @return the existing instance, or the newly created one. In either case, the instance will at least have the name
+   *         passed as a parameter.
+   */
   InstanceImpl getInstanceNamed(const std::string& name)
   {
     return static_cast<Impl*>(this)->getInstanceNamed(name);
   };
 
+  /**
+   * @brief Gets the instance representing the robot
+   * @return an instance representing the robot the LTMC is running on
+   */
   InstanceImpl getRobot()
   {
     return static_cast<Impl*>(this)->getRobot();
   };
 
+  /**
+   * @brief Inserts a new entity into the database. Returns the entity's ID so it can be manipulated with other methods.
+   * @return the new entity
+   */
   EntityImpl addEntity()
   {
     return static_cast<Impl*>(this)->addEntity();
   };
 
+  /**
+   * @brief Attempts to create an entity with a specific ID.
+   * @param id
+   * @return whether an entity with the given ID was created
+   */
   bool addEntity(uint id)
   {
     return static_cast<Impl*>(this)->addEntity(id);
   };
 
+  /**
+   * @brief Returns an entity with the given ID, if it exists
+   * @param entity_id the ID of the entity to fetch
+   * @return the entity requested, or an empty optional if no such entity exists
+   */
   boost::optional<EntityImpl> getEntity(uint entity_id)
   {
     return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
-  /// PROMOTERS
-
+  // PROMOTERS
+  /**
+   * @brief A convenience for turning an existing entity ID into a concept
+   * @param id The ID of an existing entity
+   * @param name The desired name of the concept
+   * @return whether the entity with the given ID was turned into a concept with the given name
+   */
   bool makeConcept(uint id, std::string name)
   {
     return static_cast<Impl*>(this)->makeConcept(id, name);
   }
 
 protected:
-  /// ENTITY BACKERS
+  // ENTITY BACKERS
   // These provide implementation for entity level operations. We want these to be centralized
   // with the rest of the database access code for ease of reimplementation in another backend,
   // but the users should see a nice API through the Entity class.
@@ -259,7 +357,7 @@ protected:
     return static_cast<const Impl*>(this)->isValid(entity);
   }
 
-  /// INSTANCE BACKERS
+  // INSTANCE BACKERS
 
   std::vector<ConceptImpl> getConcepts(const InstanceImpl& instance)
   {
@@ -276,7 +374,7 @@ protected:
     return static_cast<Impl*>(this)->makeInstanceOf(instance, concept);
   }
 
-  /// CONCEPT BACKERS
+  // CONCEPT BACKERS
 
   std::vector<ConceptImpl> getChildren(const ConceptImpl& concept)
   {
@@ -303,7 +401,7 @@ protected:
     return static_cast<Impl*>(this)->removeInstancesRecursive(concept);
   }
 
-  /// MAP BACKERS
+  // MAP BACKERS
   PointImpl addPoint(MapImpl& map, const std::string& name, double x, double y)
   {
     return static_cast<Impl*>(this)->addPoint(map, name, x, y);
@@ -348,7 +446,7 @@ protected:
     return static_cast<Impl*>(this)->getAllRegions(map);
   }
 
-  /// GEOMETRY BACKERS
+  // GEOMETRY BACKERS
 
 private:
   // We make the constructor private to make sure people can't build this interface type directly

@@ -44,9 +44,12 @@ static std::string toString(const AttributeValue& attribute_value)
   }
 }
 
+/**
+ * @brief A tuple of an entity id, an attribute name, and a value.
+ */
 struct EntityAttribute
 {
-  int entity_id;
+  uint entity_id;
   std::string attribute_name;
   AttributeValue value;
 
@@ -55,21 +58,45 @@ struct EntityAttribute
   {
   }
 
+  /**
+   * @brief Extracts an int from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   int getIntValue() const
   {
     return boost::get<int>(value);
   }
 
+  /**
+   * @brief Extracts a float from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   float getFloatValue() const
   {
     return boost::get<float>(value);
   }
 
+  /**
+   * @brief Extracts a bool from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   bool getBoolValue() const
   {
     return boost::get<bool>(value);
   }
 
+  /**
+   * @brief Extracts a string from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   std::string getStringValue() const
   {
     return boost::get<std::string>(value);

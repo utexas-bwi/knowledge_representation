@@ -134,7 +134,7 @@ public:
     return selectQuery<bool>(sql_query, result);
   }
 
-  //// CONVENIENCE
+  // CONVENIENCE
   LTMCConcept<LongTermMemoryConduitMySQL> getConcept(const std::string& name);
 
   InstanceImpl getInstanceNamed(const std::string& name);

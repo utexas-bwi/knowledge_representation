@@ -14,6 +14,7 @@ namespace knowledge_rep
 template <typename LTMCImpl>
 class LTMCRegion;
 
+/// \brief An instance of the Point concept, which stores a 2D coordinate with respect to some LTMCMap
 template <typename LTMCImpl>
 class LTMCPoint : public LTMCInstance<LTMCImpl>
 {

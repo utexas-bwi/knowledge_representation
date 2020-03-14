@@ -13,6 +13,8 @@ namespace knowledge_rep
 template <typename LTMCImpl>
 class LTMCRegion;
 
+/// @brief An instance of the "pose" concept, representing a 2D point and orientation (x, y, theta) with respect to some
+/// LTMCMap
 template <typename LTMCImpl>
 class LTMCPose : public LTMCInstance<LTMCImpl>
 {

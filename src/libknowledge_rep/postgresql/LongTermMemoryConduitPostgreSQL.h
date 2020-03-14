@@ -11,6 +11,7 @@ namespace knowledge_rep
 static const char* TABLE_NAMES[] = { "entity_attributes_id", "entity_attributes_str", "entity_attributes_bool",
                                      "entity_attributes_float" };
 
+/// A concrete implementation of the LongTermMemoryConduitInterface, leveraging libpqxx and PostgreSQL.
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
 {
   using EntityImpl = LTMCEntity<LongTermMemoryConduitPostgreSQL>;
@@ -96,7 +97,7 @@ public:
     }
     return true;
   }
-  /// RAW QUERIES
+  // RAW QUERIES
 
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
@@ -118,10 +119,10 @@ public:
     return selectQuery<bool>(sql_query, result);
   }
 
-  /// MAP
+  // MAP
   MapImpl getMap(const std::string& name);
 
-  /// CONVENIENCE
+  // CONVENIENCE
   ConceptImpl getConcept(const std::string& name);
 
   InstanceImpl getInstanceNamed(const std::string& name);
@@ -134,12 +135,12 @@ public:
 
   boost::optional<EntityImpl> getEntity(uint entity_id);
 
-  /// PROMOTERS
+  // PROMOTERS
 
   bool makeConcept(uint id, std::string name);
 
 protected:
-  /// ENTITY BACKERS
+  // ENTITY BACKERS
   bool deleteEntity(EntityImpl& entity);
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const float float_val);
@@ -179,7 +180,7 @@ protected:
 
   int removeInstancesRecursive(const ConceptImpl& concept);
 
-  /// MAP BACKERS
+  // MAP BACKERS
   PointImpl addPoint(MapImpl& map, const std::string& name, double x, double y);
 
   PoseImpl addPose(MapImpl& map, const std::string& name, double x, double y, double theta);

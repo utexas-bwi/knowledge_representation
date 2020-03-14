@@ -9,6 +9,7 @@
 
 namespace knowledge_rep
 {
+/// @brief A LTMCEntity representing a Concept; the abstract idea of something
 template <typename LTMCImpl>
 class LTMCConcept : public LTMCEntity<LTMCImpl>
 {
@@ -22,19 +23,30 @@ public:
   {
   }
 
+  /**
+   * @name Gets the name of the concept
+   *
+   * All concepts must have a name, as we don't expect to deal with ideas that don't at least have a name to ground them
+   * @return
+   */
   std::string getName() const
   {
     return name;
   }
   /**
    * @brief Get entities that directly instantiate this concept
-   * @return
+   * @return a list of all entities that are instances of this concept
    */
   std::vector<InstanceImpl> getInstances() const
   {
     return this->ltmc.get().getInstances(*this);
   }
 
+  /**
+   * @brief Remove all entities that are directly an instance of this concept
+   *
+   * @return the number of instances removed
+   */
   int removeInstances() const
   {
     return this->ltmc.get().removeInstances(*this);
@@ -42,6 +54,7 @@ public:
 
   /**
    * @brief Recursively remove instances of the concept
+   *
    * An instance of a given concept "C" is transitively an instance of any concept that that defines an "is_a" relation
    * with "C". For example, if the concept of apple "is_a" concept of fruit, then removing instances of fruit will
    * remove all instances of apple.
@@ -52,6 +65,10 @@ public:
     return this->ltmc.get().removeInstancesRecursive(*this);
   }
 
+  /**
+   * @brief Create a fresh instance of this concept
+   * @return a new entity that is an instance of this concept
+   */
   InstanceImpl createInstance() const
   {
     auto fresh_entity = this->ltmc.get().addEntity();
@@ -80,6 +97,7 @@ public:
   /**
    * @brief Get all concepts that are direct children of this concept
    *
+   * A child is a concept that has an `is_a` attribute pointing at this concept.
    * @return all direct childern
    */
   std::vector<LTMCConcept> getChildren() const
@@ -87,6 +105,12 @@ public:
     return this->ltmc.get().getChildren(*this);
   }
 
+  /**
+   * @brief Get all concepts that are descended from this concept
+   *
+   * A child is a concept that has an `is_a` attribute pointing at this concept.
+   * @return
+   */
   std::vector<LTMCConcept> getChildrenRecursive() const
   {
     return this->ltmc.get().getChildrenRecursive(*this);
@@ -94,6 +118,7 @@ public:
 
   /**
    * @brief Removes all references to a concept
+   *
    * References include all entity-attributes that refer to this concept. But note that this method doesn't
    * delete the entities that are the subjects of the references. This means that all instances of this
    * concept will continue to exist, but they will no longer be identified as instances of this concept.
