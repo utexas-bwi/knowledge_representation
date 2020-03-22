@@ -25,7 +25,7 @@ class TestLTMC(unittest.TestCase):
     def test_get_concept(self):
         nsb_concept = ltmc.get_concept("never seen before")
         nsb_concept.remove_instances()
-        assert len(nsb_concept.get_instances()) == 0
+        self.assertEqual(len(nsb_concept.get_instances()), 0)
 
     def test_create_instance(self):
         nsb_concept = ltmc.get_concept("never seen before")
@@ -36,12 +36,12 @@ class TestLTMC(unittest.TestCase):
         nsb_concept = ltmc.get_concept("never seen before")
         instance = nsb_concept.create_instance()
         instance_list = ltmc.get_entities_with_attribute_of_value("is_open", nsb_concept.entity_id)
-        assert len(instance_list) == 0
+        self.assertEqual(len(instance_list),  0)
 
     def test_remove_instances(self):
         nsb_concept = ltmc.get_concept("never seen before")
         nsb_concept.remove_instances()
-        assert len(nsb_concept.get_instances()) == 0
+        self.assertEqual(len(nsb_concept.get_instances()), 0)
 
     def test_select_query(self):
         result_list = PyAttributeList()
@@ -50,13 +50,28 @@ class TestLTMC(unittest.TestCase):
     def test_add_attribute(self):
         nsb_concept = ltmc.get_concept("never seen before")
         instance = nsb_concept.create_instance("nsb")
-        assert instance
+        self.assertTrue(instance)
 
         result = ltmc.add_new_attribute("new attribute", AttributeValueType.str)
-        assert result
-        assert ltmc.attribute_exists("new attribute")
-        result = instance.add_attribute_str("new attribute", "as")
-        assert result
+        self.assertTrue(result)
+        self.assertTrue(ltmc.attribute_exists("new attribute"))
+        added = instance.add_attribute_str("new attribute", "value of attribute")
+        self.assertTrue(added)
+        self.assertEqual("value of attribute", instance["new attribute"][0].get_string_value())
+
+    def test_map_types(self):
+        map = ltmc.get_map("test map")
+        self.assertEqual("test map", map.get_name())
+        point = map.add_point("test", 0, 1)
+        self.assertTrue(point)
+        self.assertEqual("test", point.get_name())
+
+        pose = map.add_pose("test pose", 0, 1, 2)
+        self.assertTrue(pose)
+        self.assertEqual(0, pose.x)
+        self.assertEqual(1, pose.y)
+        self.assertEqual(2, pose.theta)
+        self.assertEqual("test pose", pose.get_name())
 
 
 if __name__ == '__main__':

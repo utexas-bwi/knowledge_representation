@@ -162,7 +162,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
            static_cast<vector<EntityAttribute> (Entity::*)(const string&) const>(&Entity::getAttributes))
       .def("get_attributes", static_cast<vector<EntityAttribute> (Entity::*)() const>(&Entity::getAttributes))
       .def("delete", &Entity::deleteEntity)
-      .def("is_valid", &Entity::isValid);
+      .def("is_valid", &Entity::isValid)
+      .def("__getitem__", &Entity::operator[]);
 
   class_<Concept, bases<Entity>>("Concept", init<uint, string, LTMC&>())
       .def("remove_instances", &Concept::removeInstances)
@@ -195,7 +196,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
 
-  class_<Map>("Map", init<uint, string, LTMC&>())
+  class_<Map, bases<Instance>>("Map", init<uint, string, LTMC&>())
       .def("add_point", &Map::addPoint)
       .def("add_region", &Map::addRegion)
       .def("add_pose", &Map::addPose)
@@ -206,18 +207,18 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_all_poses", &Map::getAllPoses)
       .def("get_all_regions", &Map::getAllRegions);
 
-  class_<Point>("Point", init<uint, string, double, double, Map, LTMC&>())
+  class_<Point, bases<Instance>>("Point", init<uint, string, double, double, Map, LTMC&>())
       .def_readonly("x", &Point::x)
       .def_readonly("y", &Point::y)
       .def("get_containing_regions", &Point::getContainingRegions);
 
-  class_<Pose>("Pose", init<uint, string, double, double, double, Map, LTMC&>())
+  class_<Pose, bases<Instance>>("Pose", init<uint, string, double, double, double, Map, LTMC&>())
       .def_readonly("x", &Pose::x)
       .def_readonly("y", &Pose::y)
       .def_readonly("theta", &Pose::theta)
       .def("get_containing_regions", &Pose::getContainingRegions);
 
-  class_<Region>("Region", init<uint, string, Map, LTMC&>())
+  class_<Region, bases<Instance>>("Region", init<uint, string, Map, LTMC&>())
       .def_readonly("points", &Region::points)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses);
