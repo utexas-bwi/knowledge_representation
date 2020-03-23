@@ -35,6 +35,7 @@ using python::bases;
 using python::class_;
 using python::enum_;
 using python::init;
+using python::tuple;
 using python::vector_indexing_suite;
 using std::string;
 using std::vector;
@@ -116,23 +117,112 @@ struct ReturnOptional
   };  // apply
 };    // return_optional
 
+template <typename T1, typename T2>
+struct PairToPythonConverter
+{
+  static PyObject* convert(const std::pair<T1, T2>& pair)
+  {
+    return boost::python::incref(boost::python::make_tuple(pair.first, pair.second).ptr());
+  }
+};
+
+template <typename T1, typename T2>
+struct PythonToPairConverter
+{
+  PythonToPairConverter()
+  {
+    boost::python::converter::registry::push_back(&convertible, &construct, typeid(std::pair<T1, T2>));
+  }
+  static void* convertible(PyObject* obj)
+  {
+    if (!PyTuple_CheckExact(obj))
+      return 0;
+    if (PyTuple_Size(obj) != 2)
+      return 0;
+    return obj;
+  }
+  static void construct(PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data)
+  {
+    tuple tuple(boost::python::borrowed(obj));
+    void* storage = ((boost::python::converter::rvalue_from_python_storage<std::pair<T1, T2>>*)data)->storage.bytes;
+    new (storage) std::pair<T1, T2>(boost::python::extract<T1>(tuple[0]), boost::python::extract<T2>(tuple[1]));
+    data->convertible = storage;
+  }
+};
+
+template <typename T1, typename T2>
+struct py_pair
+{
+  boost::python::to_python_converter<std::pair<T1, T2>, PairToPythonConverter<T1, T2>> toPy;
+  PythonToPairConverter<T1, T2> fromPy;
+};
+
+/// @brief Type that allows for registration of conversions from
+///        python iterable types.
+struct iterable_converter
+{
+  /// @note Registers converter from a python interable type to the
+  ///       provided type.
+  template <typename Container>
+  iterable_converter& from_python()
+  {
+    boost::python::converter::registry::push_back(&iterable_converter::convertible,
+                                                  &iterable_converter::construct<Container>,
+                                                  boost::python::type_id<Container>());
+
+    // Support chaining.
+    return *this;
+  }
+
+  /// @brief Check if PyObject is iterable.
+  static void* convertible(PyObject* object)
+  {
+    return PyObject_GetIter(object) ? object : NULL;
+  }
+
+  /// @brief Convert iterable PyObject to C++ container type.
+  ///
+  /// Container Concept requirements:
+  ///
+  ///   * Container::value_type is CopyConstructable.
+  ///   * Container can be constructed and populated with two iterators.
+  ///     I.e. Container(begin, end)
+  template <typename Container>
+  static void construct(PyObject* object, boost::python::converter::rvalue_from_python_stage1_data* data)
+  {
+    namespace python = boost::python;
+    // Object is a borrowed reference, so create a handle indicting it is
+    // borrowed for proper reference counting.
+    python::handle<> handle(python::borrowed(object));
+
+    // Obtain a handle to the memory block that the converter has allocated
+    // for the C++ type.
+    typedef python::converter::rvalue_from_python_storage<Container> storage_type;
+    void* storage = reinterpret_cast<storage_type*>(data)->storage.bytes;
+
+    typedef python::stl_input_iterator<typename Container::value_type> iterator;
+
+    // Allocate the C++ type into the converter's memory block, and assign
+    // its handle to the converter's convertible variable.  The C++
+    // container is populated by passing the begin and end iterators of
+    // the python object to the container's constructor.
+    new (storage) Container(iterator(python::object(handle)),  // begin
+                            iterator());                       // end
+    data->convertible = storage;
+  }
+};
+
 BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 {
   typedef LongTermMemoryConduit LTMC;
 
-  class_<std::pair<string, string>>("StringPair")
-      .def_readwrite("first", &std::pair<string, string>::first)
-      .def_readwrite("second", &std::pair<string, string>::second);
+  // Register a converter to get Python tuples turned into std::pairs
+  py_pair<double, double>();
 
-  class_<std::pair<double, double>>("DoublePair")
-      .def_readwrite("first", &std::pair<double, double>::first)
-      .def_readwrite("second", &std::pair<double, double>::second);
+  class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>>());
 
-  class_<vector<std::pair<string, string>>>("PyPairList")
-      .def(vector_indexing_suite<vector<std::pair<string, string>>>());
-
-  class_<vector<std::pair<double, double>>>("PyDoublePairList")
-      .def(vector_indexing_suite<vector<std::pair<double, double>>>());
+  // Automatically convert Python lists into vectors
+  iterable_converter().from_python<std::vector<Region::Point2D>>();
 
   class_<vector<Entity>>("PyEntityList").def(vector_indexing_suite<vector<Entity>>());
 
@@ -218,7 +308,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readonly("theta", &Pose::theta)
       .def("get_containing_regions", &Pose::getContainingRegions);
 
-  class_<Region, bases<Instance>>("Region", init<uint, string, Map, LTMC&>())
+  class_<Region, bases<Instance>>("Region", init<uint, string, const vector<Region::Point2D>, Map, LTMC&>())
       .def_readonly("points", &Region::points)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses);

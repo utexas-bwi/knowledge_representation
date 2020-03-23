@@ -4,13 +4,14 @@
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
 #include <knowledge_representation/LTMCMap.h>
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCPose.h>
-// #include <knowledge_representation/LTMCRegion.h>
+#include <knowledge_representation/LTMCRegion.h>
 
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
@@ -111,15 +112,25 @@ TEST_F(MapTest, GetAllPosesWorks)
   EXPECT_EQ(0, map.getAllPoses().size());
 }
 
-/*TEST_F(MapTest, AddRegionWorks)
+TEST_F(MapTest, AddRegionWorks)
 {
-  auto region = map.addRegion("test region", {{1.0, 2.0}, {3.0, 4.0}});
+  auto region = map.addRegion("test region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
   EXPECT_TRUE(region.hasConcept(ltmc.getConcept("region")));
+  EXPECT_THAT(region.points, ::testing::ContainerEq(std::vector<Region::Point2D>({ { 1.0, 2.0 }, { 3.0, 4.0 } })));
 }
 
 TEST_F(MapTest, GetRegionWorks)
 {
-  auto added = map.addRegion("test region", {{1.0, 2.0}, {3.0, 4.0}});
+  auto added = map.addRegion("test region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
   auto retrieved = map.getRegion("test region");
   EXPECT_EQ(retrieved, added);
-}*/
+  EXPECT_THAT(retrieved.get().points, ::testing::ContainerEq(added.points));
+}
+
+TEST_F(MapTest, GetAllRegionsWorks)
+{
+  auto added = map.addRegion("test region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
+  auto second = map.addRegion("second region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
+  auto retrieved = map.getAllRegions();
+  EXPECT_THAT(retrieved, ::testing::ContainerEq(std::vector<Region>{ added, second }));
+}

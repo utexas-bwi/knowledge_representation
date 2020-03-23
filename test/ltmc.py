@@ -6,7 +6,6 @@ import knowledge_representation
 
 ltmc = knowledge_representation.get_default_ltmc()
 
-
 class TestLTMC(unittest.TestCase):
 
     def setUp(self):
@@ -72,6 +71,11 @@ class TestLTMC(unittest.TestCase):
         self.assertEqual(1, pose.y)
         self.assertEqual(2, pose.theta)
         self.assertEqual("test pose", pose.get_name())
+
+        region = map.add_region("test region", [(0.0,1.1), (2.2, 3.3)])
+        test = region.points
+        self.assertTrue(region)
+        self.assertEqual(region.points[0], (0.0,1.1))
 
 
 if __name__ == '__main__':

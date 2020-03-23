@@ -10,6 +10,7 @@
 #include <knowledge_representation/LTMCRegion.h>
 #include <vector>
 #include <utility>
+#include <regex>
 
 using std::string;
 using std::vector;
@@ -733,7 +734,7 @@ Point LongTermMemoryConduitPostgreSQL::addPoint(Map& map, const std::string& nam
   return { point.entity_id, name, x, y, map, *this };
 }
 
-Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const std::string& name, double x, double y, double theta)
+Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const string& name, double x, double y, double theta)
 {
   auto pose_concept = getConcept("pose");
   auto pose = pose_concept.createInstance(name).get();
@@ -747,13 +748,28 @@ Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const std::string& name,
   return { pose.entity_id, name, x, y, theta, map, *this };
 }
 
-Region LongTermMemoryConduitPostgreSQL::addRegion(Map& map, const std::string& name,
-                                                  const std::vector<std::pair<double, double>>& points)
+Region LongTermMemoryConduitPostgreSQL::addRegion(Map& map, const string& name, const vector<Region::Point2D>& points)
 {
-  assert(false);
+  auto region_concept = getConcept("region");
+  auto region = region_concept.createInstance(name).get();
+  map.addAttribute("has", region);
+  std::ostringstream points_stream;
+  points_stream << "(";
+  for (const auto& point : points)
+  {
+    points_stream << "(" << point.first << "," << point.second << "),";
+  }
+  points_stream.seekp(-1, points_stream.cur) << ")";
+
+  pqxx::work txn{ *conn, "addRegion" };
+  auto result = txn.parameterized("INSERT INTO regions VALUES ($1, $2, $3, $4)")(region.entity_id)(name)(map.getName())(
+                       points_stream.str())
+                    .exec();
+  txn.commit();
+  return { region.entity_id, name, points, map, *this };
 }
 
-boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const std::string& name)
+boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getPoint" };
 
@@ -770,7 +786,7 @@ boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const
   return {};
 }
 
-boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const std::string& name)
+boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getPose" };
   string query =
@@ -795,9 +811,59 @@ boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const s
   return {};
 }
 
-boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, const std::string& name)
+template <typename Out>
+void split(const string& s, char delim, Out result)
 {
-  assert(false);
+  std::istringstream iss(s);
+  std::string item;
+  while (std::getline(iss, item, delim))
+  {
+    *result++ = item;
+  }
+}
+
+std::vector<std::string> split(const string& s, char delim)
+{
+  std::vector<std::string> elems;
+  split(s, delim, std::back_inserter(elems));
+  return elems;
+}
+
+std::vector<Region::Point2D> strToPoints(const string& s)
+{
+  std::vector<Region::Point2D> points;
+  std::regex paren_regex("\\(|\\)");
+  std::string result;
+  // write the results to an output iterator
+  std::regex_replace(back_inserter(result), s.begin(), s.end(), paren_regex, "");
+  auto components = split(result, ',');
+  auto i = components.begin();
+  while (i < components.end())
+  {
+    auto f = *i++;
+    auto s = *i++;
+    points.emplace_back(std::stod(f), std::stod(s));
+  }
+  return points;
+}
+
+boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, const string& name)
+{
+  pqxx::work txn{ *conn, "getRegion" };
+  string query = "SELECT * "
+                 "FROM regions WHERE parent_map_name"
+                 "= $1 AND region_name = $2";
+  auto q_result = txn.parameterized(query)(map.getName())(name).exec();
+  txn.commit();
+  assert(q_result.size() <= 1);
+  if (q_result.size() == 1)
+  {
+    auto region = q_result[0];
+    auto str = region["region"].as<string>();
+    const auto points = strToPoints(str);
+    return Region{ region["entity_id"].as<uint>(), name, points, map, *this };
+  }
+  return {};
 }
 
 vector<Point> LongTermMemoryConduitPostgreSQL::getAllPoints(Map& map)
@@ -837,7 +903,20 @@ vector<Pose> LongTermMemoryConduitPostgreSQL::getAllPoses(Map& map)
 
 vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)
 {
-  assert(false);
+  pqxx::work txn{ *conn, "getAllPoses" };
+  string query = "SELECT * FROM regions WHERE parent_map_name = $1";
+
+  auto q_result = txn.parameterized(query)(map.getName()).exec();
+  txn.commit();
+  vector<Region> regions;
+  for (const auto& row : q_result)
+  {
+    auto region = q_result[0];
+    auto str = region["region"].as<string>();
+    const auto points = strToPoints(str);
+    regions.emplace_back(row["entity_id"].as<uint>(), row["region_name"].as<string>(), points, map, *this);
+  }
+  return regions;
 }
 
 }  // namespace knowledge_rep
