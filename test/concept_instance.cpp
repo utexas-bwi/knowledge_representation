@@ -84,9 +84,23 @@ TEST_F(ConceptInstanceTest, CreateInstanceWorks)
 {
   auto instance = concept.createInstance();
   EXPECT_TRUE(instance.isValid());
+  EXPECT_FALSE(instance.getName());
   auto named_instance = concept.createInstance("named");
   ASSERT_TRUE(named_instance.is_initialized());
   EXPECT_TRUE(named_instance->isValid());
+  EXPECT_EQ("named", named_instance->getName().get());
+}
+
+TEST_F(ConceptInstanceTest, InstanceNameWorks)
+{
+  auto instance = concept.createInstance();
+  EXPECT_TRUE(instance.isValid());
+  EXPECT_FALSE(instance.getName());
+  instance.addAttribute("name", "custom name");
+  EXPECT_EQ("custom name", instance.getName().get());
+  instance.addAttribute("name", "second name");
+  // FIXME(nickswalker): the second name shouldn't be allowed. Needs to fail gracefully
+  EXPECT_EQ("custom name", instance.getName().get());
 }
 
 TEST_F(ConceptInstanceTest, MakeInstanceOfWorks)

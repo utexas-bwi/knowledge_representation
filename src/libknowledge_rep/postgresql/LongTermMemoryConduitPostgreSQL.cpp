@@ -305,7 +305,8 @@ Map LongTermMemoryConduitPostgreSQL::getMap(const std::string& name)
   if (result.empty())
   {
     Concept map_concept = getConcept("map");
-    Instance new_map = map_concept.createInstance();
+    // This should succeed because we would've retrieved it above if such an instance existed
+    Instance new_map = map_concept.createInstance(name).get();
     pqxx::work txn{ *conn, "getMap" };
     auto result = txn.parameterized("INSERT INTO maps VALUES ($1, $2)")(new_map.entity_id)(name).exec();
     txn.commit();

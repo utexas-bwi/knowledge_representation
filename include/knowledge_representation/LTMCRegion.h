@@ -27,10 +27,16 @@ public:
   using Point2D = std::pair<double, double>;
   MapImpl parent_map;
   std::vector<Point2D> points;
-  LTMCRegion(uint entity_id, std::string name, const std::vector<Point2D>& points, MapImpl parent_map,
+  LTMCRegion(uint entity_id, std::string name, std::vector<Point2D> points, MapImpl parent_map,
              LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
-    : parent_map(parent_map), points(points), InstanceImpl(entity_id, name, ltmc)
+    : parent_map(parent_map), points(std::move(points)), InstanceImpl(entity_id, name, ltmc)
   {
+    this->addAttribute("name", name);
+  }
+
+  std::string getName()
+  {
+    return this->name;
   }
 
   std::vector<PointImpl> getContainedPoints()

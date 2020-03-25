@@ -30,7 +30,12 @@ using std::vector;
 class MapTest : public ::testing::Test
 {
 protected:
-  MapTest() : ltmc(knowledge_rep::getDefaultLTMC()), map(ltmc.getMap("test map"))
+  MapTest()
+    : ltmc(knowledge_rep::getDefaultLTMC())
+    , map(ltmc.getMap("test map"))
+    , point(map.addPoint("test point", 0, 1))
+    , pose(map.addPose("test pose", 0, 1, 2))
+    , region(map.addRegion("test region", { { 0, 1 }, { 2, 3 } }))
   {
   }
 
@@ -43,6 +48,9 @@ protected:
 
   knowledge_rep::LongTermMemoryConduit ltmc;
   knowledge_rep::Map map;
+  knowledge_rep::Point point;
+  knowledge_rep::Pose pose;
+  knowledge_rep::Region region;
 };
 
 TEST_F(MapTest, GetMap)
@@ -52,20 +60,26 @@ TEST_F(MapTest, GetMap)
   EXPECT_NE(map, ltmc.getMap("another map"));
 }
 
+TEST_F(MapTest, GetAllMaps)
+{
+  auto map_concept = ltmc.getConcept("map");
+
+  EXPECT_TRUE(map.hasConcept(ltmc.getConcept("map")));
+  EXPECT_NE(map, ltmc.getMap("another map"));
+}
+
 TEST_F(MapTest, AddPointWorks)
 {
-  auto point = map.addPoint("test point", 1.0, 2.0);
-  EXPECT_EQ(1.0, point.x);
-  EXPECT_EQ(2.0, point.y);
-  EXPECT_EQ("test point", point.getName().get());
+  EXPECT_EQ(0.0, point.x);
+  EXPECT_EQ(1.0, point.y);
+  EXPECT_EQ("test point", point.getName());
   EXPECT_TRUE(point.hasConcept(ltmc.getConcept("point")));
   auto second_point = map.addPoint("another point", 1.0, 2.0);
-  EXPECT_EQ("another point", second_point.getName().get());
+  EXPECT_EQ("another point", second_point.getName());
 }
 
 TEST_F(MapTest, GetAllPointsWorks)
 {
-  auto point = map.addPoint("test point", 1.0, 2.0);
   EXPECT_EQ(1, map.getAllPoints().size());
   point.deleteEntity();
   EXPECT_EQ(0, map.getAllPoints().size());
@@ -73,40 +87,34 @@ TEST_F(MapTest, GetAllPointsWorks)
 
 TEST_F(MapTest, DoubleAddPointFails)
 {
-  auto point = map.addPoint("test point", 1.0, 2.0);
   EXPECT_ANY_THROW(map.addPoint("test point", 2.0, 3.0));
 }
 
 TEST_F(MapTest, PointEqualityWorks)
 {
-  auto point = map.addPoint("test point", 1.0, 2.0);
-  auto same_point = Point(point.entity_id, "test point", 1.0, 2.0, map, ltmc);
+  auto same_point = Point(point.entity_id, "test point", point.x, point.y, map, ltmc);
   EXPECT_EQ(point, same_point);
 }
 
 TEST_F(MapTest, GetPointWorks)
 {
-  auto added = map.addPoint("test point", 1.0, 2.0);
   auto retrieved = map.getPoint("test point");
-  EXPECT_EQ(added, retrieved);
+  EXPECT_EQ(point, retrieved);
 }
 
 TEST_F(MapTest, AddPoseWorks)
 {
-  auto pose = map.addPose("test point", 1.0, 2.0, 3.14);
   EXPECT_TRUE(pose.hasConcept(ltmc.getConcept("pose")));
 }
 
 TEST_F(MapTest, GetPoseWorks)
 {
-  auto added = map.addPose("test pose", 1.0, 2.0, 3.14);
   auto retrieved = map.getPose("test pose");
-  EXPECT_EQ(added, retrieved);
+  EXPECT_EQ(pose, retrieved);
 }
 
 TEST_F(MapTest, GetAllPosesWorks)
 {
-  auto pose = map.addPose("test pose", 1.0, 2.0, 3.14);
   EXPECT_EQ(1, map.getAllPoses().size());
   pose.deleteEntity();
   EXPECT_EQ(0, map.getAllPoses().size());
@@ -114,23 +122,62 @@ TEST_F(MapTest, GetAllPosesWorks)
 
 TEST_F(MapTest, AddRegionWorks)
 {
-  auto region = map.addRegion("test region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
   EXPECT_TRUE(region.hasConcept(ltmc.getConcept("region")));
-  EXPECT_THAT(region.points, ::testing::ContainerEq(std::vector<Region::Point2D>({ { 1.0, 2.0 }, { 3.0, 4.0 } })));
+  EXPECT_THAT(region.points, ::testing::ContainerEq(std::vector<Region::Point2D>({ { 0.0, 1.0 }, { 2.0, 3.0 } })));
 }
 
 TEST_F(MapTest, GetRegionWorks)
 {
-  auto added = map.addRegion("test region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
   auto retrieved = map.getRegion("test region");
-  EXPECT_EQ(retrieved, added);
-  EXPECT_THAT(retrieved.get().points, ::testing::ContainerEq(added.points));
+  EXPECT_EQ(region, retrieved);
+  EXPECT_THAT(retrieved.get().points, ::testing::ContainerEq(region.points));
 }
 
 TEST_F(MapTest, GetAllRegionsWorks)
 {
-  auto added = map.addRegion("test region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
-  auto second = map.addRegion("second region", { { 1.0, 2.0 }, { 3.0, 4.0 } });
+  auto second = map.addRegion("second region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
   auto retrieved = map.getAllRegions();
-  EXPECT_THAT(retrieved, ::testing::ContainerEq(std::vector<Region>{ added, second }));
+  EXPECT_THAT(retrieved, ::testing::ContainerEq(std::vector<Region>{ region, second }));
+}
+
+TEST_F(MapTest, MapNameWorks)
+{
+  EXPECT_EQ("test map", map.getName());
+  ASSERT_EQ(1, map["name"].size());
+  EXPECT_EQ("test map", map["name"][0].getStringValue());
+  map.addAttribute("name", "second name");
+  EXPECT_EQ("test map", map.getName());
+  EXPECT_EQ("test map", map["name"][0].getStringValue());
+  auto downcast = Entity{ map.entity_id, ltmc };
+  EXPECT_EQ("test map", downcast.getName().get());
+}
+
+TEST_F(MapTest, PointNameWorks)
+{
+  EXPECT_EQ("test point", point.getName());
+  ASSERT_EQ(1, point["name"].size());
+  EXPECT_EQ("test point", point["name"][0].getStringValue());
+  map.addAttribute("name", "second name");
+  EXPECT_EQ("test point", point.getName());
+  EXPECT_EQ("test point", point["name"][0].getStringValue());
+}
+
+TEST_F(MapTest, PoseNameWorks)
+{
+  EXPECT_EQ("test pose", pose.getName());
+  ASSERT_EQ(1, pose["name"].size());
+  EXPECT_EQ("test pose", pose["name"][0].getStringValue());
+  map.addAttribute("name", "second name");
+  EXPECT_EQ("test pose", pose.getName());
+  EXPECT_EQ("test pose", pose["name"][0].getStringValue());
+}
+
+TEST_F(MapTest, RegionNameWorks)
+{
+  EXPECT_EQ("test region", region.getName());
+  ASSERT_EQ(1, region["name"].size());
+  EXPECT_EQ("test region", region["name"][0].getStringValue());
+  map.addAttribute("name", "second name");
+  EXPECT_EQ("test region", region.getName());
+  EXPECT_EQ("test region", region["name"][0].getStringValue());
 }

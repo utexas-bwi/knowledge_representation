@@ -63,6 +63,15 @@ TEST_F(LTMCTest, GetConceptWorks)
   EXPECT_EQ(soda.entity_id, ltmc.getConcept("soda").entity_id);
 }
 
+TEST_F(LTMCTest, GetMapWorks)
+{
+  // Get concept returns the one true concept id
+  auto fresh_map = ltmc.getMap("test map");
+  auto second_map = ltmc.getMap("second test map");
+  auto retrieved_map = ltmc.getMap("test map");
+  EXPECT_EQ(fresh_map, retrieved_map);
+}
+
 TEST_F(LTMCTest, SQLQueryStrWorks)
 {
   vector<EntityAttribute> query_result;

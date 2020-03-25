@@ -10,7 +10,7 @@ namespace knowledge_rep
 {
 /// \brief Represents an Entity that is an Instance of some Concept.
 
-/// Instances like regular entities, but they always have a "name," and have
+/// Instances are like regular entities, but they have
 /// at least one Concept which they are directly an instance of.
 template <typename LTMCImpl>
 class LTMCInstance : public LTMCEntity<LTMCImpl>
@@ -19,6 +19,15 @@ protected:
   std::string name;
 
 public:
+  /**
+   * @brief Build an instance with a given name
+   *
+   * Note that no validation is performed on construction; the name and entity id are presumed
+   * to exist, and the behavior is undefined if they do not.
+   * @param entity_id
+   * @param name
+   * @param ltmc
+   */
   LTMCInstance(uint entity_id, std::string name, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : name(std::move(name)), LTMCEntity<LTMCImpl>(entity_id, ltmc)
   {
