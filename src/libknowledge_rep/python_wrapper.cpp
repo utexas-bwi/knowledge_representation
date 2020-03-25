@@ -129,9 +129,10 @@ struct PairToPythonConverter
 template <typename T1, typename T2>
 struct PythonToPairConverter
 {
+  using pair_type = std::pair<T1, T2>;
   PythonToPairConverter()
   {
-    boost::python::converter::registry::push_back(&convertible, &construct, typeid(std::pair<T1, T2>));
+    boost::python::converter::registry::push_back(&convertible, &construct, boost::python::type_id<pair_type>());
   }
   static void* convertible(PyObject* obj)
   {
@@ -144,8 +145,8 @@ struct PythonToPairConverter
   static void construct(PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data)
   {
     tuple tuple(boost::python::borrowed(obj));
-    void* storage = ((boost::python::converter::rvalue_from_python_storage<std::pair<T1, T2>>*)data)->storage.bytes;
-    new (storage) std::pair<T1, T2>(boost::python::extract<T1>(tuple[0]), boost::python::extract<T2>(tuple[1]));
+    void* storage = ((boost::python::converter::rvalue_from_python_storage<pair_type>*)data)->storage.bytes;
+    new (storage) pair_type(boost::python::extract<T1>(tuple[0]), boost::python::extract<T2>(tuple[1]));
     data->convertible = storage;
   }
 };
@@ -219,7 +220,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
   // Register a converter to get Python tuples turned into std::pairs
   py_pair<double, double>();
 
-  class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>>());
+  // No proxy must be set to true for the contained elements to be converted to tuples on demand
+  class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>, true>());
 
   // Automatically convert Python lists into vectors
   iterable_converter().from_python<std::vector<Region::Point2D>>();
