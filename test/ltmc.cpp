@@ -42,36 +42,6 @@ protected:
   knowledge_rep::LongTermMemoryConduit ltmc;
 };
 
-class EntityTest : public ::testing::Test
-{
-protected:
-  EntityTest()
-    : ltmc(knowledge_rep::getDefaultLTMC())
-    , entity(ltmc.addEntity())
-    , concept(ltmc.getConcept("test concept"))
-    , parent_concept(ltmc.getConcept("parent concept"))
-    , instance(ltmc.addEntity().entity_id, ltmc)
-  {
-  }
-
-  ~EntityTest()
-  {
-    entity.deleteEntity();
-    parent_concept.deleteEntity();
-    concept.deleteEntity();
-    instance.deleteEntity();
-    ltmc.deleteAllEntities();
-    ltmc.deleteAllAttributes();
-  }
-
-  knowledge_rep::LongTermMemoryConduit ltmc;
-  knowledge_rep::Entity entity;
-  knowledge_rep::Concept concept;
-  knowledge_rep::Concept parent_concept;
-  knowledge_rep::Instance instance;
-};
-
-// Declare a test
 TEST_F(LTMCTest, InitialConfigurationIsValid)
 {
   // Robot should exist
@@ -192,55 +162,6 @@ TEST_F(LTMCTest, AddNewAttributeWorks)
   EXPECT_FALSE(ltmc.addNewAttribute("neverseenbeforeattr", AttributeValueType::Bool));
 }
 
-TEST_F(EntityTest, EntityEqualityWorks)
-{
-  auto new_entity = ltmc.addEntity();
-  ASSERT_NE(entity, new_entity);
-
-  auto reconstructed = Entity(new_entity.entity_id, ltmc);
-  EXPECT_EQ(new_entity, reconstructed);
-}
-
-TEST_F(EntityTest, DeleteEntityWorks)
-{
-  concept.deleteEntity();
-  EXPECT_FALSE(concept.isValid());
-  EXPECT_EQ(0, concept.getAttributes().size());
-}
-
-TEST_F(EntityTest, RemoveInstancesWorks)
-{
-  instance.makeInstanceOf(concept);
-  concept.removeInstances();
-  EXPECT_FALSE(instance.isValid());
-  EXPECT_EQ(0, concept.getInstances().size());
-}
-
-TEST_F(EntityTest, RemoveInstancesRecursiveWorks)
-{
-  instance.makeInstanceOf(concept);
-  Concept parent_concept = ltmc.getConcept("parent concept");
-  concept.addAttribute("is_a", parent_concept);
-  EXPECT_EQ(0, parent_concept.removeInstances());
-  EXPECT_EQ(1, parent_concept.removeInstancesRecursive());
-  EXPECT_FALSE(instance.isValid());
-  EXPECT_EQ(0, concept.getInstances().size());
-}
-
-TEST_F(EntityTest, GetConceptsWorks)
-{
-  instance.makeInstanceOf(concept);
-  concept.addAttribute("is_a", parent_concept);
-  EXPECT_EQ(1, instance.getConcepts().size());
-}
-
-TEST_F(EntityTest, GetConceptsRecursiveWorks)
-{
-  instance.makeInstanceOf(concept);
-  concept.addAttribute("is_a", parent_concept);
-  EXPECT_EQ(2, instance.getConceptsRecursive().size());
-}
-
 TEST_F(LTMCTest, RecursiveRemoveWorks)
 {
   Concept parent = ltmc.getConcept("parent concept");
@@ -249,76 +170,6 @@ TEST_F(LTMCTest, RecursiveRemoveWorks)
   auto instance = child.createInstance();
   ASSERT_EQ(1, parent.removeInstancesRecursive());
   EXPECT_FALSE(instance.isValid());
-}
-
-TEST_F(EntityTest, AddEntityWorks)
-{
-  ASSERT_TRUE(entity.isValid());
-}
-
-TEST_F(EntityTest, CreateInstanceWorks)
-{
-  auto instance = concept.createInstance();
-  EXPECT_TRUE(instance.isValid());
-  auto named_instance = concept.createInstance("named");
-  ASSERT_TRUE(named_instance.is_initialized());
-  EXPECT_TRUE(named_instance->isValid());
-}
-
-TEST_F(EntityTest, MakeInstanceOfWorks)
-{
-  EXPECT_EQ(0, instance.getConcepts().size());
-  EXPECT_TRUE(instance.makeInstanceOf(concept));
-  EXPECT_EQ(1, instance.getConcepts().size());
-}
-
-TEST_F(EntityTest, StringAttributeWorks)
-{
-  entity.addAttribute("is_open", "test");
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(string), attrs.at(0).value.type());
-  EXPECT_EQ("test", boost::get<string>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, IntAttributeWorks)
-{
-  entity.addAttribute("is_open", 1u);
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(int), attrs.at(0).value.type());
-  EXPECT_EQ(1, boost::get<int>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, FloatAttributeWorks)
-{
-  entity.addAttribute("is_open", 1.f);
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(float), attrs.at(0).value.type());
-  EXPECT_EQ(1, boost::get<float>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, BoolAttributeWorks)
-{
-  entity.addAttribute("is_open", true);
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(bool), attrs.at(0).value.type());
-  EXPECT_TRUE(boost::get<bool>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-
-  entity.addAttribute("is_open", false);
-  attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(bool), attrs.at(0).value.type());
-  EXPECT_FALSE(boost::get<bool>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, CantRemoveEntityAttributeTwice)
-{
-  entity.addAttribute("is_open", true);
-  ASSERT_TRUE(entity.removeAttribute("is_open"));
-  ASSERT_FALSE(entity.removeAttribute("is_open"));
 }
 
 // Run all the tests
