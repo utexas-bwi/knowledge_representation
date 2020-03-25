@@ -145,9 +145,9 @@ TEST_F(MapTest, MapNameWorks)
   EXPECT_EQ("test map", map.getName());
   ASSERT_EQ(1, map["name"].size());
   EXPECT_EQ("test map", map["name"][0].getStringValue());
-  map.addAttribute("name", "second name");
+  /*map.addAttribute("name", "second name");
   EXPECT_EQ("test map", map.getName());
-  EXPECT_EQ("test map", map["name"][0].getStringValue());
+  EXPECT_EQ("test map", map["name"][0].getStringValue());*/
   auto downcast = Entity{ map.entity_id, ltmc };
   EXPECT_EQ("test map", downcast.getName().get());
 }
@@ -157,9 +157,9 @@ TEST_F(MapTest, PointNameWorks)
   EXPECT_EQ("test point", point.getName());
   ASSERT_EQ(1, point["name"].size());
   EXPECT_EQ("test point", point["name"][0].getStringValue());
-  map.addAttribute("name", "second name");
+  /*map.addAttribute("name", "second name");
   EXPECT_EQ("test point", point.getName());
-  EXPECT_EQ("test point", point["name"][0].getStringValue());
+  EXPECT_EQ("test point", point["name"][0].getStringValue());*/
 }
 
 TEST_F(MapTest, PoseNameWorks)
@@ -167,9 +167,10 @@ TEST_F(MapTest, PoseNameWorks)
   EXPECT_EQ("test pose", pose.getName());
   ASSERT_EQ(1, pose["name"].size());
   EXPECT_EQ("test pose", pose["name"][0].getStringValue());
-  map.addAttribute("name", "second name");
+  /*map.addAttribute("name", "second name");
   EXPECT_EQ("test pose", pose.getName());
   EXPECT_EQ("test pose", pose["name"][0].getStringValue());
+   */
 }
 
 TEST_F(MapTest, RegionNameWorks)
@@ -177,7 +178,7 @@ TEST_F(MapTest, RegionNameWorks)
   EXPECT_EQ("test region", region.getName());
   ASSERT_EQ(1, region["name"].size());
   EXPECT_EQ("test region", region["name"][0].getStringValue());
-  map.addAttribute("name", "second name");
+  /*map.addAttribute("name", "second name");
   EXPECT_EQ("test region", region.getName());
-  EXPECT_EQ("test region", region["name"][0].getStringValue());
+  EXPECT_EQ("test region", region["name"][0].getStringValue());*/
 }
