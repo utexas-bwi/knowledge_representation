@@ -46,14 +46,14 @@ public:
 
   bool operator==(const LTMCPose& other) const
   {
-    return this->entity_id == other.entity_id && this->name == other.name && this->x == other.x && this->y == other.y &&
-           this->theta == other.theta;
+    return this->entity_id == other.entity_id && this->name == other.name && this->parent_map == other.parent_map &&
+           this->x == other.x && this->y == other.y && this->theta == other.theta;
   }
 
   bool operator!=(const LTMCPose& other) const
   {
-    return this->entity_id != other.entity_id || this->name == other.name || this->x != other.x || this->y != other.y ||
-           this->theta != other.theta;
+    return this->entity_id != other.entity_id || this->name != other.name || this->parent_map != other.parent_map ||
+           this->x != other.x || this->y != other.y || this->theta != other.theta;
   }
 };
 }  // namespace knowledge_rep

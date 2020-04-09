@@ -73,5 +73,13 @@ public:
   {
     return this->ltmc.get().getAllRegions(*this);
   }
+  bool operator==(const LTMCMap& other) const
+  {
+    return this->entity_id == other.entity_id && this->map_id == other.map_id;
+  }
+  bool operator!=(const LTMCMap& other) const
+  {
+    return this->entity_id != other.entity_id || this->map_id != other.map_id;
+  }
 };
 }  // namespace knowledge_rep

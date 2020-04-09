@@ -916,8 +916,7 @@ vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)
   vector<Region> regions;
   for (const auto& row : q_result)
   {
-    auto region = q_result[0];
-    auto str = region["region"].as<string>();
+    auto str = row["region"].as<string>();
     const auto points = strToPoints(str);
     regions.emplace_back(row["entity_id"].as<uint>(), row["region_name"].as<string>(), points, map, *this);
   }

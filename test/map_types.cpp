@@ -120,6 +120,16 @@ TEST_F(MapTest, GetAllPosesWorks)
   EXPECT_EQ(0, map.getAllPoses().size());
 }
 
+TEST_F(MapTest, PoseEqualityWorks)
+{
+  auto second = map.addPose("test point", 2.0, 3.0, 4.0);
+  pose.deleteEntity();
+  EXPECT_EQ(pose, pose);
+  EXPECT_EQ(second, second);
+  EXPECT_NE(pose, second);
+  EXPECT_NE(second, pose);
+}
+
 TEST_F(MapTest, AddRegionWorks)
 {
   EXPECT_TRUE(region.hasConcept(ltmc.getConcept("region")));
@@ -138,6 +148,17 @@ TEST_F(MapTest, GetAllRegionsWorks)
   auto second = map.addRegion("second region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
   auto retrieved = map.getAllRegions();
   EXPECT_THAT(retrieved, ::testing::ContainerEq(std::vector<Region>{ region, second }));
+  second.deleteEntity();
+  EXPECT_EQ(1, map.getAllRegions().size());
+}
+
+TEST_F(MapTest, RegionEqualityWorks)
+{
+  auto second = map.addRegion("second region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
+  EXPECT_EQ(region, region);
+  EXPECT_EQ(second, second);
+  EXPECT_NE(region, second);
+  EXPECT_NE(second, region);
 }
 
 TEST_F(MapTest, MapNameWorks)

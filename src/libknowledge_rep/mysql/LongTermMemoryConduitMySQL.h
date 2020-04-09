@@ -16,15 +16,6 @@
 #include <utility>
 #include <vector>
 
-// Requirements
-// * Be able to staticly select which database backend
-// * No external dependency on which backend is available
-// * No significant external code changes when switching backends
-// Options
-// Non-requirements:
-// * ABI compatibility. We will continue to assume source builds
-// *
-// Solution: Static polymorphism w/ CRTP switched via a compile flag (?)
 namespace knowledge_rep
 {
 static const std::vector<std::string> table_names = { "entity_attributes_id", "entity_attributes_str",

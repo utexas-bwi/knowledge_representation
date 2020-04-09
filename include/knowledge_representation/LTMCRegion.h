@@ -47,5 +47,17 @@ public:
   {
     assert(false);
   }
+
+  bool operator==(const LTMCRegion& other) const
+  {
+    return this->entity_id == other.entity_id && this->name == other.name && this->parent_map == other.parent_map &&
+           this->points == other.points;
+  }
+
+  bool operator!=(const LTMCRegion& other) const
+  {
+    return this->entity_id != other.entity_id || this->name != other.name || this->parent_map != other.parent_map ||
+           this->points != other.points;
+  }
 };
 }  // namespace knowledge_rep
