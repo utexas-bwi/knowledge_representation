@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+ikr() {
+  rosrun knowledge_representation ikr $@
+}
+
 kr-show() {
     rosrun knowledge_representation show_me $@
 }
