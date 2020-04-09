@@ -181,4 +181,7 @@ TEST_F(MapTest, RegionNameWorks)
   /*map.addAttribute("name", "second name");
   EXPECT_EQ("test region", region.getName());
   EXPECT_EQ("test region", region["name"][0].getStringValue());*/
+
+  Instance as_instance = region;
+  EXPECT_EQ("test region", as_instance.getName().get());
 }

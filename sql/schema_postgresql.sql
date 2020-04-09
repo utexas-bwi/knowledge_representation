@@ -119,9 +119,10 @@ CREATE TABLE entity_attributes_bool
 
 CREATE TABLE maps
 (
-    entity_id int NOT NULL,
+    entity_id int UNIQUE NOT NULL,
+    map_id SERIAL NOT NULL ,
     map_name varchar(24) NOT NULL UNIQUE,
-    PRIMARY KEY (entity_id, map_name),
+    PRIMARY KEY (map_id),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
@@ -132,16 +133,16 @@ CREATE TABLE points
 (
     entity_id int NOT NULL,
     point_name varchar(24) NOT NULL,
-    parent_map_name varchar(24) NOT NULL,
+    parent_map_id int NOT NULL,
     point point NOT NULL,
-    PRIMARY KEY (entity_id, point_name, parent_map_name),
-    UNIQUE (point_name, parent_map_name),
+    PRIMARY KEY (point_name, parent_map_id),
+    UNIQUE (point_name, parent_map_id),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (parent_map_name)
-        REFERENCES maps (map_name)
+    FOREIGN KEY (parent_map_id)
+        REFERENCES maps (map_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -150,16 +151,16 @@ CREATE TABLE regions
 (
     entity_id int NOT NULL,
     region_name varchar(24) NOT NULL,
-    parent_map_name varchar(24) NOT NULL,
+    parent_map_id int NOT NULL,
     region polygon NOT NULL,
-    PRIMARY KEY (entity_id, region_name, parent_map_name),
-    UNIQUE (region_name, parent_map_name),
+    PRIMARY KEY (entity_id, region_name, parent_map_id),
+    UNIQUE (region_name, parent_map_id),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (parent_map_name)
-        REFERENCES maps (map_name)
+    FOREIGN KEY (parent_map_id)
+        REFERENCES maps (map_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -169,16 +170,16 @@ CREATE TABLE poses
 (
     entity_id int NOT NULL,
     pose_name varchar(24) NOT NULL,
-    parent_map_name varchar(24) NOT NULL,
+    parent_map_id int NOT NULL,
     pose lseg NOT NULL,
-    PRIMARY KEY (entity_id, pose_name, parent_map_name),
-    UNIQUE (pose_name, parent_map_name),
+    PRIMARY KEY (entity_id, pose_name, parent_map_id),
+    UNIQUE (pose_name, parent_map_id),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (parent_map_name)
-        REFERENCES maps (map_name)
+    FOREIGN KEY (parent_map_id)
+        REFERENCES maps (map_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -187,16 +188,16 @@ CREATE TABLE doors
 (
     entity_id int NOT NULL,
     door_name varchar(24) NOT NULL,
-    parent_map_name varchar(24) NOT NULL,
+    parent_map_id int NOT NULL,
     door lseg NOT NULL,
-    PRIMARY KEY (entity_id, door_name, parent_map_name),
-    UNIQUE (door_name, parent_map_name),
+    PRIMARY KEY (entity_id, door_name, parent_map_id),
+    UNIQUE (door_name, parent_map_id),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (parent_map_name)
-        REFERENCES maps (map_name)
+    FOREIGN KEY (parent_map_id)
+        REFERENCES maps (map_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -406,11 +407,9 @@ AS
 $$
 
 INSERT INTO entities
-VALUES (1);
-INSERT INTO entities
-VALUES (2);
+VALUES (1), (2), (3), (4), (5), (6);
 INSERT INTO concepts
-VALUES (2, 'robot');
+VALUES (2, 'robot'), (3, 'map'), (4, 'point'), (5, 'pose'), (6, 'region') ;
 INSERT INTO instance_of
 VALUES (1, 'robot');
 

@@ -64,6 +64,8 @@ class TestLTMC(unittest.TestCase):
         point = map.add_point("test", 0, 1)
         self.assertTrue(point)
         self.assertEqual("test", point.get_name())
+        self.assertEqual(point, map.get_point("test"))
+        self.assertEqual(1, len(map.get_all_points()))
 
         pose = map.add_pose("test pose", 0, 1, 2)
         self.assertTrue(pose)
@@ -71,11 +73,15 @@ class TestLTMC(unittest.TestCase):
         self.assertEqual(1, pose.y)
         self.assertEqual(2, pose.theta)
         self.assertEqual("test pose", pose.get_name())
+        self.assertEqual(pose, map.get_pose("test pose"))
+        self.assertEqual(1, len(map.get_all_poses()))
 
         region = map.add_region("test region", [(0.0,1.1), (2.2, 3.3)])
-        test = region.points
         self.assertTrue(region)
-        self.assertEqual(region.points[0], (0.0,1.1))
+        self.assertEqual(region.points[0], (0.0, 1.1))
+
+        self.assertEqual(region, map.get_region("test region"))
+        self.assertEqual(1, len(map.get_all_regions()))
 
 
 if __name__ == '__main__':

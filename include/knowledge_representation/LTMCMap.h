@@ -19,14 +19,21 @@ class LTMCMap : public LTMCInstance<LTMCImpl>
   using PoseImpl = LTMCPose<LTMCImpl>;
   using RegionImpl = LTMCRegion<LTMCImpl>;
 
+  uint map_id;
+
 public:
-  LTMCMap(uint entity_id, std::string name, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
-    : InstanceImpl(entity_id, name, ltmc)
+  LTMCMap(uint entity_id, uint map_id, std::string name, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
+    : map_id(map_id), InstanceImpl(entity_id, name, ltmc)
   {
   }
   std::string getName()
   {
     return this->name;
+  }
+
+  uint getId()
+  {
+    return this->map_id;
   }
   PointImpl addPoint(const std::string& name, double x, double y)
   {

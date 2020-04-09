@@ -48,12 +48,12 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
   EXPECT_TRUE(ltmc.entityExists(1));
   Instance robot = { ltmc.getEntity(1).get().entity_id, ltmc };
   auto concepts = robot.getConcepts();
-  EXPECT_EQ(concepts.size(), 1);
-  EXPECT_EQ(concepts[0].getName(), "robot");
-  EXPECT_EQ(ltmc.getAllEntities().size(), 2);
-  EXPECT_EQ(ltmc.getAllConcepts().size(), 1);
-  EXPECT_EQ(ltmc.getAllInstances().size(), 1);
-  EXPECT_EQ(ltmc.getAllAttributes().size(), 15);
+  EXPECT_EQ(1, concepts.size());
+  EXPECT_EQ("robot", concepts[0].getName());
+  EXPECT_EQ(6, ltmc.getAllEntities().size());
+  EXPECT_EQ(5, ltmc.getAllConcepts().size());
+  EXPECT_EQ(1, ltmc.getAllInstances().size());
+  EXPECT_EQ(15, ltmc.getAllAttributes().size());
 }
 
 TEST_F(LTMCTest, GetConceptWorks)

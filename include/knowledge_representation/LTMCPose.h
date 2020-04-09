@@ -32,7 +32,6 @@ public:
            LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : parent_map(parent_map), x(x), y(y), theta(theta), InstanceImpl(entity_id, name, ltmc)
   {
-    this->addAttribute("name", name);
   }
 
   std::string getName()

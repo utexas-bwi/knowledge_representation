@@ -236,6 +236,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<Pose>>("PyPoseList").def(vector_indexing_suite<vector<Pose>>());
 
+  class_<vector<Region>>("PyRegionList").def(vector_indexing_suite<vector<Region>>());
+
   enum_<AttributeValueType>("AttributeValueType")
       .value("int", AttributeValueType::Int)
       .value("str", AttributeValueType::Str)
@@ -255,7 +257,9 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_attributes", static_cast<vector<EntityAttribute> (Entity::*)() const>(&Entity::getAttributes))
       .def("delete", &Entity::deleteEntity)
       .def("is_valid", &Entity::isValid)
-      .def("__getitem__", &Entity::operator[]);
+      .def("__getitem__", &Entity::operator[])
+      .def("__eq__", &Entity::operator==)
+      .def("__ne__", &Entity::operator!=);
 
   class_<Concept, bases<Entity>>("Concept", init<uint, string, LTMC&>())
       .def("remove_instances", &Concept::removeInstances)
@@ -288,7 +292,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
 
-  class_<Map, bases<Instance>>("Map", init<uint, string, LTMC&>())
+  class_<Map, bases<Instance>>("Map", init<uint, uint, string, LTMC&>())
       .def("add_point", &Map::addPoint)
       .def("add_region", &Map::addRegion)
       .def("add_pose", &Map::addPose)
