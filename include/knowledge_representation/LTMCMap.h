@@ -9,7 +9,12 @@
 
 namespace knowledge_rep
 {
-/// \brief An instance of the Map concept, which represents a single 2D frame of reference
+/**
+ * @brief An instance of the Map concept, which represents a single 2D frame of reference
+ *
+ * Unlike instances of other concepts, maps **must** be uniquely named
+ * @tparam LTMCImpl
+ */
 template <typename LTMCImpl>
 class LTMCMap : public LTMCInstance<LTMCImpl>
 {
@@ -26,11 +31,37 @@ public:
     : map_id(map_id), InstanceImpl(entity_id, name, ltmc)
   {
   }
+
+  /**
+   * @brief Renames a map
+   *
+   * Due to special uniqueness constraints on map names, you need to use
+   * this method instead of manually adjusting the name attribute.
+   * @param new_name
+   * @return true if the rename succeeded
+   */
+  bool rename(const std::string& new_name)
+  {
+    bool rename_succeeded = this->ltmc.get().renameMap(*this, new_name);
+    if (rename_succeeded)
+    {
+      this->name = new_name;
+    }
+    return rename_succeeded;
+  }
+
   std::string getName()
   {
     return this->name;
   }
 
+  /**
+   * @brief Get's the map's id (**not** its entity ID)
+   *
+   * Map's are indexed by their own space of IDs. This prevents edge cases where a plain
+   * entity ID could be coerced to be an instance of a map, without respecting unique constraints for maps.
+   * @return
+   */
   uint getId()
   {
     return this->map_id;

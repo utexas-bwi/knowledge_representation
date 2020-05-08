@@ -446,6 +446,11 @@ protected:
     return static_cast<Impl*>(this)->getAllRegions(map);
   }
 
+  bool renameMap(MapImpl& map, const std::string& new_name)
+  {
+    return static_cast<Impl*>(this)->renameMap(map, new_name);
+  }
+
   // GEOMETRY BACKERS
 
 private:

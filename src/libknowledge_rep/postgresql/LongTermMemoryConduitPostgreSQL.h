@@ -198,6 +198,8 @@ protected:
   std::vector<PoseImpl> getAllPoses(MapImpl& map);
 
   std::vector<RegionImpl> getAllRegions(MapImpl& map);
+
+  bool renameMap(MapImpl& map, const std::string& new_name);
 };
 
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;

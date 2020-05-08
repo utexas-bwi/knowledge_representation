@@ -37,6 +37,13 @@ public:
   {
   }
 
+  /**
+   * @brief Convenience for getting name attribute
+   *
+   * Caching is provided for name since it's so commonly used. Note that behavior
+   * is undefined if more than one name attribute is set on the instance.
+   * @return name, if it is set
+   */
   boost::optional<std::string> getName()
   {
     if (!name.empty())

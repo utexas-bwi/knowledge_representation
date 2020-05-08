@@ -147,7 +147,8 @@ TEST_F(MapTest, GetAllRegionsWorks)
 {
   auto second = map.addRegion("second region", { { 1.1, 2.2 }, { 3.3, 4.4 } });
   auto retrieved = map.getAllRegions();
-  EXPECT_THAT(retrieved, ::testing::ContainerEq(std::vector<Region>{ region, second }));
+  EXPECT_TRUE(retrieved[0] == region || retrieved[1] == region);
+  EXPECT_TRUE(retrieved[0] == second || retrieved[1] == second);
   second.deleteEntity();
   EXPECT_EQ(1, map.getAllRegions().size());
 }
@@ -171,6 +172,23 @@ TEST_F(MapTest, MapNameWorks)
   EXPECT_EQ("test map", map["name"][0].getStringValue());*/
   auto downcast = Entity{ map.entity_id, ltmc };
   EXPECT_EQ("test map", downcast.getName().get());
+}
+
+TEST_F(MapTest, MapRenameWorks)
+{
+  auto second_map = ltmc.getMap("second map");
+  EXPECT_EQ("test map", map.getName());
+  ASSERT_EQ(1, map["name"].size());
+  EXPECT_EQ("test map", map["name"][0].getStringValue());
+
+  // Fine to rename to current name
+  ASSERT_TRUE(map.rename("test map"));
+  // But otherwise map names must be unique
+  ASSERT_FALSE(map.rename("second map"));
+  ASSERT_TRUE(map.rename("new map"));
+  EXPECT_EQ("new map", map.getName());
+  auto downcast = Entity{ map.entity_id, ltmc };
+  EXPECT_EQ("new map", downcast.getName().get());
 }
 
 TEST_F(MapTest, PointNameWorks)

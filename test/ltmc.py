@@ -61,6 +61,8 @@ class TestLTMC(unittest.TestCase):
     def test_map_types(self):
         map = ltmc.get_map("test map")
         self.assertEqual("test map", map.get_name())
+        self.assertTrue(map.rename("renamed map"))
+        self.assertEqual("renamed map", map.get_name())
         point = map.add_point("test", 0, 1)
         self.assertTrue(point)
         self.assertEqual("test", point.get_name())

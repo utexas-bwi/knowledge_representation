@@ -719,6 +719,7 @@ int LongTermMemoryConduitPostgreSQL::removeInstancesRecursive(const Concept& con
           .exec();
   txn.commit();
   return result.affected_rows();
+  bool renameMap(Map & map, const string& new_name);
 }
 
 // MAP BACKERS
@@ -921,6 +922,28 @@ vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)
     regions.emplace_back(row["entity_id"].as<uint>(), row["region_name"].as<string>(), points, map, *this);
   }
   return regions;
+}
+
+bool LongTermMemoryConduitPostgreSQL::renameMap(Map& map, const std::string& new_name)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "renameMap" };
+    auto result =
+        txn.parameterized("UPDATE maps SET map_name = $1 WHERE map_name = $2")(new_name)(map.getName()).exec();
+    txn.commit();
+    if (result.affected_rows() == 1)
+    {
+      map.removeAttribute("name");
+      map.addAttribute("name", new_name);
+    }
+    return result.affected_rows() == 1;
+  }
+  catch (const std::exception& e)
+  {
+    // Likely a naming collision. In any case, we didn't rename, so return false
+    return false;
+  }
 }
 
 }  // namespace knowledge_rep

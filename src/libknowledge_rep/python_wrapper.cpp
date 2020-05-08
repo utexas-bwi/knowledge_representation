@@ -301,7 +301,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_region", &Map::getRegion, python::return_value_policy<ReturnOptional>())
       .def("get_all_points", &Map::getAllPoints)
       .def("get_all_poses", &Map::getAllPoses)
-      .def("get_all_regions", &Map::getAllRegions);
+      .def("get_all_regions", &Map::getAllRegions)
+      .def("rename", &Map::rename);
 
   class_<Point, bases<Instance>>("Point", init<uint, string, double, double, Map, LTMC&>())
       .def_readonly("x", &Point::x)
