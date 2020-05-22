@@ -66,40 +66,96 @@ public:
   {
     return this->map_id;
   }
+
+  /**
+   * @brief Add a new point to the map
+   */
   PointImpl addPoint(const std::string& name, double x, double y)
   {
     return this->ltmc.get().addPoint(*this, name, x, y);
   }
 
+  /**
+   * @brief Add a new pose to the map
+   *
+   * The pose is assumed to be in the map frame
+   *
+   * @param x X coordinate of the pose position
+   * @param y Y coordinate of the pose position
+   * @param theta orientation of the pose
+   */
   PoseImpl addPose(const std::string& name, double x, double y, double theta)
   {
     return this->ltmc.get().addPose(*this, name, x, y, theta);
   }
 
+  /**
+   * @brief Add a new pose using two points
+   *
+   * Coordinates are taken to be in the map frame. This convenience method is simply intended
+   * to prevent atan2 usage bugs in client code.
+   *
+   * @param x1 X coordinate of the pose position
+   * @param y1 Y coordinate of the pose position
+   * @param x2 X coordinate of a second point along the direction of the pose orientation
+   * @param y2 Y coordinate of a second point along the direction of the pose orientation
+   */
+  PoseImpl addPose(const std::string& name, double x1, double y1, double x2, double y2)
+  {
+    return addPose(name, x1, x2, atan2(y2 - y1, x2 - x1));
+  }
+
+  /**
+   * @brief Add a new region to the map
+   */
   RegionImpl addRegion(const std::string& name, const std::vector<std::pair<double, double>>& points)
   {
     return this->ltmc.get().addRegion(*this, name, points);
   }
+
+  /**
+   * @brief Retrieve an existing point by its unique name
+   */
   boost::optional<PointImpl> getPoint(const std::string& name)
   {
     return this->ltmc.get().getPoint(*this, name);
   }
+
+  /**
+ * @brief Retrieve an existing pose by its unique name
+ */
   boost::optional<PoseImpl> getPose(const std::string& name)
   {
     return this->ltmc.get().getPose(*this, name);
   }
+
+  /**
+ * @brief Retrieve an existing region by its unique name
+ */
   boost::optional<RegionImpl> getRegion(const std::string& name)
   {
     return this->ltmc.get().getRegion(*this, name);
   }
+
+  /**
+ * @brief Get all points that belong to this map
+ */
   std::vector<PointImpl> getAllPoints()
   {
     return this->ltmc.get().getAllPoints(*this);
   }
+
+  /**
+ * @brief Get all poses that belong to this map
+ */
   std::vector<PoseImpl> getAllPoses()
   {
     return this->ltmc.get().getAllPoses(*this);
   }
+
+  /**
+ * @brief Get all regions that belong to this map
+ */
   std::vector<RegionImpl> getAllRegions()
   {
     return this->ltmc.get().getAllRegions(*this);
