@@ -2,7 +2,6 @@ import os
 from xml.etree import ElementTree as ElTree
 import yaml
 from PIL import Image
-from math import atan2
 
 text_el = "{http://www.w3.org/2000/svg}text"
 circle_el = "{http://www.w3.org/2000/svg}circle"
@@ -112,7 +111,7 @@ def transform_to_map_coords(map_info, points, poses, regions):
 
 
 def point_to_map_coords(map_info, point):
-    map_origin, resolution, width, height = map_info["origin"][0:2], map_info["resolution"], map_info["width"], \
+    map_origin, resolution, _, height = map_info["origin"][0:2], map_info["resolution"], map_info["width"], \
                                             map_info["height"]
     x, y = point
     # the map coordinate corresponding to the bottom left pixel
