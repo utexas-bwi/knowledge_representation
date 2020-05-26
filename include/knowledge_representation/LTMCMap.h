@@ -50,7 +50,7 @@ public:
     return rename_succeeded;
   }
 
-  std::string getName()
+  std::string getName() const
   {
     return this->name;
   }
@@ -113,4 +113,10 @@ public:
     return this->entity_id != other.entity_id || this->map_id != other.map_id;
   }
 };
+
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCMap<LTMCImpl>& m)
+{
+  return strm << "Map(" << m.entity_id << " \"" << m.getName() << "\")";
+}
 }  // namespace knowledge_rep

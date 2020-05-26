@@ -95,21 +95,12 @@ target_link_libraries(_libknowledge_rep_wrapper_cpp
         ${Boost_LIBRARIES}
         ${catkin_LIBRARIES})
 
-add_executable(show_me src/show_me.cpp)
-target_link_libraries(show_me knowledge_rep ${catkin_LIBRARIES})
-
-
 set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
         PREFIX ""
         LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_PYTHON_DESTINATION}
         )
 
 catkin_add_env_hooks(${PROJECT_NAME} SHELLS bash zsh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
-
-install(TARGETS show_me
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
 
 install(TARGETS knowledge_rep
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

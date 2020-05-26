@@ -33,7 +33,7 @@ public:
   {
   }
 
-  std::string getName()
+  std::string getName() const
   {
     return this->name;
   }
@@ -60,4 +60,16 @@ public:
            this->points != other.points;
   }
 };
+
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCRegion<LTMCImpl>& r)
+{
+  strm << "Region(" << r.entity_id << " \"" << r.getName() << "\" " << r.parent_map << " (";
+  for (const auto& p : r.points)
+  {
+    strm << p.first << "," << p.second << " ";
+  }
+  return strm << "))";
+}
+
 }  // namespace knowledge_rep

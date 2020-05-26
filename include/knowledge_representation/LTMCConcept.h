@@ -143,4 +143,11 @@ public:
     return true;
   }
 };
+
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCConcept<LTMCImpl>& c)
+{
+  return strm << "Concept(" << c.entity_id << " \"" << c.getName() << "\")";
+}
+
 }  // namespace knowledge_rep

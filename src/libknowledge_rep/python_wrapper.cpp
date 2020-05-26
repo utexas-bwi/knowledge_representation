@@ -213,6 +213,68 @@ struct iterable_converter
   }
 };
 
+template <typename Variant>
+struct variant_adaptor
+{
+  variant_adaptor()
+  {
+    boost::python::to_python_converter<Variant, variant_adaptor>{};
+    register_convertibles<Variant>::apply();
+  }
+
+  template <typename T>
+  struct register_convertibles;
+  template <typename T>
+  struct register_convertibles<boost::variant<T>>
+  {
+    static void apply()
+    {
+      boost::python::implicitly_convertible<T, Variant>();
+    }
+  };
+  template <typename T, typename... Ts>
+  struct register_convertibles<boost::variant<T, Ts...>>
+  {
+    static void apply()
+    {
+      boost::python::implicitly_convertible<T, Variant>();
+      register_convertibles<boost::variant<Ts...>>::apply();
+    }
+  };
+
+  static PyObject* convert(Variant const& v)
+  {
+    return apply_visitor(to_python{}, v);
+  }
+  struct to_python : boost::static_visitor<PyObject*>
+  {
+    template <typename T>
+    result_type operator()(T const& t) const
+    {
+      return boost::python::incref(boost::python::object(t).ptr());
+    }
+  };
+};
+
+/**
+ * @brief wraps a stream output overload into a to-string function for __str__ implementations
+ * @tparam T
+ * @param c
+ * @return
+ */
+template <typename T>
+std::string to_str_wrap(const T& c)
+{
+  std::ostringstream oss;
+  oss << c;
+  return oss.str();
+}
+
+std::ostream& operator<<(std::ostream& strm, const EntityAttribute& m)
+{
+  return strm << "EntityAttribute(" << m.entity_id << " " << m.attribute_name << " " << m.value << ")";
+}
+
 BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 {
   typedef LongTermMemoryConduit LTMC;
@@ -259,7 +321,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("is_valid", &Entity::isValid)
       .def("__getitem__", &Entity::operator[])
       .def("__eq__", &Entity::operator==)
-      .def("__ne__", &Entity::operator!=);
+      .def("__ne__", &Entity::operator!=)
+      .def("__str__", to_str_wrap<Entity>);
 
   class_<Concept, bases<Entity>>("Concept", init<uint, string, LTMC&>())
       .def("remove_instances", &Concept::removeInstances)
@@ -272,7 +335,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("create_instance", static_cast<Instance (Concept::*)() const>(&Concept::createInstance))
       .def("create_instance",
            static_cast<boost::optional<Instance> (Concept::*)(const string&) const>(&Concept::createInstance),
-           python::return_value_policy<ReturnOptional>());
+           python::return_value_policy<ReturnOptional>())
+      .def("__str__", to_str_wrap<Concept>);
 
   class_<Instance, bases<Entity>>("Instance", init<uint, LTMC&>())
       .def("make_instance_of", &Instance::makeInstanceOf)
@@ -280,15 +344,19 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_concepts", &Instance::getConcepts)
       .def("get_concepts_recursive", &Instance::getConceptsRecursive)
       .def("has_concept", &Instance::hasConcept)
-      .def("has_concept_recursively", &Instance::hasConceptRecursively);
+      .def("has_concept_recursively", &Instance::hasConceptRecursively)
+      .def("__str__", to_str_wrap<Instance>);
 
+  variant_adaptor<AttributeValue>();
   class_<EntityAttribute>("EntityAttribute", init<uint, string, AttributeValue>())
       .def_readonly("entity_id", &EntityAttribute::entity_id)
       .def_readonly("attribute_name", &EntityAttribute::attribute_name)
+      .def_readonly("value", &EntityAttribute::getValue)
       .def("get_int_value", &EntityAttribute::getIntValue)
       .def("get_float_value", &EntityAttribute::getFloatValue)
       .def("get_bool_value", &EntityAttribute::getBoolValue)
-      .def("get_string_value", &EntityAttribute::getStringValue);
+      .def("get_string_value", &EntityAttribute::getStringValue)
+      .def("__str__", to_str_wrap<EntityAttribute>);
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
 
@@ -302,23 +370,27 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_all_points", &Map::getAllPoints)
       .def("get_all_poses", &Map::getAllPoses)
       .def("get_all_regions", &Map::getAllRegions)
-      .def("rename", &Map::rename);
+      .def("rename", &Map::rename)
+      .def("__str__", to_str_wrap<Map>);
 
   class_<Point, bases<Instance>>("Point", init<uint, string, double, double, Map, LTMC&>())
       .def_readonly("x", &Point::x)
       .def_readonly("y", &Point::y)
-      .def("get_containing_regions", &Point::getContainingRegions);
+      .def("get_containing_regions", &Point::getContainingRegions)
+      .def("__str__", to_str_wrap<Point>);
 
   class_<Pose, bases<Instance>>("Pose", init<uint, string, double, double, double, Map, LTMC&>())
       .def_readonly("x", &Pose::x)
       .def_readonly("y", &Pose::y)
       .def_readonly("theta", &Pose::theta)
-      .def("get_containing_regions", &Pose::getContainingRegions);
+      .def("get_containing_regions", &Pose::getContainingRegions)
+      .def("__str__", to_str_wrap<Pose>);
 
   class_<Region, bases<Instance>>("Region", init<uint, string, const vector<Region::Point2D>, Map, LTMC&>())
       .def_readonly("points", &Region::points)
       .def("get_contained_points", &Region::getContainedPoints)
-      .def("get_contained_poses", &Region::getContainedPoses);
+      .def("get_contained_poses", &Region::getContainedPoses)
+      .def("__str__", to_str_wrap<Region>);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
       .def("add_entity", static_cast<Entity (LTMC::*)()>(&LTMC::addEntity))

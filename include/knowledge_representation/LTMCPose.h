@@ -34,7 +34,7 @@ public:
   {
   }
 
-  std::string getName()
+  std::string getName() const
   {
     return this->name;
   }
@@ -56,4 +56,12 @@ public:
            this->x != other.x || this->y != other.y || this->theta != other.theta;
   }
 };
+
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCPose<LTMCImpl>& p)
+{
+  return strm << "Point(" << p.entity_id << " \"" << p.getName() << "\" " << p.parent_map << " (" << p.x << ", " << p.y
+              << ", " << p.theta << "))";
+}
+
 }  // namespace knowledge_rep

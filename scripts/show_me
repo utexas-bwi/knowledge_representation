@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+import knowledge_representation
+from knowledge_representation import Entity, Concept
+from tabulate import tabulate
+import argparse
+
+ltmc = knowledge_representation.get_default_ltmc()
+
+
+def about_id(entity_id, show_attributes=True):
+    entity = Entity(entity_id, ltmc)
+    if not entity.is_valid():
+        print("Entity {} does not exist".format(entity_id))
+        exit(1)
+    attributes = entity.get_attributes()
+    headers = ["Attribute Name", "Value"]
+    rows = []
+    for attr in attributes:
+        unwrapped = attr.value
+        name = None
+        if isinstance(attr.value, int):
+            other_entity = Entity(attr.value, ltmc)
+            if other_entity.is_valid() and len(other_entity.get_attributes("name")) > 0:
+                name = "\"" + other_entity.get_attributes("name")[0].value + "\""
+                unwrapped = "{} ({})".format(str(unwrapped), name)
+            else:
+                unwrapped = str(attr.value)
+        elif isinstance(attr.value, str):
+            unwrapped = "\"{}\"".format(attr.value)
+
+        rows.append([attr.attribute_name, unwrapped])
+    print(tabulate(rows, headers))
+
+
+
+def about_concept(concept_name):
+    concept = ltmc.get_concept(concept_name)
+    instances = concept.get_instances()
+    print("{} instances of {}".format(len(instances), concept_name))
+    print("ID \tName")
+    for inst in instances:
+        name_to_print = "-"
+        if inst.get_name():
+            name_to_print = inst.get_name()
+        print("{}\t{}".format(inst.entity_id, name_to_print))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("entity_id_or_concept_name", type=str)
+    args = parser.parse_args()
+    if args.entity_id_or_concept_name.isdigit():
+        args.entity_id = int(args.entity_id_or_concept_name)
+        args.concept_name = None
+    else:
+        args.concept_name = args.entity_id_or_concept_name
+        args.entity_id = None
+
+    if args.entity_id:
+        about_id(args.entity_id)
+    elif args.concept_name:
+        about_concept(args.concept_name)
+
+
+if __name__ == "__main__":
+    main()

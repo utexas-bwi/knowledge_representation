@@ -186,4 +186,10 @@ protected:
   std::reference_wrapper<LongTermMemoryConduitInterface<LTMCImpl>> ltmc;
 };
 
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCEntity<LTMCImpl>& e)
+{
+  return strm << "Entity(" << e.entity_id << ")";
+}
+
 }  // namespace knowledge_rep

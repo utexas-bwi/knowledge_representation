@@ -59,6 +59,16 @@ struct EntityAttribute
   }
 
   /**
+   * @brief Get a copy of the value
+   *
+   * Primarily a helper for the Python API
+   * @return
+   */
+  AttributeValue getValue()
+  {
+    return value;
+  }
+  /**
    * @brief Extracts an int from the value
    *
    * Throws an exception if the value isn't of the expected type.

@@ -61,7 +61,7 @@ public:
   };
 
   /**
-   * @brief Attemps to make this instance also an instance of the given concept
+   * @brief Attempts to make this instance also an instance of the given concept
    *
    * Fails if this instance is already an instance of the concept.
    * @param concept The concept to make this entity an instance of
@@ -114,5 +114,26 @@ public:
     return std::find(concepts.begin(), concepts.end(), concept) != concepts.end();
   }
 };
+
+template <typename LTMCImpl>
+std::ostream& operator<<(std::ostream& strm, const LTMCInstance<LTMCImpl>& c)
+{
+  strm << "Instance(" << c.entity_id;
+  // Get the name if it exists. Work around for non-const getName method
+  const auto name = c.getAttributes("name");
+  if (!name.empty())
+  {
+    strm << " \"" << name[0].value << "\": ";
+  }
+  else
+  {
+    strm << ": ";
+  }
+  for (const auto& parent_concept : c.getConcepts())
+  {
+    strm << "\"" << parent_concept.getName() << "\" ";
+  }
+  return strm << ")";
+}
 
 }  // namespace knowledge_rep
