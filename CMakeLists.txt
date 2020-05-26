@@ -140,6 +140,7 @@ if(CATKIN_ENABLE_TESTING)
     add_dependencies(test_ltmc _libknowledge_rep_wrapper_cpp)
 
     catkin_add_nosetests(test/ltmc.py)
+    catkin_add_nosetests(test/loaders.py)
 
 #    catkin_add_gtest(test_parser test/parser.cpp)
 #    target_link_libraries(test_parser knowledge_rep ${catkin_LIBRARIES})
