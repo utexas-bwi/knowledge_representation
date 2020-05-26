@@ -160,6 +160,35 @@ public:
   {
     return this->ltmc.get().getAllRegions(*this);
   }
+
+  /**
+   * @brief Creates a copy of all of the map's owned geometry
+   * @param with_name the name to use for the new map
+   * @return the copied map
+   */
+  LTMCMap deepCopy(const std::string& with_name)
+  {
+    // This operation doesn't need to be fast and it doesn't need to be
+    // especially safe, so we'll do it in memory
+    LTMCMap new_map = this->ltmc.get().getMap(with_name);
+    const auto points = getAllPoints();
+    const auto poses = getAllPoses();
+    const auto regions = getAllRegions();
+    for (const auto point : points)
+    {
+      new_map.addPoint(point.getName(), point.x, point.y);
+    }
+    for (const auto pose : poses)
+    {
+      new_map.addPose(pose.getName(), pose.x, pose.y, pose.theta);
+    }
+    for (const auto region : regions)
+    {
+      new_map.addRegion(region.getName(), region.points);
+    }
+    return new_map;
+  }
+
   bool operator==(const LTMCMap& other) const
   {
     return this->entity_id == other.entity_id && this->map_id == other.map_id;

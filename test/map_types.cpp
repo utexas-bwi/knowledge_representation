@@ -60,6 +60,16 @@ TEST_F(MapTest, GetMap)
   EXPECT_NE(map, ltmc.getMap("another map"));
 }
 
+TEST_F(MapTest, CopyMap)
+{
+  EXPECT_EQ(map, ltmc.getMap("test map"));
+  auto copy = map.deepCopy("new map");
+  EXPECT_EQ("new map", copy.getName());
+  EXPECT_EQ(map.getAllPoints().size(), copy.getAllPoints().size());
+  EXPECT_EQ(map.getAllPoses().size(), copy.getAllPoses().size());
+  EXPECT_EQ(map.getAllRegions().size(), copy.getAllRegions().size());
+}
+
 TEST_F(MapTest, GetAllMaps)
 {
   auto map_concept = ltmc.getConcept("map");

@@ -371,6 +371,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_all_points", &Map::getAllPoints)
       .def("get_all_poses", &Map::getAllPoses)
       .def("get_all_regions", &Map::getAllRegions)
+      .def("deep_copy", &Map::deepCopy)
       .def("rename", &Map::rename)
       .def("__str__", to_str_wrap<Map>);
 
