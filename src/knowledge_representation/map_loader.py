@@ -2,11 +2,19 @@ import os
 from xml.etree import ElementTree as ElTree
 import yaml
 from PIL import Image
+import re
+from warnings import warn
 
 text_el = "{http://www.w3.org/2000/svg}text"
 circle_el = "{http://www.w3.org/2000/svg}circle"
 line_el = "{http://www.w3.org/2000/svg}line"
 poly_el = "{http://www.w3.org/2000/svg}polygon"
+path_el = "{http://www.w3.org/2000/svg}path"
+group_el = "{http://www.w3.org/2000/svg}g"
+tspan_el = "{http://www.w3.org/2000/svg}tspan"
+
+float_pattern = r"[-+]?\d*\.\d+|[-+]?\d+"
+translation_pattern = r"^translate\(({})\,({})\)".format(float_pattern, float_pattern)
 
 
 def populate_with_map_annotations(ltmc, map_name, points, poses, regions):
@@ -14,18 +22,32 @@ def populate_with_map_annotations(ltmc, map_name, points, poses, regions):
     map = ltmc.get_map(map_name)
     map.delete()
     map = ltmc.get_map(map_name)
+    point_count = 0
+    pose_count = 0
+    region_count = 0
 
     for name, point in points:
         point = map.add_point(name, *point)
-        assert point.is_valid()
+        if not point.is_valid():
+            warn("Failed to add point '{}': {}".format(name, *point))
+        else:
+            point_count += 1
 
     for name, (p1_x, p1_y), (p2_x, p2_y) in poses:
         pose = map.add_pose(name, p1_x, p1_y, p2_x, p2_y)
-        assert pose
+        if not pose.is_valid():
+            warn("Failed to add pose '{}': {}".format(name, *((p1_x, p1_y), (p2_x, p2_y))))
+        else:
+            pose_count += 1
 
     for name, points in regions:
         region = map.add_region(name, points)
-        assert region
+        if not region.is_valid():
+            warn("Failed to add region '{}': {}".format(name, *points))
+        else:
+            region_count += 1
+
+    return point_count, pose_count, region_count
 
 
 def load_map_from_yaml(path_to_yaml):
@@ -60,34 +82,155 @@ def load_map_from_yaml(path_to_yaml):
 
 def load_svg(svg_data):
     tree = ElTree.fromstring(svg_data)
+    parent_map = {c: p for p in tree.iter() for c in p}
     point_annotations = tree.findall(".//{}[@class='circle_annotation']".format(circle_el))
     point_names = tree.findall(".//{}[@class='circle_annotation']/../{}".format(circle_el, text_el))
     pose_annotations = tree.findall(".//{}[@class='pose_line_annotation']".format(line_el))
     pose_names = tree.findall(".//{}[@class='pose_line_annotation']/../{}".format(line_el, text_el))
     region_annotations = tree.findall(".//{}[@class='region_annotation']".format(poly_el))
     region_names = tree.findall(".//{}[@class='region_annotation']/../{}".format(poly_el, text_el))
+    path_groups = tree.findall(".//{}[{}]".format(group_el, path_el))
+    circle_groups = tree.findall(".//{}[{}]".format(group_el, circle_el))
+    circle_groups = filter(lambda g: len(g.getchildren()) == 2, circle_groups)
 
-    points = []
-    poses = []
-    regions = []
-    for point, text in zip(point_annotations, point_names):
-        name = text.text
-        pixel_coord = float(point.attrib["cx"]), float(point.attrib["cy"])
-        points.append((name, pixel_coord))
+    point_parents = map(parent_map.__getitem__, point_annotations)
+    points = process_point_annotations(point_names, point_annotations, point_parents)
+    pose_parents = map(parent_map.__getitem__, pose_annotations)
+    poses = process_pose_annotations(pose_names, pose_annotations, pose_parents)
+    region_parents = map(parent_map.__getitem__, region_annotations)
+    regions = process_region_annotations(region_names, region_annotations, region_parents)
 
-    for pose, text in zip(pose_annotations, pose_names):
-        name = text.text
-        start_cord = float(pose.attrib["x1"]), float(pose.attrib["y1"])
-        stop_cord = float(pose.attrib["x2"]), float(pose.attrib["y2"])
-        poses.append((name, start_cord, stop_cord))
+    # Messier extraction to get annotations stored as paths
+    path_poses, path_regions = process_paths(path_groups)
+    extra_points = []
 
-    for region, text in zip(region_annotations, region_names):
+    for group in circle_groups:
+        circle, text = group.find(".//{}".format(circle_el)), group.find(".//{}".format(tspan_el))
+        if "class" in circle.attrib:
+            # This was probably created by the annotation tool. Already processed above
+            continue
         name = text.text
-        points_strs = region.attrib["points"].split()
-        poly_points = [(float(x_str), float(y_str)) for x_str, y_str in map(lambda x: x.split(","), points_strs)]
-        regions.append((name, poly_points))
+        pixel_coord = float(circle.attrib["cx"]), float(circle.attrib["cy"])
+        extra_points.append((name, pixel_coord))
+
+    points += extra_points
+    poses += path_poses
+    regions += path_regions
 
     return points, poses, regions
+
+
+def get_group_transform(group):
+    if "transform" in group.attrib:
+        translate_match = re.match(translation_pattern, group.attrib["transform"])
+        if not translate_match:
+            raise RuntimeError("Can't process because it has a complex transform: {}".format(group))
+        else:
+            return float(translate_match.group(1)), float(translate_match.group(2))
+    return 0, 0
+
+
+def process_paths(path_groups):
+    from svgpathtools import parse_path, Line
+
+    def is_line(path_part):
+        return isinstance(path_part, Line)
+
+    regions = []
+    poses = []
+    for group in path_groups:
+        if len(group.getchildren()) != 2:
+            # May want to print a warning here
+            continue
+
+        # We assume that the text was created in inkscape so the string will be in a tspan
+        path, text = group.find(".//{}".format(path_el)), group.find(".//{}".format(tspan_el))
+        if text is None:
+            text = group.find(".//{}".format(text_el))
+        if text is None:
+            warn("No text label found for path group: {}".format(group))
+            continue
+        name = text.text
+
+        translate = 0, 0
+        try:
+            translate = get_group_transform(group)
+        except RuntimeError:
+            warn("Can't process path group '{}' because it has a complex transform: {}".format(name, group.attrib[
+                "transform"]))
+            continue
+        path_geom = parse_path(path.attrib["d"])
+        # Single line segment path => pose
+        if len(path_geom) == 1 and is_line(path_geom[0]):
+            line = path_geom[0]
+            # We assume line starts at origin and points towards the second point
+            start_coord = (line.start.real + translate[0], line.start.imag + translate[1])
+            end_coord = (line.end.real + translate[0], line.end.imag + translate[1])
+            poses.append((name, start_coord, end_coord))
+        # If they're all lines, let's assume it's closed and use it as a region
+        elif all(map(is_line, path_geom)):
+            # Real part => x, imag part => y
+            lines = map(lambda l: ((l.start.real, l.start.imag), (l.end.real, l.end.imag)), path_geom)
+            # Each line segment starts where the previous ended, so we can drop the end points
+            points = map(lambda l: l[0], lines)
+            points = map(lambda p: (float(p[0]), float(p[1])), points)
+            points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), points)
+            regions.append((name, points))
+        else:
+            print("Encountered path that couldn't be parsed")
+    return poses, regions
+
+
+def process_point_annotations(point_names, point_annotations, point_groups):
+    points = []
+    for point, text, parent in zip(point_annotations, point_names, point_groups):
+        name = text.text
+        translate = 0, 0
+        try:
+            translate = get_group_transform(parent)
+        except RuntimeError:
+            warn("Can't process point '{}' because it has a complex transform: {}".format(name,
+                                                                                          parent.attrib["transform"]))
+            continue
+        pixel_coord = float(point.attrib["cx"]) + translate[0], float(point.attrib["cy"]) + translate[1]
+        points.append((name, pixel_coord))
+    return points
+
+
+def process_pose_annotations(pose_names, pose_annotations, pose_groups):
+    poses = []
+    for pose, text, parent in zip(pose_annotations, pose_names, pose_groups):
+        name = text.text
+        translate = 0, 0
+        try:
+            translate = get_group_transform(parent)
+        except RuntimeError:
+            warn("Can't process pose '{}' because it has a complex transform: {}".format(name,
+                                                                                         parent.attrib["transform"]))
+            continue
+        start_cord = float(pose.attrib["x1"]) + translate[0], float(pose.attrib["y1"]) + translate[1]
+        stop_cord = float(pose.attrib["x2"]) + translate[0], float(pose.attrib["y2"]) + translate[1]
+        poses.append((name, start_cord, stop_cord))
+    return poses
+
+
+def process_region_annotations(region_names, region_annotations, region_groups):
+    regions = []
+    for region, text, parent in zip(region_annotations, region_names, region_groups):
+        name = text.text
+        translate = 0, 0
+        try:
+            translate = get_group_transform(parent)
+        except RuntimeError:
+            warn("Can't process region '{}' because it has a complex transform: {}".format(name,
+                                                                                           parent.attrib["transform"]))
+            continue
+        points_strs = region.attrib["points"].split()
+        poly_points = [(float(x_str), float(y_str)) for x_str, y_str in map(lambda x: x.split(","), points_strs)]
+        # Apply any translation
+        poly_points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), poly_points)
+        regions.append((name, poly_points))
+    return regions
 
 
 def transform_to_map_coords(map_info, points, poses, regions):
@@ -112,7 +255,7 @@ def transform_to_map_coords(map_info, points, poses, regions):
 
 def point_to_map_coords(map_info, point):
     map_origin, resolution, _, height = map_info["origin"][0:2], map_info["resolution"], map_info["width"], \
-                                            map_info["height"]
+                                        map_info["height"]
     x, y = point
     # the map coordinate corresponding to the bottom left pixel
     origin_x, origin_y = map_origin

@@ -2,15 +2,25 @@
 import knowledge_representation
 from knowledge_representation.map_loader import load_map_from_yaml, populate_with_map_annotations
 import argparse
+import warnings
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("map_yaml_path", type=str)
+    parser.add_argument("--allow-errors", type=bool, default=False)
     args = parser.parse_args()
     ltmc = knowledge_representation.get_default_ltmc()
-    map_name, annotations = load_map_from_yaml(args.map_yaml_path)
-    populate_with_map_annotations(ltmc, map_name, *annotations)
+
+    with warnings.catch_warnings(record=True) as w:
+        map_name, annotations = load_map_from_yaml(args.map_yaml_path)
+        if not args.allow_errors:
+            assert len(w) == 0
+        stats = populate_with_map_annotations(ltmc, map_name, *annotations)
+        if not args.allow_errors:
+            assert len(w) == 0
+        s_points, s_poses, s_regions = stats
+        print ("Loaded map '{}' with {} points, {} poses, {} regions".format(map_name, s_points, s_poses, s_regions))
 
 
 if __name__ == "__main__":
