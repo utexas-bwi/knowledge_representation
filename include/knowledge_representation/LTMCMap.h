@@ -27,6 +27,16 @@ class LTMCMap : public LTMCInstance<LTMCImpl>
   uint map_id;
 
 public:
+  /**
+   * @brief Build a map from its identifying components
+   *
+   * Map IDs aren't exposed, so this constructor shouldn't be called outside of the library.
+   * Create and retrieve maps using other methods on LTMC.
+   * @param entity_id
+   * @param map_id
+   * @param name
+   * @param ltmc
+   */
   LTMCMap(uint entity_id, uint map_id, std::string name, LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
     : map_id(map_id), InstanceImpl(entity_id, name, ltmc)
   {

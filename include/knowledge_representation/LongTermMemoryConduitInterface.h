@@ -41,9 +41,7 @@ enum AttributeValueType;
  * @brief Interface that defines the primary means of interacting with the knowledge base.
  *
  * This class implements the Curiously Recurring Template Pattern (CRTP) to enable multiple database backend
- * implementations
- * while maintaining
- * a static interface with no runtime dispatch. You can read more about this pattern
+ * implementations while maintaining a static interface with no runtime dispatch. You can read more about this pattern
  * here: https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/
  *
  * As a result, the implementation of the knowledgebase is completely defined in subclasses of this interface, one for
@@ -110,6 +108,99 @@ public:
   };
 
   /**
+ * @brief Inserts a new entity into the database.
+ * @return the new entity
+ */
+  EntityImpl addEntity()
+  {
+    return static_cast<Impl*>(this)->addEntity();
+  };
+
+  /**
+   * @brief Attempts to create an entity with a specific ID.
+   * @param id
+   * @return whether an entity with the given ID was created
+   */
+  bool addEntity(uint id)
+  {
+    return static_cast<Impl*>(this)->addEntity(id);
+  };
+
+  /**
+* @brief Returns an entity with the given ID, if it exists
+* @param entity_id the ID of the entity to fetch
+* @return the entity requested, or an empty optional if no such entity exists
+*/
+  boost::optional<EntityImpl> getEntity(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getEntity(entity_id);
+  };
+
+  /**
+ * @brief Returns an instance with the given ID, if it exists
+ * @param entity_id the ID of the instance to fetch
+ * @return the instance requested, or an empty optional if no such instance exists
+ */
+  boost::optional<InstanceImpl> getInstance(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getInstance(entity_id);
+  };
+
+  /**
+  * @brief Returns an concept with the given ID, if it exists
+  * @param entity_id the ID of the concept to fetch
+  * @return the concept requested, or an empty optional if no such concept exists
+  */
+  boost::optional<ConceptImpl> getConcept(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getConcept(entity_id);
+  };
+
+  /**
+  * @brief Returns an concept with the given ID, if it exists
+  * @param entity_id the ID of the concept to fetch
+  * @return the concept requested, or an empty optional if no such concept exists
+  */
+  boost::optional<MapImpl> getMap(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getMap(entity_id);
+  };
+
+  /**
+ * @brief Returns an concept with the given ID, if it exists
+ * @param entity_id the ID of the concept to fetch
+ * @return the concept requested, or an empty optional if no such concept exists
+ */
+  boost::optional<PointImpl> getPoint(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getPoint(entity_id);
+  };
+
+  /**
+* @brief Returns an concept with the given ID, if it exists
+* @param entity_id the ID of the concept to fetch
+* @return the concept requested, or an empty optional if no such concept exists
+*/
+  boost::optional<PoseImpl> getPose(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getPose(entity_id);
+  };
+
+  /**
+* @brief Returns a region with the given ID, if it exists
+   *
+   * Useful for discovering whether an ID is a region
+* @param entity_id the ID of the region to fetch
+* @return the region requested, or an empty optional if no such region exists
+*/
+  boost::optional<RegionImpl> getRegion(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getRegion(entity_id);
+  };
+
+  // ATTRIBUTES
+
+  /**
    * @brief Remove an attribute from the schema
    *
    * This will also remove all uses of this attribute.
@@ -132,23 +223,7 @@ public:
     return static_cast<const Impl*>(this)->attributeExists(name);
   };
 
-  /**
-   * @brief Remove all entities and all entity attributes except for the robot
-   * @return The number of entities removed
-   */
-  uint deleteAllEntities()
-  {
-    return static_cast<Impl*>(this)->deleteAllEntities();
-  }
-
-  /**
-   * @brief Remove all attributes except those defined in the schema as defaults
-   * @return The number of attributes removed
-   */
-  uint deleteAllAttributes()
-  {
-    return static_cast<Impl*>(this)->deleteAllAttributes();
-  }
+  // BULK OPERATIONS
 
   /**
    * @brief Get all current valid entities
@@ -178,6 +253,18 @@ public:
   }
 
   /**
+ * @brief Queries for all entities that are identified as maps
+   *
+   * No operations are provided for bulk retrieving geometry as they can easily be accomplished
+   * on a map by map basis.
+ * @return all maps in the LTMC
+ */
+  std::vector<MapImpl> getAllMaps()
+  {
+    return static_cast<Impl*>(this)->getAllMaps();
+  }
+
+  /**
    * @brief Retrieves all attributes
    * @return a list of tuples. First element of each is the attribute name,
    * the second is the allowed type for the attribute
@@ -194,6 +281,24 @@ public:
   std::vector<EntityAttribute> getAllEntityAttributes()
   {
     return static_cast<const Impl*>(this)->getAllEntityAttributes();
+  }
+
+  /**
+ * @brief Remove all entities and all entity attributes except for the robot
+ * @return The number of entities removed
+ */
+  uint deleteAllEntities()
+  {
+    return static_cast<Impl*>(this)->deleteAllEntities();
+  }
+
+  /**
+   * @brief Remove all attributes except those defined in the schema as defaults
+   * @return The number of attributes removed
+   */
+  uint deleteAllAttributes()
+  {
+    return static_cast<Impl*>(this)->deleteAllAttributes();
   }
   // RAW QUERIES
 
@@ -217,18 +322,6 @@ public:
     return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
   }
 
-  // MAP
-
-  /**
-   * @brief Retrieves a map of the given name, or creates one with the name if no such map exists.
-   * @param name
-   * @return
-   */
-  MapImpl getMap(const std::string& name)
-  {
-    return static_cast<Impl*>(this)->getMap(name);
-  }
-
   // CONVENIENCE
   /**
  * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
@@ -242,15 +335,14 @@ public:
   };
 
   /**
-   * @brief Retrieves an instance of the given name, or creates one with the name if no such instance exists
-   * @param name
-   * @return the existing instance, or the newly created one. In either case, the instance will at least have the name
-   *         passed as a parameter.
-   */
-  InstanceImpl getInstanceNamed(const std::string& name)
+ * @brief Retrieves a map of the given name, or creates one with the name if no such map exists.
+ * @param name
+ * @return
+ */
+  MapImpl getMap(const std::string& name)
   {
-    return static_cast<Impl*>(this)->getInstanceNamed(name);
-  };
+    return static_cast<Impl*>(this)->getMap(name);
+  }
 
   /**
    * @brief Gets the instance representing the robot
@@ -259,35 +351,6 @@ public:
   InstanceImpl getRobot()
   {
     return static_cast<Impl*>(this)->getRobot();
-  };
-
-  /**
-   * @brief Inserts a new entity into the database. Returns the entity's ID so it can be manipulated with other methods.
-   * @return the new entity
-   */
-  EntityImpl addEntity()
-  {
-    return static_cast<Impl*>(this)->addEntity();
-  };
-
-  /**
-   * @brief Attempts to create an entity with a specific ID.
-   * @param id
-   * @return whether an entity with the given ID was created
-   */
-  bool addEntity(uint id)
-  {
-    return static_cast<Impl*>(this)->addEntity(id);
-  };
-
-  /**
-   * @brief Returns an entity with the given ID, if it exists
-   * @param entity_id the ID of the entity to fetch
-   * @return the entity requested, or an empty optional if no such entity exists
-   */
-  boost::optional<EntityImpl> getEntity(uint entity_id)
-  {
-    return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
   // PROMOTERS
@@ -391,6 +454,11 @@ protected:
     return static_cast<Impl*>(this)->getInstances(concept);
   }
 
+  InstanceImpl getInstanceNamed(const ConceptImpl& concept, const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getInstanceNamed(concept, name);
+  };
+
   int removeInstances(const ConceptImpl& concept)
   {
     return static_cast<Impl*>(this)->removeInstances(concept);
@@ -450,8 +518,6 @@ protected:
   {
     return static_cast<Impl*>(this)->renameMap(map, new_name);
   }
-
-  // GEOMETRY BACKERS
 
 private:
   // We make the constructor private to make sure people can't build this interface type directly

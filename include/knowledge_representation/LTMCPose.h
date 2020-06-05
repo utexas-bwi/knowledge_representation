@@ -60,7 +60,7 @@ public:
 template <typename LTMCImpl>
 std::ostream& operator<<(std::ostream& strm, const LTMCPose<LTMCImpl>& p)
 {
-  return strm << "Point(" << p.entity_id << " \"" << p.getName() << "\" " << p.parent_map << " (" << p.x << ", " << p.y
+  return strm << "Pose(" << p.entity_id << " \"" << p.getName() << "\" " << p.parent_map << " (" << p.x << ", " << p.y
               << ", " << p.theta << "))";
 }
 

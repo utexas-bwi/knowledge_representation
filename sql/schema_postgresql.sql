@@ -129,6 +129,20 @@ CREATE TABLE maps
         ON UPDATE CASCADE
 );
 
+/* Deleting a map will delete owned entries in the geometry tables via cascade
+   on their parent_map_id references, but their deletion doesn't cascade to the entities table.
+   This trigger manually deletes entities associated with the map. */
+CREATE FUNCTION delete_map_owned_entities() RETURNS TRIGGER AS $_$
+BEGIN
+    DELETE FROM entities WHERE entity_id IN (SELECT entity_id FROM (SELECT entity_id, parent_map_id FROM poses UNION SELECT entity_id, parent_map_id FROM points UNION SELECT entity_id, parent_map_id FROM regions) AS owend_entities WHERE parent_map_id = OLD.map_id);
+    RETURN OLD;
+END $_$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER delete_map_owned_entities
+BEFORE DELETE ON maps
+FOR EACH ROW
+EXECUTE PROCEDURE delete_map_owned_entities();
+
 CREATE TABLE points
 (
     entity_id int NOT NULL,

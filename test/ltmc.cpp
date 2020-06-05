@@ -10,7 +10,7 @@
 #include <knowledge_representation/LTMCMap.h>
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCPose.h>
-// #include <knowledge_representation/LTMCRegion.h>
+#include <knowledge_representation/LTMCRegion.h>
 
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
@@ -46,7 +46,7 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
 {
   // Robot should exist
   EXPECT_TRUE(ltmc.entityExists(1));
-  Instance robot = { ltmc.getEntity(1).get().entity_id, ltmc };
+  Instance robot = { ltmc.getEntity(1)->entity_id, ltmc };
   auto concepts = robot.getConcepts();
   EXPECT_EQ(1, concepts.size());
   EXPECT_EQ("robot", concepts[0].getName());
@@ -63,6 +63,36 @@ TEST_F(LTMCTest, GetConceptWorks)
   EXPECT_EQ(soda.entity_id, ltmc.getConcept("soda").entity_id);
 }
 
+TEST_F(LTMCTest, GetConceptIDWorks)
+{
+  // Get concept returns the one true concept id
+  Concept soda = ltmc.getConcept("soda");
+  auto by_id = ltmc.getConcept(soda.entity_id);
+  ASSERT_TRUE(by_id);
+  EXPECT_EQ(soda.entity_id, by_id->entity_id);
+}
+
+TEST_F(LTMCTest, GetInstanceWorks)
+{
+  // Get concept returns the one true concept id
+  Concept soda = ltmc.getConcept("soda");
+  auto soda_inst = soda.createInstance("coke");
+  auto by_id = ltmc.getInstance(soda_inst->entity_id);
+  ASSERT_TRUE(soda_inst);
+  EXPECT_EQ(soda_inst->entity_id, by_id->entity_id);
+}
+
+TEST_F(LTMCTest, GetInstanceNamedWorks)
+{
+  // Get concept returns the one true concept id
+  Concept soda = ltmc.getConcept("soda");
+  auto soda_inst = soda.createInstance("coke");
+  auto second_inst = soda.createInstance("another");
+  // auto by_name = ltmc.getInstanceNamed("coke");
+  ASSERT_TRUE(soda_inst);
+  // EXPECT_EQ(soda_inst->entity_id, by_name.entity_id);
+}
+
 TEST_F(LTMCTest, GetMapWorks)
 {
   // Get concept returns the one true concept id
@@ -70,6 +100,45 @@ TEST_F(LTMCTest, GetMapWorks)
   auto second_map = ltmc.getMap("second test map");
   auto retrieved_map = ltmc.getMap("test map");
   EXPECT_EQ(fresh_map, retrieved_map);
+}
+
+TEST_F(LTMCTest, GetMapIdWorks)
+{
+  // Get concept returns the one true concept id
+  auto fresh_map = ltmc.getMap("test map");
+  auto retrieved_map = ltmc.getMap(fresh_map.entity_id);
+  ASSERT_TRUE(retrieved_map);
+  EXPECT_EQ(fresh_map, *retrieved_map);
+}
+
+TEST_F(LTMCTest, GetPointIdWorks)
+{
+  // Get concept returns the one true concept id
+  auto fresh_map = ltmc.getMap("test map");
+  auto fresh_point = fresh_map.addPoint("test point", 0, 1);
+  auto retrieved_point = ltmc.getPoint(fresh_point.entity_id);
+  ASSERT_TRUE(retrieved_point);
+  EXPECT_EQ(fresh_point, *retrieved_point);
+}
+
+TEST_F(LTMCTest, GetPoseIdWorks)
+{
+  // Get concept returns the one true concept id
+  auto fresh_map = ltmc.getMap("test map");
+  auto fresh_pose = fresh_map.addPose("test pose", 0, 1, 2);
+  auto retrieved_pose = ltmc.getPose(fresh_pose.entity_id);
+  ASSERT_TRUE(retrieved_pose);
+  EXPECT_EQ(fresh_pose, *retrieved_pose);
+}
+
+TEST_F(LTMCTest, GetRegionIdWorks)
+{
+  // Get concept returns the one true concept id
+  auto fresh_map = ltmc.getMap("test map");
+  auto fresh_region = fresh_map.addRegion("test region", { { 0, 1 }, { 2, 3 }, { 3, 4 } });
+  auto retrieved_region = ltmc.getRegion(fresh_region.entity_id);
+  ASSERT_TRUE(retrieved_region);
+  EXPECT_EQ(fresh_region, *retrieved_region);
 }
 
 TEST_F(LTMCTest, SQLQueryStrWorks)
@@ -103,13 +172,10 @@ TEST_F(LTMCTest, SQLQueryFloatWorks)
 TEST_F(LTMCTest, ObjectAndConceptNameSpacesAreSeparate)
 {
   Concept pitcher_con = ltmc.getConcept("soylent pitcher");
-  knowledge_rep::Entity pitcher = ltmc.getInstanceNamed("soylent pitcher");
-  EXPECT_NE(ltmc.getInstanceNamed("soylent pitcher").entity_id, pitcher_con.entity_id);
+  knowledge_rep::Instance pitcher = *pitcher_con.createInstance("soylent pitcher");
   // Both should still be valid
   EXPECT_TRUE(pitcher_con.isValid());
   EXPECT_TRUE(pitcher.isValid());
-  // Named entity returns the only entity by that name
-  EXPECT_EQ(pitcher, ltmc.getInstanceNamed("soylent pitcher"));
 }
 
 TEST_F(LTMCTest, CanOnlyAddAttributeOnce)
@@ -145,7 +211,7 @@ TEST_F(LTMCTest, GetAllConceptsWorks)
 TEST_F(LTMCTest, GetAllInstancesWorks)
 {
   int start_num = ltmc.getAllInstances().size();
-  ltmc.getInstanceNamed("neverseenbeforeinst");
+  ltmc.getConcept("test").createInstance();
   EXPECT_EQ(ltmc.getAllInstances().size(), start_num + 1);
 }
 
@@ -160,6 +226,13 @@ TEST_F(LTMCTest, GetAllAttributesWorks)
   int start_num = ltmc.getAllAttributes().size();
   ltmc.addNewAttribute("neverseenbeforeattr", AttributeValueType::Str);
   EXPECT_EQ(ltmc.getAllAttributes().size(), start_num + 1);
+}
+
+TEST_F(LTMCTest, GetAllMapsWorks)
+{
+  int start_num = ltmc.getAllMaps().size();
+  ltmc.getMap("neverseenbeforemap");
+  EXPECT_EQ(ltmc.getAllMaps().size(), start_num + 1);
 }
 
 TEST_F(LTMCTest, AddNewAttributeWorks)

@@ -22,6 +22,9 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   using PoseImpl = LTMCPose<LongTermMemoryConduitPostgreSQL>;
   using RegionImpl = LTMCRegion<LongTermMemoryConduitPostgreSQL>;
 
+  // Give wrapper classes access to our protected members. Database access
+  // is isolated into this class, so any wrapper methods that need to talk to the database
+  // are implemented as protected members here.
   friend EntityImpl;
   friend InstanceImpl;
   friend ConceptImpl;
@@ -30,6 +33,7 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   friend PoseImpl;
   friend RegionImpl;
 
+  // Allow the interface to forward calls to our protected members
   friend class LongTermMemoryConduitInterface;
 
 public:
@@ -45,10 +49,6 @@ public:
   // Move assignment
   LongTermMemoryConduitPostgreSQL& operator=(LongTermMemoryConduitPostgreSQL&& that) noexcept = default;
 
-  // TODO(nickswalker): Expose this in the interface once we know what run-time attribute
-  // operations are useful.
-  bool addNewAttribute(const std::string& name, const AttributeValueType type);
-
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
                                                           const uint other_entity_id);
 
@@ -59,13 +59,33 @@ public:
 
   bool entityExists(uint id) const;
 
+  bool addEntity(uint id);
+
+  boost::optional<EntityImpl> getEntity(uint entity_id);
+
+  boost::optional<InstanceImpl> getInstance(uint entity_id);
+
+  boost::optional<ConceptImpl> getConcept(uint entity_id);
+
+  boost::optional<MapImpl> getMap(uint entity_id);
+
+  boost::optional<PointImpl> getPoint(uint entity_id);
+
+  boost::optional<PoseImpl> getPose(uint entity_id);
+
+  boost::optional<RegionImpl> getRegion(uint entity_id);
+
+  // ATTRIBUTES
+
+  // TODO(nickswalker): Expose this in the interface once we know what run-time attribute
+  // operations are useful.
+  bool addNewAttribute(const std::string& name, const AttributeValueType type);
+
   bool deleteAttribute(const std::string& name);
 
   bool attributeExists(const std::string& name) const;
 
-  uint deleteAllEntities();
-
-  uint deleteAllAttributes();
+  // BULK OPERATIONS
 
   std::vector<EntityImpl> getAllEntities();
 
@@ -73,9 +93,15 @@ public:
 
   std::vector<InstanceImpl> getAllInstances();
 
+  std::vector<MapImpl> getAllMaps();
+
   std::vector<std::pair<std::string, AttributeValueType>> getAllAttributes() const;
 
   std::vector<EntityAttribute> getAllEntityAttributes();
+
+  uint deleteAllEntities();
+
+  uint deleteAllAttributes();
 
   template <typename T>
   bool selectQuery(const std::string& sql_query, std::vector<EntityAttribute>& result) const
@@ -119,21 +145,14 @@ public:
     return selectQuery<bool>(sql_query, result);
   }
 
-  // MAP
-  MapImpl getMap(const std::string& name);
-
   // CONVENIENCE
   ConceptImpl getConcept(const std::string& name);
 
-  InstanceImpl getInstanceNamed(const std::string& name);
+  MapImpl getMap(const std::string& name);
 
   InstanceImpl getRobot();
 
   EntityImpl addEntity();
-
-  bool addEntity(uint id);
-
-  boost::optional<EntityImpl> getEntity(uint entity_id);
 
   // PROMOTERS
 
@@ -176,6 +195,8 @@ protected:
 
   std::vector<InstanceImpl> getInstances(const ConceptImpl& concept);
 
+  InstanceImpl getInstanceNamed(const ConceptImpl& concept, const std::string& name);
+
   int removeInstances(const ConceptImpl& concept);
 
   int removeInstancesRecursive(const ConceptImpl& concept);
@@ -200,8 +221,22 @@ protected:
   std::vector<RegionImpl> getAllRegions(MapImpl& map);
 
   bool renameMap(MapImpl& map, const std::string& new_name);
+
+private:
+  /**
+   * @brief Retrieve a map by its internal map ID
+   *
+   * Map IDs are an implementation detail and should not be used
+   * by API consumers
+   * @param map_id
+   * @return the map with the given map ID, if it exists
+   */
+  boost::optional<MapImpl> getMapForMapId(uint map_id);
 };
 
+// These definitions are provided so that API consumers don't need to fill
+// their code with references to the specific implementation. Any implementation
+// of the LTMCInterface should provide these same typedefs to be compatible.
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
 typedef LTMCConcept<LongTermMemoryConduitPostgreSQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;

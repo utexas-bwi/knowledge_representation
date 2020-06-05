@@ -20,6 +20,7 @@
 #include <utility>
 
 namespace python = boost::python;
+using boost::optional;
 using knowledge_rep::AttributeValue;
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
@@ -329,12 +330,14 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("remove_instances_recursive", &Concept::removeInstancesRecursive)
       .def("remove_references", &Concept::removeReferences)
       .def("get_instances", &Concept::getInstances)
+      // TODO(nickswalker): Decide whether to expose or remove this convenience from LTMC
+      //.def("get_instance_named", &Concept::getInstanceNamed)
       .def("get_name", &Concept::getName)
       .def("get_children", &Concept::getChildren)
       .def("get_children_recursive", &Concept::getChildrenRecursive)
       .def("create_instance", static_cast<Instance (Concept::*)() const>(&Concept::createInstance))
       .def("create_instance",
-           static_cast<boost::optional<Instance> (Concept::*)(const string&) const>(&Concept::createInstance),
+           static_cast<optional<Instance> (Concept::*)(const string&) const>(&Concept::createInstance),
            python::return_value_policy<ReturnOptional>())
       .def("__str__", to_str_wrap<Concept>);
 
@@ -411,12 +414,24 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
            static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryFloat))
       .def("select_query_string",
            static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryString))
-      .def("get_map", &LTMC::getMap)
+      .def("get_concept", static_cast<Concept (LTMC::*)(const string&)>(&LTMC::getConcept))
+      .def("get_map", static_cast<Map (LTMC::*)(const std::string&)>(&LTMC::getMap))
+      .def("get_robot", &LTMC::getRobot)
       .def("get_all_entities", &LTMC::getAllEntities)
       .def("get_all_concepts", &LTMC::getAllConcepts)
       .def("get_all_instances", &LTMC::getAllInstances)
-      .def("get_all_attribute_names", &LTMC::getAllAttributes)
-      .def("get_concept", &LTMC::getConcept)
-      .def("get_instance_named", &LTMC::getInstanceNamed)
-      .def("get_robot", &LTMC::getRobot);
+      .def("get_all_maps", &LTMC::getAllMaps)
+      .def("get_all_attributes", &LTMC::getAllAttributes)
+      .def("get_entity", &LTMC::getEntity, python::return_value_policy<ReturnOptional>())
+      .def("get_instance", &LTMC::getInstance, python::return_value_policy<ReturnOptional>())
+      .def("get_concept", static_cast<optional<Concept> (LTMC::*)(uint)>(&LTMC::getConcept),
+           python::return_value_policy<ReturnOptional>())
+      .def("get_map", static_cast<optional<Map> (LTMC::*)(uint)>(&LTMC::getMap),
+           python::return_value_policy<ReturnOptional>())
+      .def("get_point", static_cast<optional<Point> (LTMC::*)(uint)>(&LTMC::getPoint),
+           python::return_value_policy<ReturnOptional>())
+      .def("get_pose", static_cast<optional<Pose> (LTMC::*)(uint)>(&LTMC::getPose),
+           python::return_value_policy<ReturnOptional>())
+      .def("get_region", static_cast<optional<Region> (LTMC::*)(uint)>(&LTMC::getRegion),
+           python::return_value_policy<ReturnOptional>());
 }

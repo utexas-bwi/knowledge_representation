@@ -24,6 +24,42 @@ typedef LTMCPose<LongTermMemoryConduitPostgreSQL> Pose;
 typedef LTMCRegion<LongTermMemoryConduitPostgreSQL> Region;
 typedef LTMCMap<LongTermMemoryConduitPostgreSQL> Map;
 
+template <typename Out>
+void split(const string& s, char delim, Out result)
+{
+  std::istringstream iss(s);
+  std::string item;
+  while (std::getline(iss, item, delim))
+  {
+    *result++ = item;
+  }
+}
+
+std::vector<std::string> split(const string& s, char delim)
+{
+  std::vector<std::string> elems;
+  split(s, delim, std::back_inserter(elems));
+  return elems;
+}
+
+std::vector<Region::Point2D> strToPoints(const string& s)
+{
+  std::vector<Region::Point2D> points;
+  std::regex paren_regex("\\(|\\)");
+  std::string result;
+  // write the results to an output iterator
+  std::regex_replace(back_inserter(result), s.begin(), s.end(), paren_regex, "");
+  auto components = split(result, ',');
+  auto i = components.begin();
+  while (i < components.end())
+  {
+    auto f = *i++;
+    auto s = *i++;
+    points.emplace_back(std::stod(f), std::stod(s));
+  }
+  return points;
+}
+
 LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& db_name)
   : LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>()
 {
@@ -67,9 +103,9 @@ bool LongTermMemoryConduitPostgreSQL::addNewAttribute(const string& name, const 
 
 bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
 {
-  pqxx::work txn{ *conn };
+  pqxx::work txn{ *conn, "entityExists" };
   // Remove all entities
-  auto result = txn.exec("SELECT 1 FROM entities WHERE entity_id=" + txn.quote(id));
+  auto result = txn.exec("SELECT count(*) FROM entities WHERE entity_id=" + txn.quote(id));
   txn.commit();
   return result.size() == 1;
 }
@@ -125,9 +161,9 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
   return return_result;
 }
 
-std::vector<Entity> LongTermMemoryConduitPostgreSQL::getAllEntities()
+vector<Entity> LongTermMemoryConduitPostgreSQL::getAllEntities()
 {
-  pqxx::work txn{ *conn };
+  pqxx::work txn{ *conn, "getAllEntities" };
 
   auto result = txn.exec("TABLE entities");
   txn.commit();
@@ -138,6 +174,21 @@ std::vector<Entity> LongTermMemoryConduitPostgreSQL::getAllEntities()
     entities.emplace_back(row["entity_id"].as<uint>(), *this);
   }
   return entities;
+}
+
+vector<Map> LongTermMemoryConduitPostgreSQL::getAllMaps()
+{
+  pqxx::work txn{ *conn, "getAllMaps" };
+
+  auto result = txn.exec("TABLE maps");
+  txn.commit();
+
+  vector<Map> maps;
+  for (const auto& row : result)
+  {
+    maps.emplace_back(row["entity_id"].as<uint>(), row["map_id"].as<uint>(), row["name"].as<string>(), *this);
+  }
+  return maps;
 }
 
 uint LongTermMemoryConduitPostgreSQL::deleteAllAttributes()
@@ -201,31 +252,24 @@ Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
   }
 }
 
-Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const string& name)
+Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const Concept& concept, const string& name)
 {
   pqxx::work txn{ *conn, "getInstanceNamed" };
-  string query = "SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
-                 "AND attribute_value = " +
-                 txn.quote(name) + "AND entity_id NOT IN "
-                                   "(SELECT entity_id FROM entity_attributes_bool "
-                                   "WHERE attribute_name = 'is_concept' AND attribute_value = true)";
-
-  // If there's no "is_concept" marker on an entity, we assume it is not a concept
-  auto q_result = txn.exec(query);
+  auto result = txn.parameterized("SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
+                                  "AND attribute_value = $1 AND entity_id IN (SELECT entity_id FROM instance_of WHERE "
+                                  "concept_name = $2)")(name)(concept.getName())
+                    .exec();
   txn.commit();
-
-  if (q_result.empty())
+  if (result.empty())
   {
-    Instance new_entity = Instance(addEntity().entity_id, *this);
-    new_entity.addAttribute("name", name);
-    new_entity.addAttribute("is_concept", false);
-    return new_entity;
+    // We know creating will succeed because we didn't find any instances in previous query
+    return *concept.createInstance(name);
   }
   else
   {
     // Can only be one instance with a given name
-    assert(q_result.size() == 1);
-    return { q_result[0]["entity_id"].as<uint>(), *this };
+    assert(result.size() == 1);
+    return { result[0]["entity_id"].as<uint>(), *this };
   }
 }
 
@@ -236,6 +280,148 @@ boost::optional<Entity> LongTermMemoryConduitPostgreSQL::getEntity(uint entity_i
     return Entity{ entity_id, *this };
   }
   return {};
+}
+
+boost::optional<Instance> LongTermMemoryConduitPostgreSQL::getInstance(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getInstance" };
+    auto result = txn.parameterized("SELECT count(*) FROM instance_of WHERE entity_id = $1")(entity_id).exec();
+    txn.commit();
+    if (result[0]["count"].as<uint>() == 1)
+    {
+      return Instance{ entity_id, *this };
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Concept> LongTermMemoryConduitPostgreSQL::getConcept(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getConcept" };
+    // A simple count won't do because we need the name
+    auto result = txn.parameterized("SELECT concept_name FROM concepts WHERE entity_id = $1")(entity_id).exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      return Concept{ entity_id, result[0]["concept_name"].as<string>(), *this };
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Map> LongTermMemoryConduitPostgreSQL::getMap(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getMap" };
+    // A simple count won't do because we need the name
+    auto result = txn.parameterized("SELECT map_name, map_id FROM maps WHERE entity_id = $1")(entity_id).exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      return Map{ entity_id, result[0]["map_id"].as<uint>(), result[0]["map_name"].as<string>(), *this };
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getPoint" };
+    // A simple count won't do because we need the name
+    auto result = txn.parameterized("SELECT point_name, point[0] AS x, point[1] AS y, parent_map_id FROM points WHERE "
+                                    "entity_id = $1")(entity_id)
+                      .exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
+      return Point(entity_id, result[0]["point_name"].as<string>(), result[0]["x"].as<double>(),
+                   result[0]["y"].as<double>(), parent_map, *this);
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getPose" };
+    // A simple count won't do because we need the name
+    auto result =
+        txn.parameterized("SELECT entity_id, pose_name, parent_map_id, start[0] as x, start[1] as y, "
+                          "ATAN2(end_point[1]-start[1],end_point[0]-start[0])"
+                          " as theta FROM (SELECT entity_id, pose_name, parent_map_id, pose[0] as start, pose[1] as "
+                          "end_point FROM poses WHERE entity_id = $1) AS dummy_sub_alias")(entity_id)
+            .exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
+      return Pose(entity_id, result[0]["pose_name"].as<string>(), result[0]["x"].as<double>(),
+                  result[0]["y"].as<double>(), result[0]["theta"].as<double>(), parent_map, *this);
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getRegion" };
+    string query = "SELECT entity_id, region_name, region, parent_map_id "
+                   "FROM regions WHERE entity_id"
+                   "= $1";
+    auto result = txn.parameterized(query)(entity_id).exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      auto region = result[0];
+      auto str = region["region"].as<string>();
+      const auto points = strToPoints(str);
+      auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
+      return Region{ region["entity_id"].as<uint>(), region["region_name"].as<string>(), points, parent_map, *this };
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
 }
 
 Instance LongTermMemoryConduitPostgreSQL::getRobot()
@@ -817,42 +1003,6 @@ boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const s
   return {};
 }
 
-template <typename Out>
-void split(const string& s, char delim, Out result)
-{
-  std::istringstream iss(s);
-  std::string item;
-  while (std::getline(iss, item, delim))
-  {
-    *result++ = item;
-  }
-}
-
-std::vector<std::string> split(const string& s, char delim)
-{
-  std::vector<std::string> elems;
-  split(s, delim, std::back_inserter(elems));
-  return elems;
-}
-
-std::vector<Region::Point2D> strToPoints(const string& s)
-{
-  std::vector<Region::Point2D> points;
-  std::regex paren_regex("\\(|\\)");
-  std::string result;
-  // write the results to an output iterator
-  std::regex_replace(back_inserter(result), s.begin(), s.end(), paren_regex, "");
-  auto components = split(result, ',');
-  auto i = components.begin();
-  while (i < components.end())
-  {
-    auto f = *i++;
-    auto s = *i++;
-    points.emplace_back(std::stod(f), std::stod(s));
-  }
-  return points;
-}
-
 boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getRegion" };
@@ -944,6 +1094,18 @@ bool LongTermMemoryConduitPostgreSQL::renameMap(Map& map, const std::string& new
     // Likely a naming collision. In any case, we didn't rename, so return false
     return false;
   }
+}
+
+boost::optional<Map> LongTermMemoryConduitPostgreSQL::getMapForMapId(uint map_id)
+{
+  pqxx::work txn{ *conn, "getMapForId" };
+  auto result = txn.parameterized("SELECT entity_id, map_name FROM maps WHERE map_id= $1")(map_id).exec();
+  txn.commit();
+  if (result.size() == 1)
+  {
+    return Map(result[0]["entity_id"].as<uint>(), map_id, result[0]["map_name"].as<string>(), *this);
+  }
+  return {};
 }
 
 }  // namespace knowledge_rep

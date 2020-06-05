@@ -109,3 +109,12 @@ TEST_F(ConceptInstanceTest, MakeInstanceOfWorks)
   EXPECT_TRUE(instance.makeInstanceOf(concept));
   EXPECT_EQ(1, instance.getConcepts().size());
 }
+
+TEST_F(ConceptInstanceTest, ConceptEqualityWorks)
+{
+  EXPECT_EQ(concept, concept);
+  // Different ID should fail equality
+  EXPECT_NE(concept, Concept(0, concept.getName(), ltmc));
+  // Different name should fail
+  EXPECT_NE(concept, Concept(concept.entity_id, "random name", ltmc));
+}

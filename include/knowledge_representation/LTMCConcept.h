@@ -142,6 +142,28 @@ public:
     this->ltmc.get().makeConcept(this->entity_id, name);
     return true;
   }
+
+  bool operator==(const LTMCConcept& other) const
+  {
+    return this->entity_id == other.entity_id && this->name == other.name;
+  }
+
+  bool operator!=(const LTMCConcept& other) const
+  {
+    return this->entity_id != other.entity_id || this->name != other.name;
+  }
+
+  bool isValid()
+  {
+    // Check whether LTMC still knows that this ID belongs to some concept
+    auto retrieved = this->ltmc.get().getConcept(this->entity_id);
+    if (retrieved)
+    {
+      // Name could've changed if ID was reassigned to different concept. Check sameness
+      return *this == *retrieved;
+    }
+    return false;
+  }
 };
 
 template <typename LTMCImpl>
