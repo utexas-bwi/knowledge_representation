@@ -107,7 +107,7 @@ bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
   // Remove all entities
   auto result = txn.exec("SELECT count(*) FROM entities WHERE entity_id=" + txn.quote(id));
   txn.commit();
-  return result.size() == 1;
+  return result[0]["count"].as<uint>() == 1;
 }
 
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
@@ -186,7 +186,7 @@ vector<Map> LongTermMemoryConduitPostgreSQL::getAllMaps()
   vector<Map> maps;
   for (const auto& row : result)
   {
-    maps.emplace_back(row["entity_id"].as<uint>(), row["map_id"].as<uint>(), row["name"].as<string>(), *this);
+    maps.emplace_back(row["entity_id"].as<uint>(), row["map_id"].as<uint>(), row["map_name"].as<string>(), *this);
   }
   return maps;
 }
@@ -905,7 +905,6 @@ int LongTermMemoryConduitPostgreSQL::removeInstancesRecursive(const Concept& con
           .exec();
   txn.commit();
   return result.affected_rows();
-  bool renameMap(Map & map, const string& new_name);
 }
 
 // MAP BACKERS
