@@ -22,6 +22,8 @@
     <depend>libpqxx-dev</depend>
     <depend>postgresql</depend>
     <depend>python-dev</depend>
+    <exec_depend>python-imaging</exec_depend>
+    <exec_depend>svgpathtools-pip</exec_depend>
 
     <test_depend>rosunit</test_depend>
 
