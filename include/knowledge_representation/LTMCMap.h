@@ -112,7 +112,7 @@ public:
    */
   PoseImpl addPose(const std::string& name, double x1, double y1, double x2, double y2)
   {
-    return addPose(name, x1, x2, atan2(y2 - y1, x2 - x1));
+    return addPose(name, x1, y1, atan2(y2 - y1, x2 - x1));
   }
 
   /**

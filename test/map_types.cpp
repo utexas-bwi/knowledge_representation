@@ -34,7 +34,7 @@ protected:
     : ltmc(knowledge_rep::getDefaultLTMC())
     , map(ltmc.getMap("test map"))
     , point(map.addPoint("test point", 0, 1))
-    , pose(map.addPose("test pose", 0, 1, 2))
+    , pose(map.addPose("test pose", 0, 1, 0))
     , region(map.addRegion("test region", { { 0, 1 }, { 2, 3 } }))
   {
   }
@@ -115,6 +115,13 @@ TEST_F(MapTest, GetPointWorks)
 TEST_F(MapTest, AddPoseWorks)
 {
   EXPECT_TRUE(pose.hasConcept(ltmc.getConcept("pose")));
+  EXPECT_EQ(0, pose.x);
+  EXPECT_EQ(1, pose.y);
+  EXPECT_EQ(0, pose.theta);
+  auto from_points = map.addPose("fromline", 0, 1, 2, 1);
+  EXPECT_EQ(0, from_points.x);
+  EXPECT_EQ(1, from_points.y);
+  EXPECT_EQ(0, from_points.theta);
 }
 
 TEST_F(MapTest, GetPoseWorks)
