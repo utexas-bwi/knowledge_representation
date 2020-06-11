@@ -86,6 +86,11 @@ public:
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, other_entity_id);
   };
 
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const float float_val)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, float_val);
+  }
+
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val)
   {
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, bool_val);

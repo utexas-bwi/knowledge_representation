@@ -169,6 +169,24 @@ TEST_F(LTMCTest, SQLQueryFloatWorks)
   EXPECT_EQ(query_result.size(), 0);
 }
 
+TEST_F(LTMCTest, GetEntitiesWithAttributeOfValue)
+{
+  auto entity = ltmc.addEntity();
+  bool success = entity.addAttribute("is_a", 1u);
+  ASSERT_TRUE(success);
+  auto entities = ltmc.getEntitiesWithAttributeOfValue("is_a", 1u);
+  EXPECT_EQ(1, entities.size());
+  success = entity.addAttribute("height", 2.0f);
+  ASSERT_TRUE(success);
+  entities = ltmc.getEntitiesWithAttributeOfValue("height", 2.0f);
+  EXPECT_EQ(1, entities.size());
+
+  success = entity.addAttribute("is_open", true);
+  ASSERT_TRUE(success);
+  entities = ltmc.getEntitiesWithAttributeOfValue("is_open", true);
+  EXPECT_EQ(1, entities.size());
+}
+
 TEST_F(LTMCTest, ObjectAndConceptNameSpacesAreSeparate)
 {
   Concept pitcher_con = ltmc.getConcept("soylent pitcher");

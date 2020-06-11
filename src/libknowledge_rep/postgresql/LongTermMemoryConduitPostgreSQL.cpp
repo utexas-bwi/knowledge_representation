@@ -113,7 +113,7 @@ bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
                                                                                 const uint other_entity_id)
 {
-  pqxx::work txn{ *conn };
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueId"};
   auto result = txn.exec("SELECT entity_id FROM entity_attributes_id "
                          "WHERE attribute_value=" +
                          txn.quote(other_entity_id) + " and attribute_name = " + txn.quote(attribute_name));
@@ -130,7 +130,7 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
                                                                                 const bool bool_val)
 {
-  pqxx::work txn{ *conn };
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueBool" };
   auto result = txn.exec("SELECT entity_id FROM entity_attributes_bool "
                          "WHERE attribute_value=" +
                          txn.quote(bool_val) + " and attribute_name = " + txn.quote(attribute_name));
@@ -145,10 +145,27 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
 }
 
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
+                                                                                const float float_val)
+{
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueFloat" };
+  auto result = txn.exec("SELECT entity_id FROM entity_attributes_float "
+                         "WHERE attribute_value=" +
+                         txn.quote(float_val) + " and attribute_name = " + txn.quote(attribute_name));
+  txn.commit();
+
+  vector<Entity> return_result;
+  for (const auto& row : result)
+  {
+    return_result.emplace_back(row["entity_id"].as<float>(), *this);
+  }
+  return return_result;
+}
+
+vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
                                                                                 const string& string_val)
 {
-  pqxx::work txn{ *conn };
-  auto result = txn.exec("SELECT entity_id FROM entity_attributes_id "
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueString"};
+  auto result = txn.exec("SELECT entity_id FROM entity_attributes_str "
                          "WHERE attribute_value=" +
                          txn.quote(string_val) + " and attribute_name = " + txn.quote(attribute_name));
   txn.commit();
@@ -226,10 +243,10 @@ bool LongTermMemoryConduitPostgreSQL::deleteAttribute(const string& name)
 
 bool LongTermMemoryConduitPostgreSQL::attributeExists(const string& name) const
 {
-  pqxx::work txn{ *conn };
-  auto result = txn.exec("SELECT 1 FROM attributes WHERE attribute_name=" + txn.quote(name));
+  pqxx::work txn{ *conn, "attributeExists" };
+  auto result = txn.exec("SELECT count(*) FROM attributes WHERE attribute_name=" + txn.quote(name));
   txn.commit();
-  return result.size() == 1;
+  return result[0]["count"].as<uint>() == 1;
 }
 
 Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)

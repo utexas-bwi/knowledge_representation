@@ -52,6 +52,8 @@ public:
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
                                                           const uint other_entity_id);
 
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const float float_val);
+
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val);
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
