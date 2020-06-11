@@ -309,11 +309,11 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<Entity>("Entity", init<uint, LTMC&>())
       .def_readonly("entity_id", &Entity::entity_id)
-      .def("add_attribute_str", static_cast<bool (Entity::*)(const string&, const string&)>(&Entity::addAttribute))
-      .def("add_attribute_int", static_cast<bool (Entity::*)(const string&, uint)>(&Entity::addAttribute))
-      .def("add_attribute_float", static_cast<bool (Entity::*)(const string&, float)>(&Entity::addAttribute))
-      .def("add_attribute_bool", static_cast<bool (Entity::*)(const string&, bool)>(&Entity::addAttribute))
-      .def("add_attribute_entity", static_cast<bool (Entity::*)(const string&, const Entity&)>(&Entity::addAttribute))
+      .def<bool (Entity::*)(const string&, const string&)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, uint)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, float)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, bool)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, const Entity&)>("add_attribute", &Entity::addAttribute)
       .def("remove_attribute", &Entity::removeAttribute)
       .def("get_attributes",
            static_cast<vector<EntityAttribute> (Entity::*)(const string&) const>(&Entity::getAttributes))
@@ -366,8 +366,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
   class_<Map, bases<Instance>>("Map", init<uint, uint, string, LTMC&>())
       .def("add_point", &Map::addPoint)
       .def("add_region", &Map::addRegion)
-      .def("add_pose", static_cast<Pose (Map::*)(const string&, double, double, double)>(&Map::addPose))
-      .def("add_pose", static_cast<Pose (Map::*)(const string&, double, double, double, double)>(&Map::addPose))
+      .def<Pose (Map::*)(const string&, double, double, double)>("add_pose", &Map::addPose)
+      .def<Pose (Map::*)(const string&, double, double, double, double)>("add_pose", &Map::addPose)
       .def("get_point", &Map::getPoint, python::return_value_policy<ReturnOptional>())
       .def("get_pose", &Map::getPose, python::return_value_policy<ReturnOptional>())
       .def("get_region", &Map::getRegion, python::return_value_policy<ReturnOptional>())
@@ -398,24 +398,34 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("__str__", to_str_wrap<Region>);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
-      .def("add_entity", static_cast<Entity (LTMC::*)()>(&LTMC::addEntity))
+      .def<Entity (LTMC::*)()>("add_entity", &LTMC::addEntity)
       .def("add_new_attribute", &LTMC::addNewAttribute)
       .def("entity_exists", &LTMC::entityExists)
       .def("attribute_exists", &LTMC::attributeExists)
       .def("delete_all_entities", &LTMC::deleteAllEntities)
       .def("delete_all_attributes", &LTMC::deleteAllAttributes)
-      .def("get_entities_with_attribute_of_value",
-           static_cast<vector<Entity> (LTMC::*)(const string&, const uint)>(&LTMC::getEntitiesWithAttributeOfValue))
-      .def("select_query_int",
-           static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryInt))
-      .def("select_query_bool",
-           static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryBool))
-      .def("select_query_float",
-           static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryFloat))
-      .def("select_query_string",
-           static_cast<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>(&LTMC::selectQueryString))
-      .def("get_concept", static_cast<Concept (LTMC::*)(const string&)>(&LTMC::getConcept))
-      .def("get_map", static_cast<Map (LTMC::*)(const std::string&)>(&LTMC::getMap))
+      .def<vector<Entity> (LTMC::*)(const string&, const uint)>
+  ("get_entities_with_attribute_of_value",
+           &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const string&)>
+  ("get_entities_with_attribute_of_value",
+      &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const float)>
+  ("get_entities_with_attribute_of_value",
+      &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const bool)>
+  ("get_entities_with_attribute_of_value",
+      &LTMC::getEntitiesWithAttributeOfValue)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_int",
+           &LTMC::selectQueryInt)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_bool",
+           &LTMC::selectQueryBool)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_float",
+           &LTMC::selectQueryFloat)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_string",
+           &LTMC::selectQueryString)
+      .def<Concept (LTMC::*)(const string&)>("get_concept", &LTMC::getConcept)
+      .def<Map (LTMC::*)(const std::string&)>("get_map", &LTMC::getMap)
       .def("get_robot", &LTMC::getRobot)
       .def("get_all_entities", &LTMC::getAllEntities)
       .def("get_all_concepts", &LTMC::getAllConcepts)
@@ -424,14 +434,14 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_all_attributes", &LTMC::getAllAttributes)
       .def("get_entity", &LTMC::getEntity, python::return_value_policy<ReturnOptional>())
       .def("get_instance", &LTMC::getInstance, python::return_value_policy<ReturnOptional>())
-      .def("get_concept", static_cast<optional<Concept> (LTMC::*)(uint)>(&LTMC::getConcept),
+      .def<optional<Concept> (LTMC::*)(uint)>("get_concept", &LTMC::getConcept,
            python::return_value_policy<ReturnOptional>())
-      .def("get_map", static_cast<optional<Map> (LTMC::*)(uint)>(&LTMC::getMap),
+      .def<optional<Map> (LTMC::*)(uint)>("get_map", &LTMC::getMap,
            python::return_value_policy<ReturnOptional>())
-      .def("get_point", static_cast<optional<Point> (LTMC::*)(uint)>(&LTMC::getPoint),
+      .def<optional<Point> (LTMC::*)(uint)>("get_point", &LTMC::getPoint,
            python::return_value_policy<ReturnOptional>())
-      .def("get_pose", static_cast<optional<Pose> (LTMC::*)(uint)>(&LTMC::getPose),
+      .def<optional<Pose> (LTMC::*)(uint)>("get_pose", &LTMC::getPose,
            python::return_value_policy<ReturnOptional>())
-      .def("get_region", static_cast<optional<Region> (LTMC::*)(uint)>(&LTMC::getRegion),
+      .def<optional<Region> (LTMC::*)(uint)>("get_region", &LTMC::getRegion,
            python::return_value_policy<ReturnOptional>());
 }

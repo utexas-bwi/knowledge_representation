@@ -6,6 +6,7 @@ import knowledge_representation
 
 ltmc = knowledge_representation.get_default_ltmc()
 
+
 class TestLTMC(unittest.TestCase):
 
     def setUp(self):
@@ -34,8 +35,15 @@ class TestLTMC(unittest.TestCase):
     def test_get_entities_with_attribute_of_value(self):
         nsb_concept = ltmc.get_concept("never seen before")
         instance = nsb_concept.create_instance()
-        instance_list = ltmc.get_entities_with_attribute_of_value("is_open", nsb_concept.entity_id)
-        self.assertEqual(len(instance_list),  0)
+        instance.add_attribute("name", "unknown name")
+        instance_list = ltmc.get_entities_with_attribute_of_value("name", "unknown name")
+        self.assertEqual(len(instance_list),  1)
+        instance.add_attribute("is_open", True)
+        instance_list = ltmc.get_entities_with_attribute_of_value("is_open", True)
+        self.assertEqual(len(instance_list),  1)
+        instance.add_attribute("height", 10.0)
+        instance_list = ltmc.get_entities_with_attribute_of_value("height", 10.0)
+        self.assertEqual(len(instance_list),  1)
 
     def test_remove_instances(self):
         nsb_concept = ltmc.get_concept("never seen before")
