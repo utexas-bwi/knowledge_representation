@@ -68,7 +68,7 @@ TEST_F(LTMCTest, GetConceptIDWorks)
   // Get concept returns the one true concept id
   Concept soda = ltmc.getConcept("soda");
   auto by_id = ltmc.getConcept(soda.entity_id);
-  ASSERT_TRUE(bool(by_id));
+  ASSERT_TRUE(static_cast<bool>(by_id));
   EXPECT_EQ(soda.entity_id, by_id->entity_id);
 }
 
@@ -78,7 +78,7 @@ TEST_F(LTMCTest, GetInstanceWorks)
   Concept soda = ltmc.getConcept("soda");
   auto soda_inst = soda.createInstance("coke");
   auto by_id = ltmc.getInstance(soda_inst->entity_id);
-  ASSERT_TRUE(bool(soda_inst));
+  ASSERT_TRUE(static_cast<bool>(soda_inst));
   EXPECT_EQ(soda_inst->entity_id, by_id->entity_id);
 }
 
@@ -89,7 +89,7 @@ TEST_F(LTMCTest, GetInstanceNamedWorks)
   auto soda_inst = soda.createInstance("coke");
   auto second_inst = soda.createInstance("another");
   // auto by_name = ltmc.getInstanceNamed("coke");
-  ASSERT_TRUE(bool(soda_inst));
+  ASSERT_TRUE(static_cast<bool>(soda_inst));
   // EXPECT_EQ(soda_inst->entity_id, by_name.entity_id);
 }
 
@@ -107,7 +107,7 @@ TEST_F(LTMCTest, GetMapIdWorks)
   // Get concept returns the one true concept id
   auto fresh_map = ltmc.getMap("test map");
   auto retrieved_map = ltmc.getMap(fresh_map.entity_id);
-  ASSERT_TRUE(bool(retrieved_map));
+  ASSERT_TRUE(static_cast<bool>(retrieved_map));
   EXPECT_EQ(fresh_map, *retrieved_map);
 }
 
@@ -117,7 +117,7 @@ TEST_F(LTMCTest, GetPointIdWorks)
   auto fresh_map = ltmc.getMap("test map");
   auto fresh_point = fresh_map.addPoint("test point", 0, 1);
   auto retrieved_point = ltmc.getPoint(fresh_point.entity_id);
-  ASSERT_TRUE(bool(retrieved_point));
+  ASSERT_TRUE(static_cast<bool>(retrieved_point));
   EXPECT_EQ(fresh_point, *retrieved_point);
 }
 
@@ -127,7 +127,7 @@ TEST_F(LTMCTest, GetPoseIdWorks)
   auto fresh_map = ltmc.getMap("test map");
   auto fresh_pose = fresh_map.addPose("test pose", 0, 1, 2);
   auto retrieved_pose = ltmc.getPose(fresh_pose.entity_id);
-  ASSERT_TRUE(bool(retrieved_pose));
+  ASSERT_TRUE(static_cast<bool>(retrieved_pose));
   EXPECT_EQ(fresh_pose, *retrieved_pose);
 }
 
@@ -137,7 +137,7 @@ TEST_F(LTMCTest, GetRegionIdWorks)
   auto fresh_map = ltmc.getMap("test map");
   auto fresh_region = fresh_map.addRegion("test region", { { 0, 1 }, { 2, 3 }, { 3, 4 } });
   auto retrieved_region = ltmc.getRegion(fresh_region.entity_id);
-  ASSERT_TRUE(bool(retrieved_region));
+  ASSERT_TRUE(static_cast<bool>(retrieved_region));
   EXPECT_EQ(fresh_region, *retrieved_region);
 }
 

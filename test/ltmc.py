@@ -62,7 +62,7 @@ class TestLTMC(unittest.TestCase):
         result = ltmc.add_new_attribute("new attribute", AttributeValueType.str)
         self.assertTrue(result)
         self.assertTrue(ltmc.attribute_exists("new attribute"))
-        added = instance.add_attribute_str("new attribute", "value of attribute")
+        added = instance.add_attribute("new attribute", "value of attribute")
         self.assertTrue(added)
         self.assertEqual("value of attribute", instance["new attribute"][0].get_string_value())
 
