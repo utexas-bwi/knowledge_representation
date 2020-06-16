@@ -113,7 +113,7 @@ bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
                                                                                 const uint other_entity_id)
 {
-  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueId"};
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueId" };
   auto result = txn.exec("SELECT entity_id FROM entity_attributes_id "
                          "WHERE attribute_value=" +
                          txn.quote(other_entity_id) + " and attribute_name = " + txn.quote(attribute_name));
@@ -164,7 +164,7 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
                                                                                 const string& string_val)
 {
-  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueString"};
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueString" };
   auto result = txn.exec("SELECT entity_id FROM entity_attributes_str "
                          "WHERE attribute_value=" +
                          txn.quote(string_val) + " and attribute_name = " + txn.quote(attribute_name));

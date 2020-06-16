@@ -404,26 +404,19 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("attribute_exists", &LTMC::attributeExists)
       .def("delete_all_entities", &LTMC::deleteAllEntities)
       .def("delete_all_attributes", &LTMC::deleteAllAttributes)
-      .def<vector<Entity> (LTMC::*)(const string&, const uint)>
-  ("get_entities_with_attribute_of_value",
-           &LTMC::getEntitiesWithAttributeOfValue)
-      .def<vector<Entity> (LTMC::*)(const string&, const string&)>
-  ("get_entities_with_attribute_of_value",
-      &LTMC::getEntitiesWithAttributeOfValue)
-      .def<vector<Entity> (LTMC::*)(const string&, const float)>
-  ("get_entities_with_attribute_of_value",
-      &LTMC::getEntitiesWithAttributeOfValue)
-      .def<vector<Entity> (LTMC::*)(const string&, const bool)>
-  ("get_entities_with_attribute_of_value",
-      &LTMC::getEntitiesWithAttributeOfValue)
-      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_int",
-           &LTMC::selectQueryInt)
-      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_bool",
-           &LTMC::selectQueryBool)
-      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_float",
-           &LTMC::selectQueryFloat)
+      .def<vector<Entity> (LTMC::*)(const string&, const uint)>("get_entities_with_attribute_of_value",
+                                                                &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const string&)>("get_entities_with_attribute_of_value",
+                                                                   &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const float)>("get_entities_with_attribute_of_value",
+                                                                 &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const bool)>("get_entities_with_attribute_of_value",
+                                                                &LTMC::getEntitiesWithAttributeOfValue)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_int", &LTMC::selectQueryInt)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_bool", &LTMC::selectQueryBool)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_float", &LTMC::selectQueryFloat)
       .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_string",
-           &LTMC::selectQueryString)
+                                                                          &LTMC::selectQueryString)
       .def<Concept (LTMC::*)(const string&)>("get_concept", &LTMC::getConcept)
       .def<Map (LTMC::*)(const std::string&)>("get_map", &LTMC::getMap)
       .def("get_robot", &LTMC::getRobot)
@@ -435,13 +428,10 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_entity", &LTMC::getEntity, python::return_value_policy<ReturnOptional>())
       .def("get_instance", &LTMC::getInstance, python::return_value_policy<ReturnOptional>())
       .def<optional<Concept> (LTMC::*)(uint)>("get_concept", &LTMC::getConcept,
-           python::return_value_policy<ReturnOptional>())
-      .def<optional<Map> (LTMC::*)(uint)>("get_map", &LTMC::getMap,
-           python::return_value_policy<ReturnOptional>())
-      .def<optional<Point> (LTMC::*)(uint)>("get_point", &LTMC::getPoint,
-           python::return_value_policy<ReturnOptional>())
-      .def<optional<Pose> (LTMC::*)(uint)>("get_pose", &LTMC::getPose,
-           python::return_value_policy<ReturnOptional>())
+                                              python::return_value_policy<ReturnOptional>())
+      .def<optional<Map> (LTMC::*)(uint)>("get_map", &LTMC::getMap, python::return_value_policy<ReturnOptional>())
+      .def<optional<Point> (LTMC::*)(uint)>("get_point", &LTMC::getPoint, python::return_value_policy<ReturnOptional>())
+      .def<optional<Pose> (LTMC::*)(uint)>("get_pose", &LTMC::getPose, python::return_value_policy<ReturnOptional>())
       .def<optional<Region> (LTMC::*)(uint)>("get_region", &LTMC::getRegion,
-           python::return_value_policy<ReturnOptional>());
+                                             python::return_value_policy<ReturnOptional>());
 }
