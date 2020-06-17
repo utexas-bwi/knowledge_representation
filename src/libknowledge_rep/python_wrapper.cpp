@@ -381,6 +381,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
   class_<Point, bases<Instance>>("Point", init<uint, string, double, double, Map, LTMC&>())
       .def_readonly("x", &Point::x)
       .def_readonly("y", &Point::y)
+      .def_readonly("parent_map", &Point::parent_map)
       .def("get_containing_regions", &Point::getContainingRegions)
       .def("__str__", to_str_wrap<Point>);
 
@@ -388,11 +389,13 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readonly("x", &Pose::x)
       .def_readonly("y", &Pose::y)
       .def_readonly("theta", &Pose::theta)
+      .def_readonly("parent_map", &Pose::parent_map)
       .def("get_containing_regions", &Pose::getContainingRegions)
       .def("__str__", to_str_wrap<Pose>);
 
   class_<Region, bases<Instance>>("Region", init<uint, string, const vector<Region::Point2D>, Map, LTMC&>())
       .def_readonly("points", &Region::points)
+      .def_readonly("parent_map", &Region::parent_map)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses)
       .def("__str__", to_str_wrap<Region>);
