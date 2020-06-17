@@ -21,8 +21,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("map_yaml_path", type=str, help="Path to a ROS-style map YAML file")
     parser.add_argument("--allow-errors", type=bool, default=False, help="Allow warnings and non-fatal errors in "
-    "loading to be ignored")
-    args = parser.parse_args()
+                                                                         "loading to be ignored")
+    # roslaunch passes additional arguments to <node> executables, so we'll gracefully ignore those
+    args, unknown = parser.parse_known_args()
     ltmc = knowledge_representation.get_default_ltmc()
 
     with warnings.catch_warnings(record=True) as w:
@@ -39,7 +40,7 @@ def main():
             eprint("Map loading aborted due to warnings")
             exit(1)
         s_points, s_poses, s_regions = stats
-        print ("Loaded map '{}' with {} points, {} poses, {} regions".format(map_name, s_points, s_poses, s_regions))
+        print("Loaded map '{}' with {} points, {} poses, {} regions".format(map_name, s_points, s_poses, s_regions))
 
 
 if __name__ == "__main__":
