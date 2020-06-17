@@ -18,6 +18,17 @@ translation_pattern = r"^translate\(({})\,({})\)".format(float_pattern, float_pa
 
 
 def populate_with_map_annotations(ltmc, map_name, points, poses, regions):
+    """
+    Inserts a map and supporting geometry into a knowledgebase. Any existing map by the name will be deleted
+
+    Emits warnings for any annotation that can't be added, as when there are name collisions.
+    :param ltmc: The knowledgebase to insert into
+    :param map_name: Name of the map to create.
+    :param points:
+    :param poses:
+    :param regions:
+    :return: a tuple of counts of how many of each type of annotation were successfully inserted
+    """
     # Wipe any existing map by this name
     map = ltmc.get_map(map_name)
     map.delete()
@@ -51,6 +62,14 @@ def populate_with_map_annotations(ltmc, map_name, points, poses, regions):
 
 
 def load_map_from_yaml(path_to_yaml):
+    """
+    Attempt to load map annotations given a path to a YAML file. Emits warnings for issues with particular annotations.
+
+    The PGM and the SVG will be loaded in the process. The SVG file to load is determined by the `annotations` key,
+    or is an SVG with the same name as the YAML file.
+    :param path_to_yaml:
+    :return: a tuple of the name of the map and a nested tuple of points, poses and regions
+    """
     parent_dir = os.path.dirname(path_to_yaml)
     yaml_name = os.path.basename(path_to_yaml).split(".")[0]
     with open(path_to_yaml) as map_yaml:
@@ -69,7 +88,9 @@ def load_map_from_yaml(path_to_yaml):
         annotation_path = os.path.join(parent_dir, map_metadata["annotations"])
 
     if not os.path.isfile(annotation_path):
-        return None
+        # No annotations to load. Since you're trying to load annotations, this is probably an error of some sort
+        warn("No annotation file found at {}".format(annotation_path))
+        return yaml_name, None
 
     with open(annotation_path) as test_svg:
         svg_data = test_svg.readlines()
@@ -100,7 +121,7 @@ def load_svg(svg_data):
     region_parents = map(parent_map.__getitem__, region_annotations)
     regions = process_region_annotations(region_names, region_annotations, region_parents)
 
-    # Messier extraction to get annotations stored as paths
+    # Messier extraction to get annotations stored as paths. These are from Inkscape or other regular editing tools.
     path_poses, path_regions = process_paths(path_groups)
     extra_points = []
 
@@ -121,16 +142,37 @@ def load_svg(svg_data):
 
 
 def get_group_transform(group):
-    if "transform" in group.attrib:
-        translate_match = re.match(translation_pattern, group.attrib["transform"])
-        if not translate_match:
-            raise RuntimeError("Can't process because it has a complex transform: {}".format(group))
-        else:
-            return float(translate_match.group(1)), float(translate_match.group(2))
-    return 0, 0
+    if "transform" not in group.attrib:
+        return 0, 0
+    # We can only handle basic translate transforms right now
+    translate_match = re.match(translation_pattern, group.attrib["transform"])
+    if not translate_match:
+        raise RuntimeError("Can't process because it has a complex transform: {}".format(group))
+    else:
+        return float(translate_match.group(1)), float(translate_match.group(2))
+
+
+def get_text_from_group(group):
+    # Inkscape tucks things in a tspan. Check that first
+    text = group.find(".//{}".format(tspan_el))
+    if text is None:
+        text = group.find(".//{}".format(text_el))
+    return text
 
 
 def process_paths(path_groups):
+    """
+    Extracts pose and region annotations represented as paths
+
+    :param path_groups: a list of groups each containing a text element and a path
+    :return: a tuple of poses and regions
+    """
+    if len(path_groups) == 0:
+        return [], []
+
+    # SVG paths are specified in a rich language of segment commands:
+    # https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+    # We'll use a new dependency to extract what we can
     from svgpathtools import parse_path, Line
 
     def is_line(path_part):
@@ -144,9 +186,7 @@ def process_paths(path_groups):
             continue
 
         # We assume that the text was created in inkscape so the string will be in a tspan
-        path, text = group.find(".//{}".format(path_el)), group.find(".//{}".format(tspan_el))
-        if text is None:
-            text = group.find(".//{}".format(text_el))
+        path, text = group.find(".//{}".format(path_el)), get_text_from_group(group)
         if text is None:
             warn("No text label found for path group: {}".format(group))
             continue
@@ -254,8 +294,14 @@ def transform_to_map_coords(map_info, points, poses, regions):
 
 
 def point_to_map_coords(map_info, point):
-    map_origin, resolution, _, height = map_info["origin"][0:2], map_info["resolution"], map_info["width"], \
-                                        map_info["height"]
+    """
+    Converts a pixel coordinate point into map coordinates
+    :param map_info: A dictionary specifying the origin, resolution, width and height of the map
+    :param point: A coordinate tuple in pixel coordinates
+    :return: A coordinate tuple in map coordinates
+    """
+    map_origin, resolution, _, height = map_info["origin"][0:2], map_info["resolution"], map_info["width"], map_info[
+        "height"]
     x, y = point
     # the map coordinate corresponding to the bottom left pixel
     origin_x, origin_y = map_origin
