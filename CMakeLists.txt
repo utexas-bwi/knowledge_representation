@@ -3,9 +3,6 @@ project(knowledge_representation)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(BISON)
-find_package(FLEX)
-
 find_package(catkin REQUIRED COMPONENTS
         roslint
         )
@@ -59,12 +56,6 @@ include_directories(
 
 if ("${MYSQL_AVAILABLE}" OR "${POSTGRES_AVAILABLE}")
 
-
-#BISON_TARGET(parser src/libknowledge_rep/parser.yy ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.cpp COMPILE_FLAGS --defines=${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/Parser.h)
-#FLEX_TARGET(scanner src/libknowledge_rep/lexer.l  ${CMAKE_CURRENT_BINARY_DIR}/Lexer.cpp)
-
-
-#ADD_FLEX_BISON_DEPENDENCY(scanner parser)
 if (MYSQL_AVAILABLE)
     set(DB_SOURCES src/libknowledge_rep/mysql/LongTermMemoryConduitMySQL.cpp)
     # Symlink the LTMC header into place. We have to put this header in the public
@@ -80,9 +71,6 @@ endif()
 add_library(knowledge_rep
         ${DB_SOURCES}
         src/libknowledge_rep/convenience.cpp
-       # src/libknowledge_rep/Compiler.cpp
-       # ${BISON_parser_OUTPUTS}
-       # ${FLEX_scanner_OUTPUTS}
         )
 
 add_dependencies(knowledge_rep link_target)
@@ -141,9 +129,6 @@ if(CATKIN_ENABLE_TESTING)
 
     catkin_add_nosetests(test/ltmc.py)
     catkin_add_nosetests(test/loaders.py)
-
-#    catkin_add_gtest(test_parser test/parser.cpp)
-#    target_link_libraries(test_parser knowledge_rep ${catkin_LIBRARIES})
 endif()
 
 
