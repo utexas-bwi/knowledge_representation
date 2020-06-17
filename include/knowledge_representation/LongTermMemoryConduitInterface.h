@@ -86,14 +86,24 @@ public:
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, other_entity_id);
   };
 
-  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const float float_val)
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const int int_val)
   {
-    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, float_val);
-  }
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, int_val);
+  };
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val)
   {
     return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, bool_val);
+  }
+
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const double float_val)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, float_val);
+  }
+
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const char* string_val)
+  {
+    return static_cast<Impl*>(this)->getEntitiesWithAttributeOfValue(attribute_name, std::string(string_val));
   }
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
@@ -307,6 +317,16 @@ public:
   }
   // RAW QUERIES
 
+  bool selectQueryId(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryId(sql_query, result);
+  }
+
+  bool selectQueryBool(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
+  }
+
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return static_cast<const Impl*>(this)->selectQueryInt(sql_query, result);
@@ -320,11 +340,6 @@ public:
   bool selectQueryString(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return static_cast<const Impl*>(this)->selectQueryString(sql_query, result);
-  }
-
-  bool selectQueryBool(const std::string& sql_query, std::vector<EntityAttribute>& result) const
-  {
-    return static_cast<const Impl*>(this)->selectQueryBool(sql_query, result);
   }
 
   // CONVENIENCE
@@ -380,9 +395,9 @@ protected:
     return static_cast<Impl*>(this)->deleteEntity(entity);
   }
 
-  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const float float_val)
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const uint other_entity_id)
   {
-    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, float_val);
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, static_cast<const uint>(other_entity_id));
   }
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const bool bool_val)
@@ -390,9 +405,19 @@ protected:
     return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, bool_val);
   }
 
-  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const uint other_entity_id)
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const int int_val)
   {
-    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, static_cast<const uint>(other_entity_id));
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, static_cast<const int>(int_val));
+  }
+
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const double float_val)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, float_val);
+  }
+
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const char* string_val)
+  {
+    return static_cast<Impl*>(this)->addAttribute(entity, attribute_name, std::string(string_val));
   }
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const std::string& string_val)

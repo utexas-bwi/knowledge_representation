@@ -131,9 +131,9 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
                                                                                 const bool bool_val)
 {
   pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueBool" };
-  auto result = txn.exec("SELECT entity_id FROM entity_attributes_bool "
-                         "WHERE attribute_value=" +
-                         txn.quote(bool_val) + " and attribute_name = " + txn.quote(attribute_name));
+  auto result = txn.parameterized("SELECT entity_id FROM entity_attributes_bool "
+                                  "WHERE attribute_value= $1  AND attribute_name = $2")(bool_val)(attribute_name)
+                    .exec();
   txn.commit();
 
   vector<Entity> return_result;
@@ -145,7 +145,24 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
 }
 
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
-                                                                                const float float_val)
+                                                                                const int int_val)
+{
+  pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueInt" };
+  auto result = txn.exec("SELECT entity_id FROM entity_attributes_int "
+                         "WHERE attribute_value=" +
+                         txn.quote(int_val) + " and attribute_name = " + txn.quote(attribute_name));
+  txn.commit();
+
+  vector<Entity> return_result;
+  for (const auto& row : result)
+  {
+    return_result.emplace_back(row["entity_id"].as<uint>(), *this);
+  }
+  return return_result;
+}
+
+vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
+                                                                                const double float_val)
 {
   pqxx::work txn{ *conn, "getEntitiesWithAttributeOfValueFloat" };
   auto result = txn.exec("SELECT entity_id FROM entity_attributes_float "
@@ -156,9 +173,15 @@ vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(
   vector<Entity> return_result;
   for (const auto& row : result)
   {
-    return_result.emplace_back(row["entity_id"].as<float>(), *this);
+    return_result.emplace_back(row["entity_id"].as<uint>(), *this);
   }
   return return_result;
+}
+
+vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
+                                                                                const char* string_val)
+{
+  return this->getEntitiesWithAttributeOfValue(attribute_name, std::string(string_val));
 }
 
 vector<Entity> LongTermMemoryConduitPostgreSQL::getEntitiesWithAttributeOfValue(const string& attribute_name,
@@ -577,15 +600,13 @@ bool LongTermMemoryConduitPostgreSQL::deleteEntity(Entity& entity)
 }
 
 bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::string& attribute_name,
-                                                   const float float_val)
+                                                   const uint other_entity_id)
 {
   try
   {
-    pqxx::work txn{ *conn, "addAttribute (float)" };
-    auto result =
-        txn.exec("INSERT INTO entity_attributes_float "
-                 "VALUES (" +
-                 txn.quote(entity.entity_id) + ", " + txn.quote(attribute_name) + ", " + txn.quote(float_val) + ")");
+    pqxx::work txn{ *conn, "addAttribute (id)" };
+    auto result = txn.exec("INSERT INTO entity_attributes_id VALUES (" + txn.quote(entity.entity_id) + ", " +
+                           txn.quote(attribute_name) + ", " + txn.quote(other_entity_id) + ")");
     txn.commit();
     return result.affected_rows() == 1;
   }
@@ -616,14 +637,33 @@ bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::st
   }
 }
 
-bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::string& attribute_name,
-                                                   const uint other_entity_id)
+bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::string& attribute_name, const int int_val)
 {
   try
   {
-    pqxx::work txn{ *conn, "addAttribute (id)" };
-    auto result = txn.exec("INSERT INTO entity_attributes_id VALUES (" + txn.quote(entity.entity_id) + ", " +
-                           txn.quote(attribute_name) + ", " + txn.quote(other_entity_id) + ")");
+    pqxx::work txn{ *conn, "addAttribute (int)" };
+    auto result = txn.parameterized("INSERT INTO entity_attributes_int "
+                                    "VALUES ($1, $2, $3)")(entity.entity_id)(attribute_name)(int_val)
+                      .exec();
+    txn.commit();
+    return result.affected_rows() == 1;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return false;
+  }
+}
+
+bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::string& attribute_name,
+                                                   const double float_val)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "addAttribute (float)" };
+    auto result = txn.parameterized("INSERT INTO entity_attributes_float "
+                                    "VALUES ($1, $2, $3)")(entity.entity_id)(attribute_name)(float_val)
+                      .exec();
     txn.commit();
     return result.affected_rows() == 1;
   }
@@ -640,10 +680,9 @@ bool LongTermMemoryConduitPostgreSQL::addAttribute(Entity& entity, const std::st
   try
   {
     pqxx::work txn{ *conn, "addAttribute (str)" };
-    auto result =
-        txn.exec("INSERT INTO entity_attributes_str "
-                 "VALUES (" +
-                 txn.quote(entity.entity_id) + ", " + txn.quote(attribute_name) + ", " + txn.quote(string_val) + ")");
+    auto result = txn.parameterized("INSERT INTO entity_attributes_str "
+                                    "VALUES ($1, $2, $3)")(entity.entity_id)(attribute_name)(string_val)
+                      .exec();
     txn.commit();
     return result.affected_rows() == 1;
   }
@@ -660,9 +699,9 @@ int LongTermMemoryConduitPostgreSQL::removeAttribute(Entity& entity, const std::
   pqxx::work txn{ *conn, "removeAttribute" };
   try
   {
-    auto result = txn.exec("SELECT * FROM remove_attribute"
-                           "(" +
-                           txn.quote(entity.entity_id) + ", " + txn.quote(attribute_name) + ") AS count");
+    auto result = txn.parameterized("SELECT * FROM remove_attribute"
+                                    "($1, $2) AS count")(entity.entity_id)(attribute_name)
+                      .exec();
     txn.commit();
     return result[0]["count"].as<int>();
   }
@@ -679,7 +718,7 @@ int LongTermMemoryConduitPostgreSQL::removeAttributeOfValue(Entity& entity, cons
   assert(false);
 }
 
-void unwrap_attribute_rows(pqxx::result rows, vector<EntityAttribute>& entity_attributes)
+void unwrap_attribute_rows(const pqxx::result& rows, vector<EntityAttribute>& entity_attributes)
 {
   pqxx::oid type = rows[0]["attribute_value"].type();
   if (type == 23)
@@ -703,7 +742,7 @@ void unwrap_attribute_rows(pqxx::result rows, vector<EntityAttribute>& entity_at
     for (const auto& row : rows)
     {
       entity_attributes.emplace_back(row["entity_id"].as<uint>(), row["attribute_name"].as<string>(),
-                                     row["attribute_value"].as<float>());
+                                     row["attribute_value"].as<double>());
     }
   }
   else if (type == 16)
@@ -729,7 +768,7 @@ vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(const Ent
     {
       pqxx::work txn{ *conn, "getAttributes" };
       auto result =
-          txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " + txn.quote(entity.entity_id));
+          txn.parameterized("SELECT * FROM " + std::string(name) + " WHERE entity_id = $1")(entity.entity_id).exec();
       txn.commit();
       unwrap_attribute_rows(result, attributes);
     }
@@ -751,8 +790,9 @@ std::vector<EntityAttribute> LongTermMemoryConduitPostgreSQL::getAttributes(cons
     try
     {
       pqxx::work txn{ *conn, "getAttributes" };
-      auto result = txn.exec("SELECT * FROM " + std::string(name) + " WHERE entity_id = " +
-                             txn.quote(entity.entity_id) + " AND attribute_name = " + txn.quote(attribute_name));
+      auto result = txn.parameterized("SELECT * FROM " + std::string(name) +
+                                      " WHERE entity_id = $1 AND attribute_name = $2")(entity.entity_id)(attribute_name)
+                        .exec();
       txn.commit();
       unwrap_attribute_rows(result, attributes);
     }

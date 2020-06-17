@@ -9,35 +9,37 @@ namespace knowledge_rep
 {
 enum AttributeValueType
 {
-  Int,
-  Str,
+  Id,
   Bool,
-  Float
+  Int,
+  Float,
+  Str
 };
 
-static std::map<std::string, AttributeValueType> string_to_attribute_value_type = { { "int", Int },
-                                                                                    { "str", Str },
+static std::map<std::string, AttributeValueType> string_to_attribute_value_type = { { "id", Id },
                                                                                     { "bool", Bool },
-                                                                                    { "float", Float } };
+                                                                                    { "int", Int },
+                                                                                    { "float", Float },
+                                                                                    { "str", Str } };
 
-static std::map<AttributeValueType, std::string> attribute_value_type_to_string = { { Int, "int" },
-                                                                                    { Str, "str" },
-                                                                                    { Bool, "bool" },
-                                                                                    { Float, "float" } };
-
-typedef boost::variant<int, float, bool, std::string> AttributeValue;
+static std::map<AttributeValueType, std::string> attribute_value_type_to_string = {
+  { Id, "id" }, { Bool, "bool" }, { Int, "int" }, { Float, "float" }, { Str, "str" },
+};
+typedef boost::variant<uint, bool, int, double, std::string> AttributeValue;
 
 static std::string toString(const AttributeValue& attribute_value)
 {
   switch (attribute_value.which())
   {
     case 0:
-      return std::to_string(boost::get<int>(attribute_value));
+      return std::to_string(boost::get<uint>(attribute_value));
     case 1:
-      return std::to_string(boost::get<float>(attribute_value));
-    case 2:
       return std::to_string(boost::get<bool>(attribute_value));
+    case 2:
+      return std::to_string(boost::get<int>(attribute_value));
     case 3:
+      return std::to_string(boost::get<double>(attribute_value));
+    case 4:
       return boost::get<std::string>(attribute_value);
     default:
       assert(false);
@@ -68,6 +70,29 @@ struct EntityAttribute
   {
     return value;
   }
+
+  /**
+* @brief Extracts an ID (uint) from the value
+*
+* Throws an exception if the value isn't of the expected type.
+* @return
+*/
+  uint getIdValue() const
+  {
+    return boost::get<uint>(value);
+  }
+
+  /**
+ * @brief Extracts a bool from the value
+ *
+ * Throws an exception if the value isn't of the expected type.
+ * @return
+ */
+  bool getBoolValue() const
+  {
+    return boost::get<bool>(value);
+  }
+
   /**
    * @brief Extracts an int from the value
    *
@@ -85,20 +110,9 @@ struct EntityAttribute
    * Throws an exception if the value isn't of the expected type.
    * @return
    */
-  float getFloatValue() const
+  double getFloatValue() const
   {
-    return boost::get<float>(value);
-  }
-
-  /**
-   * @brief Extracts a bool from the value
-   *
-   * Throws an exception if the value isn't of the expected type.
-   * @return
-   */
-  bool getBoolValue() const
-  {
-    return boost::get<bool>(value);
+    return boost::get<double>(value);
   }
 
   /**

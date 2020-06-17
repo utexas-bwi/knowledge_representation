@@ -9,7 +9,7 @@ CREATE TABLE entities
     PRIMARY KEY (entity_id)
 );
 
-CREATE TYPE attribute_type as ENUM ('bool', 'int', 'id', 'str', 'float');
+CREATE TYPE attribute_type as ENUM ('id', 'bool', 'int', 'float', 'str');
 
 CREATE TABLE attributes
 (
@@ -66,6 +66,22 @@ CREATE TABLE entity_attributes_id
         ON UPDATE CASCADE
 );
 
+CREATE TABLE entity_attributes_int
+(
+    entity_id       int         NOT NULL,
+    attribute_name  varchar(24) NOT NULL,
+    attribute_value int         NOT NULL,
+    PRIMARY KEY (entity_id, attribute_name, attribute_value),
+    FOREIGN KEY (entity_id)
+        REFERENCES entities (entity_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (attribute_name)
+        REFERENCES attributes (attribute_name)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 CREATE TABLE entity_attributes_str
 (
     entity_id       int         NOT NULL,
@@ -87,7 +103,7 @@ CREATE TABLE entity_attributes_float
 (
     entity_id       int         NOT NULL,
     attribute_name  varchar(24) NOT NULL,
-    attribute_value float       NOT NULL,
+    attribute_value double precision NOT NULL,
     PRIMARY KEY (entity_id, attribute_name, attribute_value),
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
@@ -238,30 +254,39 @@ CREATE FUNCTION remove_attribute(INT, varchar(24))
 AS
 $body$
 DECLARE
-    n_bool_del  bigint;
-    n_float_del bigint;
     n_id_del    bigint;
+    n_bool_del  bigint;
+    n_int_del    bigint;
+    n_float_del bigint;
     n_str_del   bigint;
 BEGIN
+
+    WITH id_del AS (DELETE FROM entity_attributes_id WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
+    SELECT count(*)
+    FROM id_del
+    INTO n_id_del;
+
     WITH bool_del
              AS (DELETE FROM entity_attributes_bool WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
     SELECT count(*)
     FROM bool_del
     INTO n_bool_del;
-    WITH float_del
-             AS (DELETE FROM entity_attributes_float WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
+
+    WITH int_del AS (DELETE FROM entity_attributes_int WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
+    SELECT count(*)
+    FROM int_del
+    INTO n_int_del;
+
+    WITH float_del AS (DELETE FROM entity_attributes_float WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
     SELECT count(*)
     FROM float_del
     INTO n_float_del;
-    WITH id_del AS (DELETE FROM entity_attributes_id WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
-    SELECT count(*)
-    FROM id_del
-    INTO n_id_del;
+
     WITH str_del AS (DELETE FROM entity_attributes_str WHERE entity_id = $1 AND attribute_name = $2 RETURNING entity_id)
     SELECT count(*)
     FROM str_del
     INTO n_str_del;
-    RETURN n_bool_del + n_float_del + n_id_del + n_str_del;
+    RETURN n_id_del + n_bool_del + n_int_del + n_float_del + n_str_del;
 END
 $body$;
 
@@ -382,35 +407,22 @@ AS
 $$
 
 INSERT INTO attributes
-VALUES ('answer_to', 'int');
-INSERT INTO attributes
-VALUES ('default_location', 'int');
-INSERT INTO attributes
-VALUES ('has', 'id');
-INSERT INTO attributes
-VALUES ('height', 'float');
-INSERT INTO attributes
-VALUES ('is_a', 'int');
-INSERT INTO attributes
-VALUES ('is_connected', 'id');
-INSERT INTO attributes
-VALUES ('is_delivered', 'id');
-INSERT INTO attributes
-VALUES ('is_facing', 'id');
-INSERT INTO attributes
-VALUES ('is_holding', 'id');
-INSERT INTO attributes
-VALUES ('is_in', 'id');
-INSERT INTO attributes
-VALUES ('is_near', 'id');
-INSERT INTO attributes
-VALUES ('is_open', 'bool');
-INSERT INTO attributes
-VALUES ('is_placed', 'id');
-INSERT INTO attributes
-VALUES ('name', 'str');
-INSERT INTO attributes
-VALUES ('part_of', 'id')
+VALUES ('answer_to', 'id'),
+('count', 'int'),
+('default_location', 'id'),
+('has', 'id'),
+('height', 'float'),
+('is_a', 'id'),
+('is_connected', 'id'),
+('is_delivered', 'id'),
+('is_facing', 'id'),
+('is_holding', 'id'),
+('is_in', 'id'),
+('is_near', 'id'),
+('is_open', 'bool'),
+('is_placed', 'id'),
+('name', 'str'),
+('part_of', 'id');
 $$;
 
 /***** DEFAULT VALUES */

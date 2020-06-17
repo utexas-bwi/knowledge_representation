@@ -19,50 +19,6 @@ public:
   }
 
   /**
-   * @brief Set a string-valued attribute on this entity
-   * @param attribute_name
-   * @param string_val
-   * @return whether the modification succeeded
-   */
-  bool addAttribute(const std::string& attribute_name, const std::string& string_val)
-  {
-    return ltmc.get().addAttribute(*this, attribute_name, string_val);
-  };
-
-  /**
-   * @brief Set a string-valued attribute on this entity
-   * @param attribute_name
-   * @param string_val
-   * @return whether the modification succeeded
-   */
-  bool addAttribute(const std::string& attribute_name, const char* string_val)
-  {
-    return ltmc.get().addAttribute(*this, attribute_name, std::string(string_val));
-  };
-
-  /**
-   * @brief Set a float-valued attribute on this entity
-   * @param attribute_name
-   * @param float_val
-   * @return whether the modification succeeded
-   */
-  bool addAttribute(const std::string& attribute_name, float float_val)
-  {
-    return ltmc.get().addAttribute(*this, attribute_name, float_val);
-  };
-
-  /**
-   * @brief Set a bool-valued attribute on this entity
-   * @param attribute_name
-   * @param bool_val
-   * @return whether the modification succeeded
-   */
-  bool addAttribute(const std::string& attribute_name, bool bool_val)
-  {
-    return ltmc.get().addAttribute(*this, attribute_name, bool_val);
-  };
-
-  /**
    * @brief Set an attribute which points to some other valid entity
    * @param attribute_name
    * @param other_entity_id
@@ -85,6 +41,61 @@ public:
   };
 
   /**
+   * @brief Set a bool-valued attribute on this entity
+   * @param attribute_name
+   * @param bool_val
+   * @return whether the modification succeeded
+   */
+  bool addAttribute(const std::string& attribute_name, bool bool_val)
+  {
+    return ltmc.get().addAttribute(*this, attribute_name, bool_val);
+  };
+
+  /**
+ * @brief Set a int-valued attribute on this entity
+ * @param attribute_name
+ * @param int_val
+ * @return whether the modification succeeded
+ */
+  bool addAttribute(const std::string& attribute_name, int int_val)
+  {
+    return ltmc.get().addAttribute(*this, attribute_name, static_cast<int>(int_val));
+  };
+
+  /**
+   * @brief Set a float-valued attribute on this entity
+   * @param attribute_name
+   * @param float_val
+   * @return whether the modification succeeded
+   */
+  bool addAttribute(const std::string& attribute_name, double float_val)
+  {
+    return ltmc.get().addAttribute(*this, attribute_name, float_val);
+  };
+
+  /**
+ * @brief Set a string-valued attribute on this entity
+ * @param attribute_name
+ * @param string_val
+ * @return whether the modification succeeded
+ */
+  bool addAttribute(const std::string& attribute_name, const std::string& string_val)
+  {
+    return ltmc.get().addAttribute(*this, attribute_name, string_val);
+  };
+
+  /**
+   * @brief Set a string-valued attribute on this entity
+   * @param attribute_name
+   * @param string_val
+   * @return whether the modification succeeded
+   */
+  bool addAttribute(const std::string& attribute_name, const char* string_val)
+  {
+    return ltmc.get().addAttribute(*this, attribute_name, std::string(string_val));
+  };
+
+  /**
    * @brief Unsets all values of a given attribute on this entity
    * @param attribute_name
    * @param other_entity_id
@@ -95,6 +106,7 @@ public:
     return ltmc.get().removeAttribute(*this, attribute_name);
   };
 
+  // TODO(nickswalker): Decide whether to remove this
   int removeAttributeOfValue(const std::string& attribute_name, const LTMCEntity& other_entity)
   {
     return ltmc.get().removeAttributeOfValue(*this, attribute_name, other_entity);

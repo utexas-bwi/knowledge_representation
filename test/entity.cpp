@@ -65,30 +65,13 @@ TEST_F(EntityTest, AddEntityWorks)
   ASSERT_TRUE(entity.isValid());
 }
 
-TEST_F(EntityTest, StringAttributeWorks)
-{
-  entity.addAttribute("is_open", "test");
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(string), attrs.at(0).value.type());
-  EXPECT_EQ("test", boost::get<string>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, IntAttributeWorks)
+TEST_F(EntityTest, IdAttributeWorks)
 {
   entity.addAttribute("is_open", 1u);
   auto attrs = entity.getAttributes("is_open");
+  // That's right, we aren't actually storing these as uint, because databases rarely have uint support
   ASSERT_EQ(typeid(int), attrs.at(0).value.type());
   EXPECT_EQ(1, boost::get<int>(attrs.at(0).value));
-  EXPECT_EQ(1, entity.removeAttribute("is_open"));
-}
-
-TEST_F(EntityTest, FloatAttributeWorks)
-{
-  entity.addAttribute("is_open", 1.f);
-  auto attrs = entity.getAttributes("is_open");
-  ASSERT_EQ(typeid(float), attrs.at(0).value.type());
-  EXPECT_EQ(1, boost::get<float>(attrs.at(0).value));
   EXPECT_EQ(1, entity.removeAttribute("is_open"));
 }
 
@@ -104,6 +87,33 @@ TEST_F(EntityTest, BoolAttributeWorks)
   attrs = entity.getAttributes("is_open");
   ASSERT_EQ(typeid(bool), attrs.at(0).value.type());
   EXPECT_FALSE(boost::get<bool>(attrs.at(0).value));
+  EXPECT_EQ(1, entity.removeAttribute("is_open"));
+}
+
+TEST_F(EntityTest, IntAttributeWorks)
+{
+  entity.addAttribute("count", -1);
+  auto attrs = entity.getAttributes("count");
+  ASSERT_EQ(typeid(int), attrs.at(0).value.type());
+  EXPECT_EQ(-1, boost::get<int>(attrs.at(0).value));
+  EXPECT_EQ(1, entity.removeAttribute("count"));
+}
+
+TEST_F(EntityTest, FloatAttributeWorks)
+{
+  entity.addAttribute("is_open", 1.f);
+  auto attrs = entity.getAttributes("is_open");
+  ASSERT_EQ(typeid(double), attrs.at(0).value.type());
+  EXPECT_EQ(1, boost::get<double>(attrs.at(0).value));
+  EXPECT_EQ(1, entity.removeAttribute("is_open"));
+}
+
+TEST_F(EntityTest, StringAttributeWorks)
+{
+  entity.addAttribute("is_open", "test");
+  auto attrs = entity.getAttributes("is_open");
+  ASSERT_EQ(typeid(string), attrs.at(0).value.type());
+  EXPECT_EQ("test", boost::get<string>(attrs.at(0).value));
   EXPECT_EQ(1, entity.removeAttribute("is_open"));
 }
 

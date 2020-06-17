@@ -8,8 +8,8 @@
 
 namespace knowledge_rep
 {
-static const char* TABLE_NAMES[] = { "entity_attributes_id", "entity_attributes_str", "entity_attributes_bool",
-                                     "entity_attributes_float" };
+static const char* TABLE_NAMES[] = { "entity_attributes_id", "entity_attributes_int", "entity_attributes_bool",
+                                     "entity_attributes_float", "entity_attributes_str" };
 
 /// A concrete implementation of the LongTermMemoryConduitInterface, leveraging libpqxx and PostgreSQL.
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
@@ -52,9 +52,13 @@ public:
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
                                                           const uint other_entity_id);
 
-  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const float float_val);
-
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const bool bool_val);
+
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const int int_val);
+
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const double float_val);
+
+  std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name, const char* string_val);
 
   std::vector<EntityImpl> getEntitiesWithAttributeOfValue(const std::string& attribute_name,
                                                           const std::string& string_val);
@@ -127,6 +131,16 @@ public:
   }
   // RAW QUERIES
 
+  bool selectQueryId(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return selectQuery<uint>(sql_query, result);
+  }
+
+  bool selectQueryBool(const std::string& sql_query, std::vector<EntityAttribute>& result) const
+  {
+    return selectQuery<bool>(sql_query, result);
+  }
+
   bool selectQueryInt(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return selectQuery<int>(sql_query, result);
@@ -134,17 +148,12 @@ public:
 
   bool selectQueryFloat(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
-    return selectQuery<float>(sql_query, result);
+    return selectQuery<double>(sql_query, result);
   }
 
   bool selectQueryString(const std::string& sql_query, std::vector<EntityAttribute>& result) const
   {
     return selectQuery<std::string>(sql_query, result);
-  }
-
-  bool selectQueryBool(const std::string& sql_query, std::vector<EntityAttribute>& result) const
-  {
-    return selectQuery<bool>(sql_query, result);
   }
 
   // CONVENIENCE
@@ -164,11 +173,13 @@ protected:
   // ENTITY BACKERS
   bool deleteEntity(EntityImpl& entity);
 
-  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const float float_val);
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const uint other_entity_id);
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const bool bool_val);
 
-  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const uint other_entity_id);
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const int int_val);
+
+  bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const double float_val);
 
   bool addAttribute(EntityImpl& entity, const std::string& attribute_name, const std::string& string_val);
 

@@ -280,28 +280,34 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 {
   typedef LongTermMemoryConduit LTMC;
 
-  // Register a converter to get Python tuples turned into std::pairs
+  // Register bidirectional conversion of Python tuples <--> std::pairs
   py_pair<double, double>();
-
-  // No proxy must be set to true for the contained elements to be converted to tuples on demand
-  class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>, true>());
+  py_pair<string, AttributeValueType>();
 
   // Automatically convert Python lists into vectors
-  iterable_converter().from_python<std::vector<Region::Point2D>>();
+  iterable_converter().from_python<vector<Region::Point2D>>();
 
-  class_<vector<Entity>>("PyEntityList").def(vector_indexing_suite<vector<Entity>>());
+  // Expose C++ vectors of certain types as special Python classes via vector indexing suite.
+  // No proxy must be set to true for the contained elements to be converted to tuples on demand
+  class_<vector<Entity>>("PyEntityList").def(vector_indexing_suite<vector<Entity>, true>());
 
-  class_<vector<Concept>>("PyConceptList").def(vector_indexing_suite<vector<Concept>>());
+  class_<vector<Concept>>("PyConceptList").def(vector_indexing_suite<vector<Concept>, true>());
 
-  class_<vector<Instance>>("PyInstanceList").def(vector_indexing_suite<vector<Instance>>());
+  class_<vector<Instance>>("PyInstanceList").def(vector_indexing_suite<vector<Instance>, true>());
 
-  class_<vector<Point>>("PyPointList").def(vector_indexing_suite<vector<Point>>());
+  class_<vector<Point>>("PyPointList").def(vector_indexing_suite<vector<Point>, true>());
 
-  class_<vector<Pose>>("PyPoseList").def(vector_indexing_suite<vector<Pose>>());
+  class_<vector<Pose>>("PyPoseList").def(vector_indexing_suite<vector<Pose>, true>());
 
-  class_<vector<Region>>("PyRegionList").def(vector_indexing_suite<vector<Region>>());
+  class_<vector<Region>>("PyRegionList").def(vector_indexing_suite<vector<Region>, true>());
+
+  class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>, true>());
+
+  class_<vector<std::pair<string, AttributeValueType>>>("PyStrAttributeValueTypeTupleList")
+      .def(vector_indexing_suite<vector<std::pair<string, AttributeValueType>>, true>());
 
   enum_<AttributeValueType>("AttributeValueType")
+      .value("id", AttributeValueType::Id)
       .value("int", AttributeValueType::Int)
       .value("str", AttributeValueType::Str)
       .value("bool", AttributeValueType::Bool)
@@ -309,15 +315,16 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<Entity>("Entity", init<uint, LTMC&>())
       .def_readonly("entity_id", &Entity::entity_id)
-      .def<bool (Entity::*)(const string&, const string&)>("add_attribute", &Entity::addAttribute)
-      .def<bool (Entity::*)(const string&, uint)>("add_attribute", &Entity::addAttribute)
-      .def<bool (Entity::*)(const string&, float)>("add_attribute", &Entity::addAttribute)
-      .def<bool (Entity::*)(const string&, bool)>("add_attribute", &Entity::addAttribute)
       .def<bool (Entity::*)(const string&, const Entity&)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, uint)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, int)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, bool)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, double)>("add_attribute", &Entity::addAttribute)
+
+      .def<bool (Entity::*)(const string&, const string&)>("add_attribute", &Entity::addAttribute)
       .def("remove_attribute", &Entity::removeAttribute)
-      .def("get_attributes",
-           static_cast<vector<EntityAttribute> (Entity::*)(const string&) const>(&Entity::getAttributes))
-      .def("get_attributes", static_cast<vector<EntityAttribute> (Entity::*)() const>(&Entity::getAttributes))
+      .def<vector<EntityAttribute> (Entity::*)(const string&) const>("get_attributes", &Entity::getAttributes)
+      .def<vector<EntityAttribute> (Entity::*)() const>("get_attributes", &Entity::getAttributes)
       .def("delete", &Entity::deleteEntity)
       .def("is_valid", &Entity::isValid)
       .def("__getitem__", &Entity::operator[])
@@ -335,10 +342,9 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_name", &Concept::getName)
       .def("get_children", &Concept::getChildren)
       .def("get_children_recursive", &Concept::getChildrenRecursive)
-      .def("create_instance", static_cast<Instance (Concept::*)() const>(&Concept::createInstance))
-      .def("create_instance",
-           static_cast<optional<Instance> (Concept::*)(const string&) const>(&Concept::createInstance),
-           python::return_value_policy<ReturnOptional>())
+      .def<Instance (Concept::*)() const>("create_instance", &Concept::createInstance)
+      .def<optional<Instance> (Concept::*)(const string&) const>("create_instance", &Concept::createInstance,
+                                                                 python::return_value_policy<ReturnOptional>())
       .def("__str__", to_str_wrap<Concept>);
 
   class_<Instance, bases<Entity>>("Instance", init<uint, LTMC&>())
@@ -355,19 +361,21 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readonly("entity_id", &EntityAttribute::entity_id)
       .def_readonly("attribute_name", &EntityAttribute::attribute_name)
       .def_readonly("value", &EntityAttribute::getValue)
+      .def("get_id_value", &EntityAttribute::getIdValue)
+      .def("get_bool_value", &EntityAttribute::getBoolValue)
       .def("get_int_value", &EntityAttribute::getIntValue)
       .def("get_float_value", &EntityAttribute::getFloatValue)
-      .def("get_bool_value", &EntityAttribute::getBoolValue)
       .def("get_string_value", &EntityAttribute::getStringValue)
+
       .def("__str__", to_str_wrap<EntityAttribute>);
 
   class_<vector<EntityAttribute>>("PyAttributeList").def(vector_indexing_suite<vector<EntityAttribute>>());
 
   class_<Map, bases<Instance>>("Map", init<uint, uint, string, LTMC&>())
       .def("add_point", &Map::addPoint)
-      .def("add_region", &Map::addRegion)
       .def<Pose (Map::*)(const string&, double, double, double)>("add_pose", &Map::addPose)
       .def<Pose (Map::*)(const string&, double, double, double, double)>("add_pose", &Map::addPose)
+      .def("add_region", &Map::addRegion)
       .def("get_point", &Map::getPoint, python::return_value_policy<ReturnOptional>())
       .def("get_pose", &Map::getPose, python::return_value_policy<ReturnOptional>())
       .def("get_region", &Map::getRegion, python::return_value_policy<ReturnOptional>())
@@ -409,14 +417,19 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("delete_all_attributes", &LTMC::deleteAllAttributes)
       .def<vector<Entity> (LTMC::*)(const string&, const uint)>("get_entities_with_attribute_of_value",
                                                                 &LTMC::getEntitiesWithAttributeOfValue)
-      .def<vector<Entity> (LTMC::*)(const string&, const string&)>("get_entities_with_attribute_of_value",
-                                                                   &LTMC::getEntitiesWithAttributeOfValue)
-      .def<vector<Entity> (LTMC::*)(const string&, const float)>("get_entities_with_attribute_of_value",
-                                                                 &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const int)>("get_entities_with_attribute_of_value",
+                                                               &LTMC::getEntitiesWithAttributeOfValue)
       .def<vector<Entity> (LTMC::*)(const string&, const bool)>("get_entities_with_attribute_of_value",
                                                                 &LTMC::getEntitiesWithAttributeOfValue)
-      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_int", &LTMC::selectQueryInt)
+      .def<vector<Entity> (LTMC::*)(const string&, const double)>("get_entities_with_attribute_of_value",
+                                                                  &LTMC::getEntitiesWithAttributeOfValue)
+      .def<vector<Entity> (LTMC::*)(const string&, const string&)>("get_entities_with_attribute_of_value",
+                                                                   &LTMC::getEntitiesWithAttributeOfValue)
+
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_id", &LTMC::selectQueryId)
       .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_bool", &LTMC::selectQueryBool)
+      .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_int", &LTMC::selectQueryInt)
+
       .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_float", &LTMC::selectQueryFloat)
       .def<bool (LTMC::*)(const string&, vector<EntityAttribute>&) const>("select_query_string",
                                                                           &LTMC::selectQueryString)

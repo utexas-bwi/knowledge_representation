@@ -53,7 +53,7 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
   EXPECT_EQ(6, ltmc.getAllEntities().size());
   EXPECT_EQ(5, ltmc.getAllConcepts().size());
   EXPECT_EQ(1, ltmc.getAllInstances().size());
-  EXPECT_EQ(15, ltmc.getAllAttributes().size());
+  EXPECT_EQ(16, ltmc.getAllAttributes().size());
 }
 
 TEST_F(LTMCTest, GetConceptWorks)
@@ -141,24 +141,17 @@ TEST_F(LTMCTest, GetRegionIdWorks)
   EXPECT_EQ(fresh_region, *retrieved_region);
 }
 
-TEST_F(LTMCTest, SQLQueryStrWorks)
-{
-  vector<EntityAttribute> query_result;
-  ltmc.selectQueryString("SELECT * FROM entity_attributes_str", query_result);
-  EXPECT_EQ(query_result.size(), 0);
-}
-
 TEST_F(LTMCTest, SQLQueryIdWorks)
 {
   vector<EntityAttribute> query_result;
-  ltmc.selectQueryString("SELECT * FROM entity_attributes_id", query_result);
+  ltmc.selectQueryId("SELECT * FROM entity_attributes_id", query_result);
   EXPECT_EQ(query_result.size(), 0);
 }
 
 TEST_F(LTMCTest, SQLQueryBoolWorks)
 {
   vector<EntityAttribute> query_result;
-  ltmc.selectQueryString("SELECT * FROM entity_attributes_bool", query_result);
+  ltmc.selectQueryBool("SELECT * FROM entity_attributes_bool", query_result);
   EXPECT_EQ(query_result.size(), 0);
 }
 
@@ -169,6 +162,13 @@ TEST_F(LTMCTest, SQLQueryFloatWorks)
   EXPECT_EQ(query_result.size(), 0);
 }
 
+TEST_F(LTMCTest, SQLQueryStrWorks)
+{
+  vector<EntityAttribute> query_result;
+  ltmc.selectQueryString("SELECT * FROM entity_attributes_str", query_result);
+  EXPECT_EQ(query_result.size(), 0);
+}
+
 TEST_F(LTMCTest, GetEntitiesWithAttributeOfValue)
 {
   auto entity = ltmc.addEntity();
@@ -176,14 +176,26 @@ TEST_F(LTMCTest, GetEntitiesWithAttributeOfValue)
   ASSERT_TRUE(success);
   auto entities = ltmc.getEntitiesWithAttributeOfValue("is_a", 1u);
   EXPECT_EQ(1, entities.size());
-  success = entity.addAttribute("height", 2.0f);
-  ASSERT_TRUE(success);
-  entities = ltmc.getEntitiesWithAttributeOfValue("height", 2.0f);
-  EXPECT_EQ(1, entities.size());
 
   success = entity.addAttribute("is_open", true);
   ASSERT_TRUE(success);
   entities = ltmc.getEntitiesWithAttributeOfValue("is_open", true);
+  EXPECT_EQ(1, entities.size());
+
+  success = entity.addAttribute("count", -1);
+  ASSERT_TRUE(success);
+  entities = ltmc.getEntitiesWithAttributeOfValue("count", -1);
+  EXPECT_EQ(1, entities.size());
+
+  success = entity.addAttribute("height", 2.01234567890123f);
+  ASSERT_TRUE(success);
+  entities = ltmc.getEntitiesWithAttributeOfValue("height", 2.01234567890123f);
+  EXPECT_EQ(1, entities.size());
+
+  success = entity.addAttribute("name", "never seen before name");
+  ASSERT_TRUE(success);
+  auto str = "never seen before name";
+  entities = ltmc.getEntitiesWithAttributeOfValue("name", str);
   EXPECT_EQ(1, entities.size());
 }
 

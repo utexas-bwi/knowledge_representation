@@ -5,7 +5,7 @@ Quickly inspect individual entities or see a summary of the whole knowledgebase
 import operator
 
 import knowledge_representation
-from knowledge_representation import Entity, Concept, Instance, Map, Point, Pose, Region, id_to_typed_wrapper
+from knowledge_representation import Entity, Concept, Instance, Map, Point, Pose, Region, AttributeValueType, id_to_typed_wrapper
 from tabulate import tabulate
 import argparse
 
@@ -16,8 +16,11 @@ def summarize_ltmc():
     all_entities = ltmc.get_all_entities()
     concept_count = len(ltmc.get_all_concepts())
     instance_count = len(ltmc.get_all_instances())
-    print("{} entities ({} concepts, {} instances)".format(len(all_entities), concept_count, instance_count))
+    attributes = ltmc.get_all_attributes()
+    print("{} entities ({} concepts, {} instances), {} attributes".format(len(all_entities), concept_count, instance_count, len(attributes)))
     summarize_entities(all_entities)
+    print("")
+    summarize_attributes(attributes)
 
 
 def summarize_entities(entity_ids):
@@ -27,6 +30,15 @@ def summarize_entities(entity_ids):
         rows.append([entity.entity_id, summarize_typed_entity(typed)])
 
     print(tabulate(rows, ["ID", "Summary"]))
+
+
+def summarize_attributes(attributes):
+    header = ["Attribute Name", "Value Type"]
+    rows = []
+    for attr_name, value_type in attributes:
+        type_as_str = AttributeValueType.names.keys()[AttributeValueType.names.values().index(value_type)]
+        rows.append([attr_name, type_as_str])
+    print(tabulate(rows, header))
 
 
 def summarize_typed_entity(entity):
@@ -105,7 +117,6 @@ def about_entity_attributes(entity):
     rows = []
     for attr in attributes:
         unwrapped = attr.value
-        name = None
         if isinstance(attr.value, int):
             other_entity = id_to_typed_wrapper(ltmc, attr.value)
             if other_entity:
