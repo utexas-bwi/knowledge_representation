@@ -1,3 +1,8 @@
+"""
+Parsers for the XML files that are distributed with the RoboCup GPSR Command generator:
+https://github.com/RoboCupAtHome/Sydney2019/tree/master/GPSRCmdGen
+"""
+
 from xml.etree import ElementTree as ElTree
 
 

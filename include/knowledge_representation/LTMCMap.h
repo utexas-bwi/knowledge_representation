@@ -90,6 +90,7 @@ public:
    *
    * The pose is assumed to be in the map frame
    *
+   * @param name name of the pose to add
    * @param x X coordinate of the pose position
    * @param y Y coordinate of the pose position
    * @param theta orientation of the pose
@@ -105,6 +106,7 @@ public:
    * Coordinates are taken to be in the map frame. This convenience method is simply intended
    * to prevent atan2 usage bugs in client code.
    *
+   * @param name name of the pose to add
    * @param x1 X coordinate of the pose position
    * @param y1 Y coordinate of the pose position
    * @param x2 X coordinate of a second point along the direction of the pose orientation

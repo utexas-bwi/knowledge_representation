@@ -122,7 +122,6 @@ public:
    * References include all entity-attributes that refer to this concept. But note that this method doesn't
    * delete the entities that are the subjects of the references. This means that all instances of this
    * concept will continue to exist, but they will no longer be identified as instances of this concept.
-   * @param concept_name
    * @return
    */
   bool removeReferences()

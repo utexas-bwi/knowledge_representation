@@ -98,8 +98,7 @@ public:
   /**
    * @brief Unsets all values of a given attribute on this entity
    * @param attribute_name
-   * @param other_entity_id
-   * @return whether the modification succeeded
+   * @return the number of attribute values removed
    */
   int removeAttribute(const std::string& attribute_name)
   {
