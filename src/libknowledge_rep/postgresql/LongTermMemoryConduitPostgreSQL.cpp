@@ -1062,8 +1062,8 @@ boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const s
 boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getRegion" };
-  string query = "SELECT * "
-                 "FROM regions WHERE parent_map_id"
+  string query = "SELECT entity_id, region, region_name "
+                 "FROM regions WHERE parent_map_id "
                  "= $1 AND region_name = $2";
   auto q_result = txn.parameterized(query)(map.getId())(name).exec();
   txn.commit();
@@ -1116,12 +1116,29 @@ vector<Pose> LongTermMemoryConduitPostgreSQL::getAllPoses(Map& map)
 vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)
 {
   pqxx::work txn{ *conn, "getAllPoses" };
-  string query = "SELECT * FROM regions WHERE parent_map_id = $1";
+  string query = "SELECT entity_id, region, region_name FROM regions WHERE parent_map_id = $1";
 
   auto q_result = txn.parameterized(query)(map.getId()).exec();
   txn.commit();
   vector<Region> regions;
   for (const auto& row : q_result)
+  {
+    auto str = row["region"].as<string>();
+    const auto points = strToPoints(str);
+    regions.emplace_back(row["entity_id"].as<uint>(), row["region_name"].as<string>(), points, map, *this);
+  }
+  return regions;
+}
+
+std::vector<Region> LongTermMemoryConduitPostgreSQL::getContainingRegions(Map& map, std::pair<double, double> point)
+{
+  pqxx::work txn{ *conn, "getContainingRegions" };
+  auto result = txn.parameterized("SELECT entity_id, region, region_name FROM regions WHERE parent_map_id = $1 AND "
+                                  "region <@ point($2,$3)")(map.map_id)(point.first)(point.second)
+                    .exec();
+  txn.commit();
+  vector<Region> regions;
+  for (const auto& row : result)
   {
     auto str = row["region"].as<string>();
     const auto points = strToPoints(str);
@@ -1150,6 +1167,55 @@ bool LongTermMemoryConduitPostgreSQL::renameMap(Map& map, const std::string& new
     // Likely a naming collision. In any case, we didn't rename, so return false
     return false;
   }
+}
+
+// REGION BACKERS
+
+vector<Point> LongTermMemoryConduitPostgreSQL::getContainedPoints(Region& region)
+{
+  pqxx::work txn{ *conn, "getContainedPoints" };
+
+  auto result =
+      txn.parameterized("SELECT entity_id, point_name, point FROM points WHERE parent_map_id = $1 AND (SELECT region "
+                        "FROM regions WHERE entity_id = $2) <@ point")(region.parent_map.map_id)(region.entity_id)
+          .exec();
+  txn.commit();
+  vector<Point> points;
+  for (const auto& row : result)
+  {
+    points.emplace_back(row["entity_id"].as<uint>(), row["point_name"].as<string>(), row["x"].as<double>(),
+                        row["y"].as<double>(), region.parent_map, *this);
+  }
+  return points;
+}
+
+vector<Pose> LongTermMemoryConduitPostgreSQL::getContainedPoses(Region& region)
+{
+  pqxx::work txn{ *conn, "getContainedPoses" };
+
+  string query = "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
+                 "as theta, pose_name FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point, pose_name FROM "
+                 "poses WHERE parent_map_id "
+                 "= $1 AND (SELECT region FROM regions WHERE entity_id = $2) <@ pose[0]) AS dummy_sub_alias";
+  auto result = txn.parameterized(query)(region.parent_map.map_id)(region.entity_id).exec();
+  txn.commit();
+  vector<Pose> poses;
+  for (const auto& row : result)
+  {
+    poses.emplace_back(row["entity_id"].as<uint>(), row["pose_name"].as<string>(), row["x"].as<double>(),
+                       row["y"].as<double>(), row["theta"].as<double>(), region.parent_map, *this);
+  }
+  return poses;
+}
+
+bool LongTermMemoryConduitPostgreSQL::isPointContained(const Region& region, std::pair<double, double> point)
+{
+  pqxx::work txn{ *conn, "isPointContained" };
+  auto result = txn.parameterized("SELECT count(*) FROM regions WHERE entity_id = $1 AND region <@ point($2,$3)")(
+                       region.entity_id)(point.first)(point.second)
+                    .exec();
+  txn.commit();
+  return result[0]["count"].as<uint>() == 1;
 }
 
 boost::optional<Map> LongTermMemoryConduitPostgreSQL::getMapForMapId(uint map_id)

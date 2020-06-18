@@ -544,9 +544,31 @@ protected:
     return static_cast<Impl*>(this)->getAllRegions(map);
   }
 
+  std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point)
+  {
+    return static_cast<Impl*>(this)->getContainingRegions(map, point);
+  }
+
   bool renameMap(MapImpl& map, const std::string& new_name)
   {
     return static_cast<Impl*>(this)->renameMap(map, new_name);
+  }
+
+  // REGION BACKERS
+
+  std::vector<PointImpl> getContainedPoints(RegionImpl& region)
+  {
+    return static_cast<Impl*>(this)->getContainedPoints(region);
+  }
+
+  std::vector<PoseImpl> getContainedPoses(RegionImpl& region)
+  {
+    return static_cast<Impl*>(this)->getContainedPoses(region);
+  }
+
+  bool isPointContained(const RegionImpl& region, std::pair<double, double> point)
+  {
+    return static_cast<Impl*>(this)->isPointContained(region, point);
   }
 
 private:

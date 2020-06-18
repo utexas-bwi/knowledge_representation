@@ -233,7 +233,17 @@ protected:
 
   std::vector<RegionImpl> getAllRegions(MapImpl& map);
 
+  std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point);
+
   bool renameMap(MapImpl& map, const std::string& new_name);
+
+  // REGION BACKERS
+
+  std::vector<PointImpl> getContainedPoints(RegionImpl& region);
+
+  std::vector<PoseImpl> getContainedPoses(RegionImpl& region);
+
+  bool isPointContained(const RegionImpl& region, std::pair<double, double> point);
 
 private:
   /**

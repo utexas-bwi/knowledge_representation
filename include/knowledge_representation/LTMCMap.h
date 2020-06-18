@@ -24,6 +24,7 @@ class LTMCMap : public LTMCInstance<LTMCImpl>
   using PoseImpl = LTMCPose<LTMCImpl>;
   using RegionImpl = LTMCRegion<LTMCImpl>;
 
+  friend LTMCImpl;
   uint map_id;
 
 public:

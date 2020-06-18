@@ -406,6 +406,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readonly("parent_map", &Region::parent_map)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses)
+      .def("is_point_contained", &Region::isPointContained)
       .def("__str__", to_str_wrap<Region>);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())

@@ -39,9 +39,13 @@ public:
     return this->name;
   }
 
+  /**
+   * @brief Gets the regions that belong to the same map that contain this pose
+   * @return regions where this pose is inside or on the bounds
+   */
   std::vector<RegionImpl> getContainingRegions()
   {
-    assert(false);
+    return this->ltmc.get().getContainingRegions(parent_map, { x, y });
   }
 
   bool operator==(const LTMCPose& other) const

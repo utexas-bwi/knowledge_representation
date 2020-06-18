@@ -38,14 +38,31 @@ public:
     return this->name;
   }
 
+  /**
+   * @brief Gets the points that belong to the same map and are inside or on the bounds of the region
+   * @return a list of contained points
+   */
   std::vector<PointImpl> getContainedPoints()
   {
-    assert(false);
+    return this->ltmc.get().getContainedPoints(*this);
   }
 
+  /**
+   * @brief Gets the poses that belong to the same map and are inside or on the bounds of the region
+   * @return a list of contained poses
+   */
   std::vector<PoseImpl> getContainedPoses()
   {
-    assert(false);
+    return this->ltmc.get().getContainedPoses(*this);
+  }
+
+  /**
+   * @brief Checks whether a point is in or on the bounds of the region
+   * @return whether the point is contained in the region
+   */
+  bool isPointContained(const Point2D& point)
+  {
+    return this->ltmc.get().isPointContained(*this, point);
   }
 
   bool operator==(const LTMCRegion& other) const
