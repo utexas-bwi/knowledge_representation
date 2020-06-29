@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('classknowledge__rep_1_1LTMCRegion.html
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classknowledge__rep_1_1LTMCRegion-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">LTMCRegion&lt; LTMCImpl &gt; Class Template Reference</div>  </div>
@@ -94,6 +95,19 @@ $(document).ready(function(){initNavTree('classknowledge__rep_1_1LTMCRegion.html
  <a href="classknowledge__rep_1_1LTMCRegion.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="LTMCRegion_8h_source.html">LTMCRegion.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a844832c3ca2179b2a84bacd1746d3ac1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classknowledge__rep_1_1LTMCPoint.html">PointImpl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCRegion.html#a844832c3ca2179b2a84bacd1746d3ac1">getContainedPoints</a> ()</td></tr>
+<tr class="memdesc:a844832c3ca2179b2a84bacd1746d3ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the points that belong to the same map and are inside or on the bounds of the region.  <a href="classknowledge__rep_1_1LTMCRegion.html#a844832c3ca2179b2a84bacd1746d3ac1">More...</a><br /></td></tr>
+<tr class="separator:a844832c3ca2179b2a84bacd1746d3ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d4e506aac23d89d6b8ec6ecd64c33d3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classknowledge__rep_1_1LTMCPose.html">PoseImpl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCRegion.html#a3d4e506aac23d89d6b8ec6ecd64c33d3">getContainedPoses</a> ()</td></tr>
+<tr class="memdesc:a3d4e506aac23d89d6b8ec6ecd64c33d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the poses that belong to the same map and are inside or on the bounds of the region.  <a href="classknowledge__rep_1_1LTMCRegion.html#a3d4e506aac23d89d6b8ec6ecd64c33d3">More...</a><br /></td></tr>
+<tr class="separator:a3d4e506aac23d89d6b8ec6ecd64c33d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21dfbaa64d26d07cdbf38f110f1b0ec6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCRegion.html#a21dfbaa64d26d07cdbf38f110f1b0ec6">isPointContained</a> (const Point2D &amp;point)</td></tr>
+<tr class="memdesc:a21dfbaa64d26d07cdbf38f110f1b0ec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a point is in or on the bounds of the region.  <a href="classknowledge__rep_1_1LTMCRegion.html#a21dfbaa64d26d07cdbf38f110f1b0ec6">More...</a><br /></td></tr>
+<tr class="separator:a21dfbaa64d26d07cdbf38f110f1b0ec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename LTMCImpl&gt;<br />
 class knowledge_rep::LTMCRegion&lt; LTMCImpl &gt;</h3>
@@ -101,7 +115,99 @@ class knowledge_rep::LTMCRegion&lt; LTMCImpl &gt;</h3>
 <p>An instance of the "region" concept which represents a closed polygon on some <a class="el" href="classknowledge__rep_1_1LTMCMap.html" title="An instance of the Map concept, which represents a single 2D frame of reference.">LTMCMap</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00034">34</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a844832c3ca2179b2a84bacd1746d3ac1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a844832c3ca2179b2a84bacd1746d3ac1">&#9670;&nbsp;</a></span>getContainedPoints()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classknowledge__rep_1_1LTMCPoint.html">PointImpl</a>&gt; getContainedPoints </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the points that belong to the same map and are inside or on the bounds of the region. </p>
+<dl class="section return"><dt>Returns</dt><dd>a list of contained points </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="LTMCRegion_8h_source.html#l00045">45</a> of file <a class="el" href="LTMCRegion_8h_source.html">LTMCRegion.h</a>.</p>
+
+</div>
+</div>
+<a id="a3d4e506aac23d89d6b8ec6ecd64c33d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d4e506aac23d89d6b8ec6ecd64c33d3">&#9670;&nbsp;</a></span>getContainedPoses()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classknowledge__rep_1_1LTMCPose.html">PoseImpl</a>&gt; getContainedPoses </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the poses that belong to the same map and are inside or on the bounds of the region. </p>
+<dl class="section return"><dt>Returns</dt><dd>a list of contained poses </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="LTMCRegion_8h_source.html#l00054">54</a> of file <a class="el" href="LTMCRegion_8h_source.html">LTMCRegion.h</a>.</p>
+
+</div>
+</div>
+<a id="a21dfbaa64d26d07cdbf38f110f1b0ec6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21dfbaa64d26d07cdbf38f110f1b0ec6">&#9670;&nbsp;</a></span>isPointContained()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isPointContained </td>
+          <td>(</td>
+          <td class="paramtype">const Point2D &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks whether a point is in or on the bounds of the region. </p>
+<dl class="section return"><dt>Returns</dt><dd>whether the point is contained in the region </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="LTMCRegion_8h_source.html#l00063">63</a> of file <a class="el" href="LTMCRegion_8h_source.html">LTMCRegion.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>include/knowledge_representation/<a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a></li>
 <li>include/knowledge_representation/<a class="el" href="LTMCRegion_8h_source.html">LTMCRegion.h</a></li>
 </ul>
@@ -111,7 +217,7 @@ class knowledge_rep::LTMCRegion&lt; LTMCImpl &gt;</h3>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>knowledge_rep</b></li><li class="navelem"><a class="el" href="classknowledge__rep_1_1LTMCRegion.html">LTMCRegion</a></li>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

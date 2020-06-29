@@ -220,7 +220,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00040">40</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00041">41</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
 </div>
 </div>
@@ -258,7 +258,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the rename succeeded </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00053">53</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00054">54</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +288,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 <p>Get's the map's id (<b>not</b> its entity ID) </p>
 <p>Map's are indexed by their own space of IDs. This prevents edge cases where a plain entity ID could be coerced to be an instance of a map, without respecting unique constraints for maps. </p><dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00075">75</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00076">76</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
 </div>
 </div>
@@ -342,6 +342,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 <p>The pose is assumed to be in the map frame</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">name</td><td>name of the pose to add </td></tr>
     <tr><td class="paramname">x</td><td>X coordinate of the pose position </td></tr>
     <tr><td class="paramname">y</td><td>Y coordinate of the pose position </td></tr>
     <tr><td class="paramname">theta</td><td>orientation of the pose </td></tr>
@@ -349,9 +350,9 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00097">97</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00099">99</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="LTMCMap_8h_source.html#l00113">LTMCMap&lt; LTMCImpl &gt;::addPose()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="LTMCMap_8h_source.html#l00116">LTMCMap&lt; LTMCImpl &gt;::addPose()</a>.</p>
 
 </div>
 </div>
@@ -411,6 +412,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 <p>Coordinates are taken to be in the map frame. This convenience method is simply intended to prevent atan2 usage bugs in client code.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">name</td><td>name of the pose to add </td></tr>
     <tr><td class="paramname">x1</td><td>X coordinate of the pose position </td></tr>
     <tr><td class="paramname">y1</td><td>Y coordinate of the pose position </td></tr>
     <tr><td class="paramname">x2</td><td>X coordinate of a second point along the direction of the pose orientation </td></tr>
@@ -419,9 +421,9 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00113">113</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00116">116</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
-<p class="reference">References <a class="el" href="LTMCMap_8h_source.html#l00097">LTMCMap&lt; LTMCImpl &gt;::addPose()</a>.</p>
+<p class="reference">References <a class="el" href="LTMCMap_8h_source.html#l00099">LTMCMap&lt; LTMCImpl &gt;::addPose()</a>.</p>
 
 </div>
 </div>
@@ -458,9 +460,9 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the copied map </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00179">179</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCMap_8h_source.html#l00182">182</a> of file <a class="el" href="LTMCMap_8h_source.html">LTMCMap.h</a>.</p>
 
-<p class="reference">References <a class="el" href="LTMCMap_8h_source.html#l00153">LTMCMap&lt; LTMCImpl &gt;::getAllPoints()</a>, <a class="el" href="LTMCMap_8h_source.html#l00161">LTMCMap&lt; LTMCImpl &gt;::getAllPoses()</a>, and <a class="el" href="LTMCMap_8h_source.html#l00169">LTMCMap&lt; LTMCImpl &gt;::getAllRegions()</a>.</p>
+<p class="reference">References <a class="el" href="LTMCMap_8h_source.html#l00156">LTMCMap&lt; LTMCImpl &gt;::getAllPoints()</a>, <a class="el" href="LTMCMap_8h_source.html#l00164">LTMCMap&lt; LTMCImpl &gt;::getAllPoses()</a>, and <a class="el" href="LTMCMap_8h_source.html#l00172">LTMCMap&lt; LTMCImpl &gt;::getAllRegions()</a>.</p>
 
 </div>
 </div>
@@ -474,7 +476,7 @@ class knowledge_rep::LTMCMap&lt; LTMCImpl &gt;</h3>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>knowledge_rep</b></li><li class="navelem"><a class="el" href="classknowledge__rep_1_1LTMCMap.html">LTMCMap</a></li>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

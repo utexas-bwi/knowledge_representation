@@ -8,8 +8,8 @@ var annotated_dup =
       [ "LTMCEntity", "classknowledge__rep_1_1LTMCEntity.html", "classknowledge__rep_1_1LTMCEntity" ],
       [ "LTMCInstance", "classknowledge__rep_1_1LTMCInstance.html", "classknowledge__rep_1_1LTMCInstance" ],
       [ "LTMCMap", "classknowledge__rep_1_1LTMCMap.html", "classknowledge__rep_1_1LTMCMap" ],
-      [ "LTMCPoint", "classknowledge__rep_1_1LTMCPoint.html", null ],
-      [ "LTMCPose", "classknowledge__rep_1_1LTMCPose.html", null ],
-      [ "LTMCRegion", "classknowledge__rep_1_1LTMCRegion.html", null ]
+      [ "LTMCPoint", "classknowledge__rep_1_1LTMCPoint.html", "classknowledge__rep_1_1LTMCPoint" ],
+      [ "LTMCPose", "classknowledge__rep_1_1LTMCPose.html", "classknowledge__rep_1_1LTMCPose" ],
+      [ "LTMCRegion", "classknowledge__rep_1_1LTMCRegion.html", "classknowledge__rep_1_1LTMCRegion" ]
     ] ]
 ];

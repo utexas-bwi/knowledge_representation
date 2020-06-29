@@ -30,8 +30,13 @@ var NAVTREE =
         [ "Map Types", "index.html#autotoc_md2", null ]
       ] ],
       [ "Installation", "index.html#autotoc_md3", null ],
-      [ "Usage", "index.html#autotoc_md4", null ],
-      [ "Development", "index.html#autotoc_md5", null ]
+      [ "Usage", "index.html#autotoc_md4", [
+        [ "C++/Python API", "index.html#autotoc_md5", null ],
+        [ "Loading Knowledge", "index.html#autotoc_md6", null ],
+        [ "Exploration", "index.html#autotoc_md7", null ],
+        [ "As Part of a ROS System", "index.html#autotoc_md8", null ]
+      ] ],
+      [ "Development", "index.html#autotoc_md9", null ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],

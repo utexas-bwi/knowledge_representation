@@ -160,67 +160,67 @@ $(document).ready(function(){initNavTree('LTMCConcept_8h_source.html',''); initR
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">return</span> this-&gt;ltmc.get().getChildrenRecursive(*<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  }</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">  128</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">removeReferences</a>()</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="comment">// Rely on the schema to clear out the childern via cascading delete</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    this-&gt;deleteEntity();</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    {</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      <span class="comment">// Recreate it with the same ID</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      <span class="keyword">auto</span> new_entity = this-&gt;ltmc.get().getEntity(this-&gt;entity_id);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      <span class="keywordflow">if</span> (!new_entity)</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      {</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      }</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    }</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="comment">// The current entity should still be valid (because we recreated it), so make it a concept again</span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    this-&gt;ltmc.get().makeConcept(this-&gt;entity_id, name);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">  146</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">operator==</a>(<span class="keyword">const</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a>&amp; other)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id == other.entity_id &amp;&amp; this-&gt;name == other.name;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  }</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">  151</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">operator!=</a>(<span class="keyword">const</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a>&amp; other)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id != other.entity_id || this-&gt;name != other.name;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  }</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">  156</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">isValid</a>()</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="comment">// Check whether LTMC still knows that this ID belongs to some concept</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">auto</span> retrieved = this-&gt;ltmc.get().getConcept(this-&gt;entity_id);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keywordflow">if</span> (retrieved)</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      <span class="comment">// Name could&#39;ve changed if ID was reassigned to different concept. Check sameness</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      <span class="keywordflow">return</span> *<span class="keyword">this</span> == *retrieved;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    }</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  }</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;};</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCConcept&lt;LTMCImpl&gt;&amp; c)</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;{</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Concept(&quot;</span> &lt;&lt; c.entity_id &lt;&lt; <span class="stringliteral">&quot; \&quot;&quot;</span> &lt;&lt; c.getName() &lt;&lt; <span class="stringliteral">&quot;\&quot;)&quot;</span>;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">  127</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">removeReferences</a>()</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  {</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="comment">// Rely on the schema to clear out the childern via cascading delete</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    this-&gt;deleteEntity();</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;      <span class="comment">// Recreate it with the same ID</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      <span class="keyword">auto</span> new_entity = this-&gt;ltmc.get().getEntity(this-&gt;entity_id);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      <span class="keywordflow">if</span> (!new_entity)</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      }</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    }</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">// The current entity should still be valid (because we recreated it), so make it a concept again</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    this-&gt;ltmc.get().makeConcept(this-&gt;entity_id, name);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">  145</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">operator==</a>(<span class="keyword">const</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id == other.entity_id &amp;&amp; this-&gt;name == other.name;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">  150</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">operator!=</a>(<span class="keyword">const</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id != other.entity_id || this-&gt;name != other.name;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  }</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">  155</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">isValid</a>()</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="comment">// Check whether LTMC still knows that this ID belongs to some concept</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">auto</span> retrieved = this-&gt;ltmc.get().getConcept(this-&gt;entity_id);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordflow">if</span> (retrieved)</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      <span class="comment">// Name could&#39;ve changed if ID was reassigned to different concept. Check sameness</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      <span class="keywordflow">return</span> *<span class="keyword">this</span> == *retrieved;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;};</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCConcept&lt;LTMCImpl&gt;&amp; c)</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;{</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Concept(&quot;</span> &lt;&lt; c.entity_id &lt;&lt; <span class="stringliteral">&quot; \&quot;&quot;</span> &lt;&lt; c.getName() &lt;&lt; <span class="stringliteral">&quot;\&quot;)&quot;</span>;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;}</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a464e83105c0eaa07c083ec4669fe9d97"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a464e83105c0eaa07c083ec4669fe9d97">knowledge_rep::LTMCConcept::getChildrenRecursive</a></div><div class="ttdeci">std::vector&lt; LTMCConcept &gt; getChildrenRecursive() const</div><div class="ttdoc">Get all concepts that are descended from this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00114">LTMCConcept.h:114</a></div></div>
-<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_afe93e17ac89cd97917811068ba2af214"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">knowledge_rep::LTMCConcept::isValid</a></div><div class="ttdeci">bool isValid()</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00156">LTMCConcept.h:156</a></div></div>
-<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a5aa22c8a659efd4b679dfbc8b70a3f13"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">knowledge_rep::LTMCConcept::removeReferences</a></div><div class="ttdeci">bool removeReferences()</div><div class="ttdoc">Removes all references to a concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00128">LTMCConcept.h:128</a></div></div>
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_afe93e17ac89cd97917811068ba2af214"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#afe93e17ac89cd97917811068ba2af214">knowledge_rep::LTMCConcept::isValid</a></div><div class="ttdeci">bool isValid()</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00155">LTMCConcept.h:155</a></div></div>
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a5aa22c8a659efd4b679dfbc8b70a3f13"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">knowledge_rep::LTMCConcept::removeReferences</a></div><div class="ttdeci">bool removeReferences()</div><div class="ttdoc">Removes all references to a concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00127">LTMCConcept.h:127</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a09090373ae0aba9024a5e5609b66ed67"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a09090373ae0aba9024a5e5609b66ed67">knowledge_rep::LTMCConcept::getInstances</a></div><div class="ttdeci">std::vector&lt; InstanceImpl &gt; getInstances() const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00040">LTMCConcept.h:40</a></div></div>
-<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a5357d36e24b05958d6984577ffb0443c"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">knowledge_rep::LTMCConcept::operator==</a></div><div class="ttdeci">bool operator==(const LTMCConcept &amp;other) const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00146">LTMCConcept.h:146</a></div></div>
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a5357d36e24b05958d6984577ffb0443c"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c">knowledge_rep::LTMCConcept::operator==</a></div><div class="ttdeci">bool operator==(const LTMCConcept &amp;other) const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00145">LTMCConcept.h:145</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a8a60438a5b55d0b2ceb35c8674b9d8c5"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a8a60438a5b55d0b2ceb35c8674b9d8c5">knowledge_rep::LTMCConcept::getName</a></div><div class="ttdeci">std::string getName() const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00032">LTMCConcept.h:32</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html">knowledge_rep::LTMCConcept</a></div><div class="ttdoc">A LTMCEntity representing a Concept; the abstract idea of something.</div><div class="ttdef"><b>Definition:</b> <a href="LongTermMemoryConduitInterface_8h_source.html#l00019">LongTermMemoryConduitInterface.h:19</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_aabb891170f74a52d50b121f288367d97"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#aabb891170f74a52d50b121f288367d97">knowledge_rep::LTMCConcept::removeInstances</a></div><div class="ttdeci">int removeInstances() const</div><div class="ttdoc">Remove all entities that are directly an instance of this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00050">LTMCConcept.h:50</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCInstance_html_a9d84edd3058d51e1938b16325fa8ba66"><div class="ttname"><a href="classknowledge__rep_1_1LTMCInstance.html#a9d84edd3058d51e1938b16325fa8ba66">knowledge_rep::LTMCInstance::makeInstanceOf</a></div><div class="ttdeci">bool makeInstanceOf(const LTMCConcept&lt; LTMCImpl &gt; &amp;concept)</div><div class="ttdoc">Attempts to make this instance also an instance of the given concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCInstance_8h_source.html#l00070">LTMCInstance.h:70</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCInstance_html"><div class="ttname"><a href="classknowledge__rep_1_1LTMCInstance.html">knowledge_rep::LTMCInstance</a></div><div class="ttdoc">Represents an Entity that is an Instance of some Concept.</div><div class="ttdef"><b>Definition:</b> <a href="LongTermMemoryConduitInterface_8h_source.html#l00022">LongTermMemoryConduitInterface.h:22</a></div></div>
-<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a41e7b83f170c7be50f75e29124b0b7ea"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">knowledge_rep::LTMCConcept::operator!=</a></div><div class="ttdeci">bool operator!=(const LTMCConcept &amp;other) const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00151">LTMCConcept.h:151</a></div></div>
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a41e7b83f170c7be50f75e29124b0b7ea"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea">knowledge_rep::LTMCConcept::operator!=</a></div><div class="ttdeci">bool operator!=(const LTMCConcept &amp;other) const</div><div class="ttdoc">Get entities that directly instantiate this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00150">LTMCConcept.h:150</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a281051427a06699dc29c25133f150172"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a281051427a06699dc29c25133f150172">knowledge_rep::LTMCConcept::createInstance</a></div><div class="ttdeci">boost::optional&lt; InstanceImpl &gt; createInstance(const std::string &amp;name) const</div><div class="ttdoc">Create an instance of the concept and give it a particular name.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00085">LTMCConcept.h:85</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_aa892117d9779d2879dbe0340bf8d35dd"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#aa892117d9779d2879dbe0340bf8d35dd">knowledge_rep::LTMCConcept::createInstance</a></div><div class="ttdeci">InstanceImpl createInstance() const</div><div class="ttdoc">Create a fresh instance of this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00072">LTMCConcept.h:72</a></div></div>
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCConcept_html_a6a05ae545f0abeb66adb5f521a6659a2"><div class="ttname"><a href="classknowledge__rep_1_1LTMCConcept.html#a6a05ae545f0abeb66adb5f521a6659a2">knowledge_rep::LTMCConcept::getChildren</a></div><div class="ttdeci">std::vector&lt; LTMCConcept &gt; getChildren() const</div><div class="ttdoc">Get all concepts that are direct children of this concept.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCConcept_8h_source.html#l00103">LTMCConcept.h:103</a></div></div>
@@ -229,7 +229,7 @@ $(document).ready(function(){initNavTree('LTMCConcept_8h_source.html',''); initR
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_612c4df28c85d54f06844f941890c577.html">knowledge_representation</a></li><li class="navelem"><b>LTMCConcept.h</b></li>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

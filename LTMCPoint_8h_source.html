@@ -127,42 +127,44 @@ $(document).ready(function(){initNavTree('LTMCPoint_8h_source.html',''); initRes
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">return</span> this-&gt;name;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  std::vector&lt;RegionImpl&gt; getContainingRegions()</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    assert(<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> LTMCPoint&amp; other)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id == other.entity_id &amp;&amp; this-&gt;name == other.name &amp;&amp; this-&gt;x == other.x &amp;&amp; this-&gt;y == other.y;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> LTMCPoint&amp; other)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id != other.entity_id || this-&gt;name == other.name || this-&gt;x != other.x || this-&gt;y != other.y;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  LTMCPoint&amp; operator=(<span class="keyword">const</span> LTMCPoint&amp; that)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    this-&gt;entity_id = that.entity_id;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    this-&gt;ltmc = that.ltmc;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCPoint&lt;LTMCImpl&gt;&amp; p)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Point(&quot;</span> &lt;&lt; p.entity_id &lt;&lt; <span class="stringliteral">&quot; \&quot;&quot;</span> &lt;&lt; p.getName() &lt;&lt; <span class="stringliteral">&quot;\&quot; &quot;</span> &lt;&lt; p.parent_map &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; p.x &lt;&lt; <span class="stringliteral">&quot;, &quot;</span> &lt;&lt; p.y</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;              &lt;&lt; <span class="stringliteral">&quot;))&quot;</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classknowledge__rep_1_1LTMCPoint.html#a513c9e0d427929e73e92d5c526e6c233">   46</a></span>&#160;  std::vector&lt;RegionImpl&gt; <a class="code" href="classknowledge__rep_1_1LTMCPoint.html#a513c9e0d427929e73e92d5c526e6c233">getContainingRegions</a>()</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> this-&gt;ltmc.get().getContainingRegions(parent_map, { x, y });</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code" href="classknowledge__rep_1_1LTMCPoint.html">LTMCPoint</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id == other.entity_id &amp;&amp; this-&gt;name == other.name &amp;&amp; this-&gt;x == other.x &amp;&amp; this-&gt;y == other.y;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> LTMCPoint&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id != other.entity_id || this-&gt;name == other.name || this-&gt;x != other.x || this-&gt;y != other.y;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  LTMCPoint&amp; operator=(<span class="keyword">const</span> LTMCPoint&amp; that)</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    this-&gt;entity_id = that.entity_id;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    this-&gt;ltmc = that.ltmc;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCPoint&lt;LTMCImpl&gt;&amp; p)</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;{</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Point(&quot;</span> &lt;&lt; p.entity_id &lt;&lt; <span class="stringliteral">&quot; \&quot;&quot;</span> &lt;&lt; p.getName() &lt;&lt; <span class="stringliteral">&quot;\&quot; &quot;</span> &lt;&lt; p.parent_map &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; p.x &lt;&lt; <span class="stringliteral">&quot;, &quot;</span> &lt;&lt; p.y</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;              &lt;&lt; <span class="stringliteral">&quot;))&quot;</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCPoint_html_a513c9e0d427929e73e92d5c526e6c233"><div class="ttname"><a href="classknowledge__rep_1_1LTMCPoint.html#a513c9e0d427929e73e92d5c526e6c233">knowledge_rep::LTMCPoint::getContainingRegions</a></div><div class="ttdeci">std::vector&lt; RegionImpl &gt; getContainingRegions()</div><div class="ttdoc">Gets the regions that belong to the same map that contain this point.</div><div class="ttdef"><b>Definition:</b> <a href="LTMCPoint_8h_source.html#l00046">LTMCPoint.h:46</a></div></div>
+<div class="ttc" id="aclassknowledge__rep_1_1LTMCPoint_html"><div class="ttname"><a href="classknowledge__rep_1_1LTMCPoint.html">knowledge_rep::LTMCPoint</a></div><div class="ttdoc">An instance of the Point concept, which stores a 2D coordinate with respect to some LTMCMap.</div><div class="ttdef"><b>Definition:</b> <a href="LongTermMemoryConduitInterface_8h_source.html#l00028">LongTermMemoryConduitInterface.h:28</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_612c4df28c85d54f06844f941890c577.html">knowledge_representation</a></li><li class="navelem"><b>LTMCPoint.h</b></li>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

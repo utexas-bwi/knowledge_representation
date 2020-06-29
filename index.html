@@ -87,19 +87,20 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <div class="title">knowledge_representation <a href="https://github.com/utexas-bwi/knowledge_representation/actions?query=workflow%3ACI"><img src="https://github.com/utexas-bwi/knowledge_representation/workflows/CI/badge.svg" alt="CI" style="pointer-events: none;" class="inline"/></a> </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> Mechanisms for storing and querying information about the world. You can think of this as a nicely packaged <a href="https://en.wikipedia.org/wiki/Database_schema">database schema</a>; it's an opinionated take on how to structure the kinds of knowledge that a robot might need and tools for <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD operations</a> within that structure.</p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> Mechanisms for storing and querying information about the world. A nicely packaged <a href="https://en.wikipedia.org/wiki/Database_schema">database schema</a> to structure the kinds of knowledge that a robot might need and tools for <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD operations</a> within that structure. Integrate it into your robot's perception so you can query where objects were seen, or into your task planning system so you can easily manage all of your facts.</p>
 <ul>
-<li>Persistent storage backed by a local PostgreSQL or MySQL database</li>
+<li>Persistent storage of facts and map geometry backed by a local PostgreSQL database</li>
 <li>Convenient APIs for common queries, like getting all instances of a type of object</li>
 <li>Link directly against your C++ code, or import a Python binding</li>
+<li>Not dependent on ROS, but easy to integrate into ROS projects</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Representation</h1>
-<p>Knowledge is broken up into <em>concepts</em>, <em>instances</em> and <em>relations</em>.</p>
+<p>Knowledge is broken up into <em>concepts</em>, <em>instances</em> and <em>attributes</em>.</p>
 <p><b>Concepts</b> are abstract ideas. They represent the <em>idea</em> of something. For example, the general idea of an apple but not any one apple in particular.</p>
 <p><b>Instances</b> are concrete, usually physical manifestations of concepts. You could have a dozen instances of a concept like apple.</p>
 <p>Both concepts and instances are <b>entities</b> in the knowledgebase. Each entity is granted a unique identifying number.</p>
-<p><b>Relations</b> tie different entities together and store data about them. Each relation has a name and a type. For example, an apple instance might be <code>on</code> some other instance. The relation is named <code>on</code> and its type is <code>entity_id</code>, because it relates some entity to another. Relations with types other than <code>entity_id</code> function more like properties; for example, the relation <code>is_graspable</code> with a type of <code>bool</code> is just storing a simple fact about an entity.</p>
+<p><b>Attributes</b> tie entities together and store data about them. Each attribute has a name and a type. For example, an apple instance might be <em>on</em> some other instance. The attribute is named <code>is_on</code> and its type is <code>entity_id</code>, because it relates some entity to another. Attributes with a value type of <code>entity_id</code> are also called <b>relations</b> because they relate entities to each other. Attributes with types other than <code>entity_id</code> function more like properties; for example, the relation <code>is_graspable</code> with a type of <code>bool</code> is just storing a simple fact about an entity.</p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Map Types</h2>
 <p>Mobile robots often have to answer questions like "what room am I in?" or "which is the nearest X?". knowledge_representation includes special affordances for representing 2D geometric information that can be queried to answer these kinds of questions:</p>
@@ -116,8 +117,30 @@ Installation</h1>
 </pre><p>Then run one of <code>scripts/configure_{mysql,postgresql}.sh</code> to install the default database configuration and schema. <b>PostgreSQL is the preferred backend.</b></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Usage</h1>
-<p>For example usage of the C++ API, check out <code>test/ltmc.cpp</code>. For Python, scripts <code>test_ltmc</code>.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<p>Integrate knowledge_representation by using the API wherever you need to store facts and observations that the robot might need later. Use the same API to retrieve facts en masse so you can plan over them, inspect them, or do whatever else you need for your application.</p>
+<h2><a class="anchor" id="autotoc_md5"></a>
+C++/Python API</h2>
+<p>To create applications that store and query, link your C++ against the <code>knowledge_rep</code> library or just import the <code>knowledge_representation</code> Python module. See the <a href="https://utexas-bwi.github.io/knowledge_representation/">documentation for the latest version of the C++ API</a> and example usage in <code>test/*.cpp</code>. The Python API is a generated wrapper, so must classes and methods are the same but with snake case conventions. See scripts <code>test_ltmc</code> or <code>scripts/show_me</code> for example usage, and try out the <code>ikr</code> script to interactively explore the API.</p>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Loading Knowledge</h2>
+<p>Scripts are provided for bulk loading knowledge. This is helpful if say, you want to load in map annotations, or you have an ontology that you want to use to initialize the robot's knowledge.</p>
+<p><code>populate_with_map</code> loads in SVG map annotations (marked over an image, ROS-style map). See <code>test/resources</code> for some example SVG files. In the future, we'll provide a simple browser-based annotator as well.</p>
+<p><code>populate_with_[knowledge|owl|xml]</code> support loading in different kinds of ontologies. Documentation and example files will come in a later release.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
+Exploration</h2>
+<p>Once your robot has accumulated knowledge, you'll want to poke around. Use the <code>show_me</code> script to quickly see a summary of the current knowledge, then pass it an ID or a name to see details about entities and their relations.</p>
+<h2><a class="anchor" id="autotoc_md8"></a>
+As Part of a ROS System</h2>
+<p>Once you add <code>knowledge_representation</code> to your package's dependencies, your code will link against the library that provides the APIs.</p>
+<p>The <code>populate_</code> scripts are geared towards use in a launch files. For instance, to load a map on launch, just add a line like this to your launch file: </p><pre class="fragment">&lt;node name="load_map_annotations" pkg="knowledge_representation" type="populate_with_map" args="$(find my_map_package)/maps/map_name.yaml"/&gt;
+</pre><p>Once the package is built in a catkin workspace, you can access additional shell shortcuts:</p>
+<ul>
+<li><code>ikr</code>: run the iPython environment</li>
+<li><code>kr-query</code>: run a SQL query against the knowledgebase</li>
+<li><code>kr-save</code>: save a SQL-dump of the current knowledgebase</li>
+<li><code>kr-show</code>: run <code>show_me</code></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Development</h1>
 <p>If you're working on the MySQL interface, we access the backing store via the xdev API. See the <a href="https://dev.mysql.com/doc/dev/connector-cpp/8.0/">documentation</a> for the official MySQL xdev API C++ library. </p>
 </div></div><!-- PageDoc -->
@@ -126,7 +149,7 @@ Development</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

@@ -98,96 +98,105 @@ $(document).ready(function(){initNavTree('EntityAttribute_8h_source.html',''); i
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;{</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">enum</span> AttributeValueType</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  Int,</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  Str,</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  Bool,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  Float</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;};</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">static</span> std::map&lt;std::string, AttributeValueType&gt; string_to_attribute_value_type = { { <span class="stringliteral">&quot;int&quot;</span>, Int },</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                                                                                    { <span class="stringliteral">&quot;str&quot;</span>, Str },</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  Id,</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  Bool,</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  Int,</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  Float,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  Str</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">static</span> std::map&lt;std::string, AttributeValueType&gt; string_to_attribute_value_type = { { <span class="stringliteral">&quot;id&quot;</span>, Id },</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                                                                                    { <span class="stringliteral">&quot;bool&quot;</span>, Bool },</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                                                                    { <span class="stringliteral">&quot;float&quot;</span>, Float } };</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">static</span> std::map&lt;AttributeValueType, std::string&gt; attribute_value_type_to_string = { { Int, <span class="stringliteral">&quot;int&quot;</span> },</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                                                                                    { Str, <span class="stringliteral">&quot;str&quot;</span> },</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                                                                                    { Bool, <span class="stringliteral">&quot;bool&quot;</span> },</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                                                                    { Float, <span class="stringliteral">&quot;float&quot;</span> } };</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">typedef</span> boost::variant&lt;int, float, bool, std::string&gt; AttributeValue;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                                                                                    { <span class="stringliteral">&quot;int&quot;</span>, Int },</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                                                                                    { <span class="stringliteral">&quot;float&quot;</span>, Float },</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                                                                                    { <span class="stringliteral">&quot;str&quot;</span>, Str } };</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">static</span> std::map&lt;AttributeValueType, std::string&gt; attribute_value_type_to_string = {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  { Id, <span class="stringliteral">&quot;id&quot;</span> }, { Bool, <span class="stringliteral">&quot;bool&quot;</span> }, { Int, <span class="stringliteral">&quot;int&quot;</span> }, { Float, <span class="stringliteral">&quot;float&quot;</span> }, { Str, <span class="stringliteral">&quot;str&quot;</span> },</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">typedef</span> boost::variant&lt;uint, bool, int, double, std::string&gt; AttributeValue;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">static</span> std::string toString(<span class="keyword">const</span> AttributeValue&amp; attribute_value)</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordflow">switch</span> (attribute_value.which())</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">case</span> 0:</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;int&gt;(attribute_value));</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;uint&gt;(attribute_value));</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">case</span> 1:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;float&gt;(attribute_value));</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;bool&gt;(attribute_value));</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">case</span> 2:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;bool&gt;(attribute_value));</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;int&gt;(attribute_value));</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">case</span> 3:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <span class="keywordflow">return</span> boost::get&lt;std::string&gt;(attribute_value);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      assert(<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html">   50</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  uint entity_id;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  std::string attribute_name;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  AttributeValue value;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a>(<span class="keywordtype">int</span> entity_id, std::string attribute_name, AttributeValue value)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    : entity_id(entity_id), attribute_name(std::move(attribute_name)), value(std::move(value))</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">   67</a></span>&#160;  AttributeValue <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">getValue</a>()</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordflow">return</span> value;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  }</div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">   77</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">getIntValue</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;int&gt;(value);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  }</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a8b6e5dccd615d65041ffc174d01cb9b8">   88</a></span>&#160;  <span class="keywordtype">float</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a8b6e5dccd615d65041ffc174d01cb9b8">getFloatValue</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;float&gt;(value);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">   99</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">getBoolValue</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;bool&gt;(value);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  }</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">  110</a></span>&#160;  std::string <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">getStringValue</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;std::string&gt;(value);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a>&amp; other)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> (this-&gt;entity_id == other.entity_id) &amp;&amp; (this-&gt;attribute_name == other.attribute_name) &amp;&amp;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;           (this-&gt;value == other.value);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  }</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;};</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <span class="keywordflow">return</span> std::to_string(boost::get&lt;double&gt;(attribute_value));</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">case</span> 4:</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      <span class="keywordflow">return</span> boost::get&lt;std::string&gt;(attribute_value);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      assert(<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html">   52</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  uint entity_id;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  std::string attribute_name;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  AttributeValue value;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a>(<span class="keywordtype">int</span> entity_id, std::string attribute_name, AttributeValue value)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    : entity_id(entity_id), attribute_name(std::move(attribute_name)), value(std::move(value))</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">   69</a></span>&#160;  AttributeValue <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">getValue</a>()</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">return</span> value;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a05b4cc1e5cbf438ba448649c783ef1bc">   80</a></span>&#160;  uint <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a05b4cc1e5cbf438ba448649c783ef1bc">getIdValue</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;uint&gt;(value);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">   91</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">getBoolValue</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;bool&gt;(value);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">  102</a></span>&#160;  <span class="keywordtype">int</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">getIntValue</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;int&gt;(value);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  }</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#ae60e3662dba0df8a708c6205233a231a">  113</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#ae60e3662dba0df8a708c6205233a231a">getFloatValue</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;double&gt;(value);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">  124</a></span>&#160;  std::string <a class="code" href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">getStringValue</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">return</span> boost::get&lt;std::string&gt;(value);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code" href="structknowledge__rep_1_1EntityAttribute.html">EntityAttribute</a>&amp; other)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">return</span> (this-&gt;entity_id == other.entity_id) &amp;&amp; (this-&gt;attribute_name == other.attribute_name) &amp;&amp;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;           (this-&gt;value == other.value);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;};</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a0bc29da0e07e8d52e43ec94e488a4ffd"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">knowledge_rep::EntityAttribute::getStringValue</a></div><div class="ttdeci">std::string getStringValue() const</div><div class="ttdoc">Extracts a string from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00110">EntityAttribute.h:110</a></div></div>
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a26b4cddae619190c84d436369198e7c0"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">knowledge_rep::EntityAttribute::getBoolValue</a></div><div class="ttdeci">bool getBoolValue() const</div><div class="ttdoc">Extracts a bool from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00099">EntityAttribute.h:99</a></div></div>
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a80d705f6bbf49abd4c4b14b4498e97c8"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">knowledge_rep::EntityAttribute::getValue</a></div><div class="ttdeci">AttributeValue getValue()</div><div class="ttdoc">Get a copy of the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00067">EntityAttribute.h:67</a></div></div>
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html">knowledge_rep::EntityAttribute</a></div><div class="ttdoc">A tuple of an entity id, an attribute name, and a value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00050">EntityAttribute.h:51</a></div></div>
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a65e7fa88854f3fba293fad662506715f"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">knowledge_rep::EntityAttribute::getIntValue</a></div><div class="ttdeci">int getIntValue() const</div><div class="ttdoc">Extracts an int from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00077">EntityAttribute.h:77</a></div></div>
-<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a8b6e5dccd615d65041ffc174d01cb9b8"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a8b6e5dccd615d65041ffc174d01cb9b8">knowledge_rep::EntityAttribute::getFloatValue</a></div><div class="ttdeci">float getFloatValue() const</div><div class="ttdoc">Extracts a float from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00088">EntityAttribute.h:88</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a0bc29da0e07e8d52e43ec94e488a4ffd"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a0bc29da0e07e8d52e43ec94e488a4ffd">knowledge_rep::EntityAttribute::getStringValue</a></div><div class="ttdeci">std::string getStringValue() const</div><div class="ttdoc">Extracts a string from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00124">EntityAttribute.h:124</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a26b4cddae619190c84d436369198e7c0"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a26b4cddae619190c84d436369198e7c0">knowledge_rep::EntityAttribute::getBoolValue</a></div><div class="ttdeci">bool getBoolValue() const</div><div class="ttdoc">Extracts a bool from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00091">EntityAttribute.h:91</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a80d705f6bbf49abd4c4b14b4498e97c8"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a80d705f6bbf49abd4c4b14b4498e97c8">knowledge_rep::EntityAttribute::getValue</a></div><div class="ttdeci">AttributeValue getValue()</div><div class="ttdoc">Get a copy of the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00069">EntityAttribute.h:69</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html">knowledge_rep::EntityAttribute</a></div><div class="ttdoc">A tuple of an entity id, an attribute name, and a value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00052">EntityAttribute.h:53</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_ae60e3662dba0df8a708c6205233a231a"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#ae60e3662dba0df8a708c6205233a231a">knowledge_rep::EntityAttribute::getFloatValue</a></div><div class="ttdeci">double getFloatValue() const</div><div class="ttdoc">Extracts a float from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00113">EntityAttribute.h:113</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a05b4cc1e5cbf438ba448649c783ef1bc"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a05b4cc1e5cbf438ba448649c783ef1bc">knowledge_rep::EntityAttribute::getIdValue</a></div><div class="ttdeci">uint getIdValue() const</div><div class="ttdoc">Extracts an ID (uint) from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00080">EntityAttribute.h:80</a></div></div>
+<div class="ttc" id="astructknowledge__rep_1_1EntityAttribute_html_a65e7fa88854f3fba293fad662506715f"><div class="ttname"><a href="structknowledge__rep_1_1EntityAttribute.html#a65e7fa88854f3fba293fad662506715f">knowledge_rep::EntityAttribute::getIntValue</a></div><div class="ttdeci">int getIntValue() const</div><div class="ttdoc">Extracts an int from the value.</div><div class="ttdef"><b>Definition:</b> <a href="EntityAttribute_8h_source.html#l00102">EntityAttribute.h:102</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_612c4df28c85d54f06844f941890c577.html">knowledge_representation</a></li><li class="navelem"><b>EntityAttribute.h</b></li>
-    <li class="footer">Generated on Wed Jun 17 2020 22:59:41 for knowledge_representation by
+    <li class="footer">Generated on Mon Jun 29 2020 19:11:39 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>
