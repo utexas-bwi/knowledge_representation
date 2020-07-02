@@ -415,12 +415,9 @@ boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(uint entity_id)
   {
     pqxx::work txn{ *conn, "getPose" };
     // A simple count won't do because we need the name
-    auto result =
-        txn.parameterized("SELECT entity_id, pose_name, parent_map_id, start[0] as x, start[1] as y, "
-                          "ATAN2(end_point[1]-start[1],end_point[0]-start[0])"
-                          " as theta FROM (SELECT entity_id, pose_name, parent_map_id, pose[0] as start, pose[1] as "
-                          "end_point FROM poses WHERE entity_id = $1) AS dummy_sub_alias")(entity_id)
-            .exec();
+    auto result = txn.parameterized("SELECT entity_id, pose_name, parent_map_id, x, y, theta FROM poses_point_angle "
+                                    "WHERE entity_id = $1")(entity_id)
+                      .exec();
     txn.commit();
     if (!result.empty())
     {
@@ -986,7 +983,7 @@ Pose LongTermMemoryConduitPostgreSQL::addPose(Map& map, const string& name, doub
   map.addAttribute("has", pose_entity);
   pqxx::work txn{ *conn, "addPose" };
   auto result =
-      txn.parameterized("INSERT INTO poses SELECT $1, $2, $3, lseg(point($4, $5),point($4+COS($6),$5+SIN($6)))")(
+      txn.parameterized("INSERT INTO poses VALUES ($1, $2, $3, lseg(point($4, $5), point($4+COS($6),$5+SIN($6))))")(
              pose_entity.entity_id)(name)(map.getId())(x)(y)(theta)
           .exec();
   txn.parameterized("INSERT INTO instance_of VALUES ($1,$2)")(pose_entity.entity_id)("pose").exec();
@@ -1037,10 +1034,8 @@ boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const
 boost::optional<Pose> LongTermMemoryConduitPostgreSQL::getPose(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getPose" };
-  string query =
-      "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
-      "as theta FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point FROM poses WHERE parent_map_id "
-      "= $1 AND pose_name = $2) AS dummy_sub_alias";
+  string query = "SELECT entity_id, x, y, theta FROM poses_point_angle WHERE parent_map_id "
+                 "= $1 AND pose_name = $2";
 
   auto q_result = txn.parameterized(query)(map.getId())(name).exec();
   txn.commit();
@@ -1097,12 +1092,11 @@ vector<Point> LongTermMemoryConduitPostgreSQL::getAllPoints(Map& map)
 vector<Pose> LongTermMemoryConduitPostgreSQL::getAllPoses(Map& map)
 {
   pqxx::work txn{ *conn, "getAllPoses" };
-  string query = "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
-                 "as theta, pose_name FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point, pose_name FROM "
-                 "poses WHERE parent_map_id "
-                 "= $1) AS dummy_sub_alias";
 
-  auto q_result = txn.parameterized(query)(map.getId()).exec();
+  auto q_result =
+      txn.parameterized("SELECT entity_id, x, y, theta, pose_name FROM poses_point_angle WHERE parent_map_id = $1")(
+             map.getId())
+          .exec();
   txn.commit();
   vector<Pose> poses;
   for (const auto& row : q_result)
@@ -1193,9 +1187,8 @@ vector<Pose> LongTermMemoryConduitPostgreSQL::getContainedPoses(Region& region)
 {
   pqxx::work txn{ *conn, "getContainedPoses" };
 
-  string query = "SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0]) "
-                 "as theta, pose_name FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point, pose_name FROM "
-                 "poses WHERE parent_map_id "
+  string query = "SELECT entity_id, x, y, theta, pose_name FROM poses_point_angle"
+                 "WHERE parent_map_id "
                  "= $1 AND (SELECT region FROM regions WHERE entity_id = $2) <@ pose[0]) AS dummy_sub_alias";
   auto result = txn.parameterized(query)(region.parent_map.map_id)(region.entity_id).exec();
   txn.commit();

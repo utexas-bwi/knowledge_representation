@@ -52,16 +52,16 @@ CREATE TABLE entity_attributes_id
     attribute_name  varchar(24) NOT NULL,
     attribute_value int         NOT NULL,
     PRIMARY KEY (entity_id, attribute_name, attribute_value),
-    FOREIGN KEY (attribute_value)
-        REFERENCES entities (entity_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
     FOREIGN KEY (entity_id)
         REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (attribute_name)
         REFERENCES attributes (attribute_name)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (attribute_value)
+        REFERENCES entities (entity_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -95,8 +95,7 @@ CREATE TABLE entity_attributes_str
     FOREIGN KEY (attribute_name)
         REFERENCES attributes (attribute_name)
         ON DELETE CASCADE
-        ON UPDATE CASCADE/*,
-    CONSTRAINT CHK_name_unique CHECK (NumSameNames() = 0)*/
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE entity_attributes_float
@@ -150,7 +149,7 @@ CREATE TABLE maps
    This trigger manually deletes entities associated with the map. */
 CREATE FUNCTION delete_map_owned_entities() RETURNS TRIGGER AS $_$
 BEGIN
-    DELETE FROM entities WHERE entity_id IN (SELECT entity_id FROM (SELECT entity_id, parent_map_id FROM poses UNION SELECT entity_id, parent_map_id FROM points UNION SELECT entity_id, parent_map_id FROM regions) AS owend_entities WHERE parent_map_id = OLD.map_id);
+    DELETE FROM entities WHERE entity_id IN (SELECT entity_id FROM (SELECT entity_id, parent_map_id FROM poses UNION SELECT entity_id, parent_map_id FROM points UNION SELECT entity_id, parent_map_id FROM regions) AS owned_entities WHERE parent_map_id = OLD.map_id);
     RETURN OLD;
 END $_$ LANGUAGE 'plpgsql';
 
@@ -195,7 +194,6 @@ CREATE TABLE regions
         ON UPDATE CASCADE
 );
 
-/*TODO(nickswalker): These can have magnitude normalization*/
 CREATE TABLE poses
 (
     entity_id int NOT NULL,
@@ -213,6 +211,38 @@ CREATE TABLE poses
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+/* This doesn't seem to work because NEW isn't available in the subquery for the INSERT section */
+CREATE FUNCTION normalize_pose() RETURNS TRIGGER AS $_$
+BEGIN
+    IF TG_OP = 'UPDATE' THEN
+    WITH p (x1, y1, x2, y2) AS
+    (SELECT st[0] AS x1, st[1] AS y1, en[0] as x2, en[1] AS y2 FROM
+    (SELECT l[0] AS st, l[1] AS en FROM OLD.pose AS l) AS dummy),
+    a(theta) AS (SELECT ATAN2(p.y2-p.y1,p.x2-p.x1) FROM p)
+    SELECT lseg(point(p.x1, p.y1), point(p.x1 + COS(a.theta), p.y1 + SIN(a.theta))) INTO OLD.pose FROM p;
+    RETURN OLD;
+    ELSIF TG_OP = 'INSERT' THEN
+    SELECT lseg(point(x1, y1), point(x1 + COS(theta), y1 + SIN(theta))) INTO NEW.pose FROM
+    (SELECT st[0] AS x1, st[1] AS y1, en[0] AS x2, en[1] AS y2, ATAN2(y2-y1,x2-x1) AS theta FROM
+    (SELECT l[0] AS st, l[1] AS en FROM NEW.pose) AS l) AS dummy;
+    RETURN NEW;
+    ELSE
+    RETURN null;
+    END IF;
+
+END $_$ LANGUAGE 'plpgsql';
+
+/*CREATE TRIGGER normalize_pose
+BEFORE UPDATE OF pose OR INSERT ON poses
+FOR EACH ROW
+EXECUTE PROCEDURE normalize_pose();*/
+
+/* Simplifies retrieving poses as (x,y,theta) tuples*/
+CREATE VIEW poses_point_angle AS
+  SELECT entity_id, start[0] as x, start[1] as y, ATAN2(end_point[1]-start[1],end_point[0]-start[0])
+                 as theta, pose_name, parent_map_id FROM (SELECT entity_id, pose[0] as start, pose[1] as end_point, pose_name, parent_map_id FROM
+                poses) AS dummy_sub_alias;
 
 CREATE TABLE doors
 (
@@ -233,20 +263,6 @@ CREATE TABLE doors
 );
 
 /******************* FUNCTIONS */
-
-/* Counts the number of entities that have the same name */
-CREATE FUNCTION NumSameNames()
-    RETURNS BIGINT
-    IMMUTABLE
-    LANGUAGE SQL
-AS
-$$
-/* TODO: Fix this and reenable the trigger */
-SELECT COUNT(*)
-FROM entity_attributes_str
-WHERE attribute_name = 'name'
-  AND attribute_value = 'robot'
-$$;
 
 CREATE FUNCTION remove_attribute(INT, varchar(24))
     RETURNS BIGINT
@@ -400,6 +416,7 @@ SELECT entity_id, concept_name
 FROM instance_of WHERE concept_name IN (SELECT concept_name FROM cteConcepts INNER JOIN concepts ON (concepts.entity_id = id));
 $$;
 
+/***** DEFAULT VALUES */
 CREATE FUNCTION add_default_attributes()
     RETURNS VOID
     LANGUAGE SQL
@@ -425,7 +442,7 @@ VALUES ('answer_to', 'id'),
 ('part_of', 'id');
 $$;
 
-/***** DEFAULT VALUES */
+
 CREATE FUNCTION add_default_entities()
     RETURNS bigint
     LANGUAGE SQL
