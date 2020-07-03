@@ -13,11 +13,7 @@
     <buildtool_depend>catkin</buildtool_depend>
     <build_depend>roslint</build_depend>
 
-    <depend>bison</depend>
     <depend>boost</depend>
-    <depend>flex</depend>
-    <depend>libmysqlclient-dev</depend>
-    <depend>libmysqlcppconn-dev</depend>
     <depend>libpqxx</depend>
     <depend>libpqxx-dev</depend>
     <depend>postgresql</depend>

@@ -1,4 +1,4 @@
-#include "LongTermMemoryConduitPostgreSQL.h"
+#include <knowledge_representation/LongTermMemoryConduitPostgreSQL.h>
 #include <knowledge_representation/LongTermMemoryConduitInterface.h>
 #include <iostream>
 #include <string>

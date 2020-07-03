@@ -55,25 +55,25 @@ include_directories(
 
 
 if ("${MYSQL_AVAILABLE}" OR "${POSTGRES_AVAILABLE}")
-
+    set(INTERFACE_HEADER_PATH ${PROJECT_SOURCE_DIR}/include/knowledge_representation/LongTermMemoryConduit.h)
 if (MYSQL_AVAILABLE)
-    set(DB_SOURCES src/libknowledge_rep/mysql/LongTermMemoryConduitMySQL.cpp)
-    # Symlink the LTMC header into place. We have to put this header in the public
-    # interface in order to instantiate the template of the base class. This class
-    # will not be used alone, so methods in its interface can't really be used.
-    add_custom_target(link_target ALL
-            COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/src/libknowledge_rep/mysql/LongTermMemoryConduitMySQL.h ${PROJECT_SOURCE_DIR}/include/knowledge_representation/LongTermMemoryConduit.h)
+    set(DB_SOURCES src/libknowledge_rep/LongTermMemoryConduitMySQL.cpp)
+    set(DB_BACKEND MySQL)
+
 elseif (POSTGRES_AVAILABLE)
-    set(DB_SOURCES src/libknowledge_rep/postgresql/LongTermMemoryConduitPostgreSQL.cpp)
-    add_custom_target(link_target ALL
-            COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/src/libknowledge_rep/postgresql/LongTermMemoryConduitPostgreSQL.h ${PROJECT_SOURCE_DIR}/include/knowledge_representation/LongTermMemoryConduit.h)
+    set(DB_SOURCES src/libknowledge_rep/LongTermMemoryConduitPostgreSQL.cpp)
+    set(DB_BACKEND PostgreSQL)
+
 endif()
+
+# This header file imports the correct backend. Lets library users avoid
+# depending on a particular backend
+configure_file(${INTERFACE_HEADER_PATH}.in ${INTERFACE_HEADER_PATH})
 add_library(knowledge_rep
         ${DB_SOURCES}
         src/libknowledge_rep/convenience.cpp
         )
 
-add_dependencies(knowledge_rep link_target)
 target_link_libraries(knowledge_rep ${DB_LIBS} ${catkin_LIBRARIES})
 
 add_library(_libknowledge_rep_wrapper_cpp src/libknowledge_rep/python_wrapper.cpp)
@@ -90,19 +90,15 @@ set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
 
 catkin_add_env_hooks(${PROJECT_NAME} SHELLS bash zsh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
-install(TARGETS knowledge_rep
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
-
-install(TARGETS _libknowledge_rep_wrapper_cpp
+install(TARGETS knowledge_rep _libknowledge_rep_wrapper_cpp
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
 
 install(DIRECTORY include/${PROJECT_NAME}
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-        FILES_MATCHING PATTERN "*.h")
+        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+### LINTING
 
 file(GLOB_RECURSE ${PROJECT_NAME}_CPP_SRC
         RELATIVE ${PROJECT_SOURCE_DIR} src/lib${PROJECT_NAME}/*.cpp src/libknowledge_rep/*.h include/${PROJECT_NAME}/*.h test/*.cpp)
@@ -131,14 +127,13 @@ if(CATKIN_ENABLE_TESTING)
     catkin_add_nosetests(test/loaders.py)
 endif()
 
-
 endif ()
 
+### DOCS
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
 
     set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile)
-
 
     configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 

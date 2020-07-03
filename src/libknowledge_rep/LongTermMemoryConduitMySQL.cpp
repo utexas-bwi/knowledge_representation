@@ -3,7 +3,7 @@
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
 #include <knowledge_representation/LongTermMemoryConduitInterface.h>
-#include <knowledge_representation/LongTermMemoryConduit.h>
+#include <knowledge_representation/LongTermMemoryConduitMySQL.h>
 #include <list>
 #include <mysqlx/xdevapi.h>
 #include <string>
