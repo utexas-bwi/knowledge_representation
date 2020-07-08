@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   industrial_ci:
     env:
-      AFTER_INSTALL_TARGET_DEPENDENCIES: 'pip install -U PyYAML && scripts/configure_postgresql.sh'
+      AFTER_INSTALL_TARGET_DEPENDENCIES: 'pip install -U PyYAML svgpathtools && scripts/configure_postgresql.sh'
       AFTER_SCRIPT: 'cd $target_ws && rosenv && catkin build $(catkin_topological_order "${TARGET_REPO_PATH}" --only-names) --no-deps --no-status --verbose --make-args roslint'
       CATKIN_LINT: true
       CLANG_FORMAT_VERSION: 3.9
