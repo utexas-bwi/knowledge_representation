@@ -39,7 +39,7 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
 public:
   std::unique_ptr<pqxx::connection> conn;
 
-  explicit LongTermMemoryConduitPostgreSQL(const std::string& db_name);
+  explicit LongTermMemoryConduitPostgreSQL(const std::string& db_name, const std::string& hostname = "localhost");
 
   // Move constructor
   LongTermMemoryConduitPostgreSQL(LongTermMemoryConduitPostgreSQL&& that) = default;

@@ -60,10 +60,10 @@ std::vector<Region::Point2D> strToPoints(const string& s)
   return points;
 }
 
-LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& db_name)
+LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& db_name, const string& hostname)
   : LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>()
 {
-  conn = std::unique_ptr<pqxx::connection>(new pqxx::connection("postgresql://postgres@localhost/" + db_name));
+  conn = std::unique_ptr<pqxx::connection>(new pqxx::connection("postgresql://postgres@" + hostname + "/" + db_name));
 }
 
 LongTermMemoryConduitPostgreSQL::~LongTermMemoryConduitPostgreSQL() = default;
@@ -104,7 +104,6 @@ bool LongTermMemoryConduitPostgreSQL::addNewAttribute(const string& name, const 
 bool LongTermMemoryConduitPostgreSQL::entityExists(uint id) const
 {
   pqxx::work txn{ *conn, "entityExists" };
-  // Remove all entities
   auto result = txn.exec("SELECT count(*) FROM entities WHERE entity_id=" + txn.quote(id));
   txn.commit();
   return result[0]["count"].as<uint>() == 1;

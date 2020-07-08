@@ -409,7 +409,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("is_point_contained", &Region::isPointContained)
       .def("__str__", to_str_wrap<Region>);
 
-  class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit", init<const string&>())
+  class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit",
+                                                    init<const string&, python::optional<const string&>>())
       .def<Entity (LTMC::*)()>("add_entity", &LTMC::addEntity)
       .def("add_new_attribute", &LTMC::addNewAttribute)
       .def("entity_exists", &LTMC::entityExists)

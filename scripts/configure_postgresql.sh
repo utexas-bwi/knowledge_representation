@@ -14,8 +14,10 @@ if [[ -z "$ENTERED_PASSWORD" ]]; then
   read -sp 'Password: ' ENTERED_PASSWORD
 fi
 
+schema_path="$(rospack find knowledge_representation)/sql/schema_postgresql.sql"
+
 sudo -u postgres createdb knowledge_base
-sudo -u postgres psql -d knowledge_base -f sql/schema_postgresql.sql
+sudo -u postgres psql -d knowledge_base -f $schema_path
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '$ENTERED_PASSWORD'"
 
 # Store the password in a dotfile so we can avoid authentication elsewhere

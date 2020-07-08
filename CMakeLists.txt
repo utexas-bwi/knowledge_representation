@@ -90,13 +90,24 @@ set_target_properties(_libknowledge_rep_wrapper_cpp PROPERTIES
 
 catkin_add_env_hooks(${PROJECT_NAME} SHELLS bash zsh DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
 
+### INSTALL
+
 install(TARGETS knowledge_rep _libknowledge_rep_wrapper_cpp
         ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
         RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
 
+catkin_install_python(PROGRAMS scripts/ikr scripts/populate_with_knowledge scripts/populate_with_map scripts/show_me
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(PROGRAMS scripts/configure_postgresql.sh
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/scripts)
+
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
+install(DIRECTORY sql/
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/sql)
 
 ### LINTING
 
