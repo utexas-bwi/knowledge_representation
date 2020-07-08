@@ -95,26 +95,29 @@ $(document).ready(function(){initNavTree('convenience_8cpp_source.html',''); ini
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;LongTermMemoryConduit getDefaultLTMC()</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  std::string db_name = <span class="stringliteral">&quot;knowledge_base&quot;</span>;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  std::string db_pass = <span class="stringliteral">&quot;nopass&quot;</span>;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  <span class="keywordflow">if</span> (<span class="keyword">const</span> <span class="keywordtype">char</span>* env_db_name = std::getenv(<span class="stringliteral">&quot;KNOWLEDGE_REP_DB_NAME&quot;</span>))</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    db_name = env_db_name;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  }</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  <span class="keywordflow">if</span> (<span class="keyword">const</span> <span class="keywordtype">char</span>* env_db_pass = std::getenv(<span class="stringliteral">&quot;KNOWLEDGE_REP_DB_PASSWORD&quot;</span>))</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    db_name = env_db_pass;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  }</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <span class="keywordflow">return</span> LongTermMemoryConduit(db_name);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  std::string db_hostname = <span class="stringliteral">&quot;localhost&quot;</span>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  <span class="comment">// The expectation is that you won&#39;t put secrets directly in your code or out in environment variables,</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  <span class="comment">// so LTMC implementations will either look for passwords in some dotfile or rely on being on an allow list</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  <span class="comment">// with the backend.</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  <span class="keywordflow">if</span> (<span class="keyword">const</span> <span class="keywordtype">char</span>* env_db_name = std::getenv(<span class="stringliteral">&quot;KNOWLEDGE_REP_DB_NAME&quot;</span>))</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    db_name = env_db_name;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  }</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  <span class="keywordflow">if</span> (<span class="keyword">const</span> <span class="keywordtype">char</span>* env_hostname = std::getenv(<span class="stringliteral">&quot;KNOWLEDGE_REP_DB_HOSTNAME&quot;</span>))</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    db_name = env_hostname;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  }</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keywordflow">return</span> LongTermMemoryConduit(db_name, db_hostname);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4adb94294ee7feadc35a332ae3cb3685.html">libknowledge_rep</a></li><li class="navelem"><b>convenience.cpp</b></li>
-    <li class="footer">Generated on Fri Jul 3 2020 07:36:52 for knowledge_representation by
+    <li class="footer">Generated on Wed Jul 8 2020 05:43:25 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>
