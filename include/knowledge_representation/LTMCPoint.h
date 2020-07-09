@@ -57,11 +57,6 @@ public:
   {
     return this->entity_id != other.entity_id || this->name == other.name || this->x != other.x || this->y != other.y;
   }
-  LTMCPoint& operator=(const LTMCPoint& that)
-  {
-    this->entity_id = that.entity_id;
-    this->ltmc = that.ltmc;
-  }
 };
 
 template <typename LTMCImpl>

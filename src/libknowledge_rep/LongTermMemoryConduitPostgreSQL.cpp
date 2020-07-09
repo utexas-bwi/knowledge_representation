@@ -81,7 +81,7 @@ bool LongTermMemoryConduitPostgreSQL::addEntity(uint id)
 /**
  * @brief Add a new attribute
  * @param name the name of the attribute
- * @param allowed_types a bitmask representing the types allowed for the attribute
+ * @param type the type of data for the attribute's values
  * @return whether the attribute was added. Note that addition will fail if the attribute already exists.
  */
 bool LongTermMemoryConduitPostgreSQL::addNewAttribute(const string& name, const AttributeValueType type)

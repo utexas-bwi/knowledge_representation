@@ -53,6 +53,15 @@ TEST_F(EntityTest, EntityEqualityWorks)
   EXPECT_EQ(new_entity, reconstructed);
 }
 
+TEST_F(EntityTest, EntityAssignmentWorks)
+{
+
+  auto some_entity = ltmc.addEntity();
+  auto old_id = some_entity.entity_id;
+  some_entity = entity;
+  EXPECT_NE(old_id, some_entity.entity_id);
+}
+
 TEST_F(EntityTest, DeleteEntityWorks)
 {
   entity.deleteEntity();

@@ -181,13 +181,6 @@ public:
     return this->entity_id != other.entity_id;
   }
 
-  LTMCEntity& operator=(const LTMCEntity& that)
-  {
-    // FIXME(nickswalker): Handle self-assignment correctly (see clang tidy)
-    this->entity_id = that.entity_id;
-    this->ltmc = that.ltmc;
-  }
-
   std::vector<EntityAttribute> operator[](const std::string& attr_name) const
   {
     return getAttributes(attr_name);
