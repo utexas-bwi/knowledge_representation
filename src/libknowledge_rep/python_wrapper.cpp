@@ -337,7 +337,6 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("remove_instances_recursive", &Concept::removeInstancesRecursive)
       .def("remove_references", &Concept::removeReferences)
       .def("get_instances", &Concept::getInstances)
-      // TODO(nickswalker): Decide whether to expose or remove this convenience from LTMC
       .def<optional<Instance> (Concept::*)(const string&) const>("get_instance_named", &Concept::getInstanceNamed,
                                                                  python::return_value_policy<ReturnOptional>())
       .def("get_name", &Concept::getName)
@@ -445,7 +444,6 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_all_maps", &LTMC::getAllMaps)
       .def("get_all_attributes", &LTMC::getAllAttributes)
       .def("get_entity", &LTMC::getEntity, python::return_value_policy<ReturnOptional>())
-      .def("get_instance_named", &LTMC::getInstanceNamed, python::return_value_policy<ReturnOptional>())
       .def("get_instance", &LTMC::getInstance, python::return_value_policy<ReturnOptional>())
       .def<optional<Concept> (LTMC::*)(uint)>("get_concept", &LTMC::getConcept,
                                               python::return_value_policy<ReturnOptional>())
