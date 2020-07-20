@@ -68,7 +68,7 @@ public:
   bool addEntity(uint id);
 
   boost::optional<EntityImpl> getEntity(uint entity_id);
-  
+
   boost::optional<InstanceImpl> getInstanceNamed(const ConceptImpl& concept, const std::string& name);
 
   boost::optional<InstanceImpl> getInstance(uint entity_id);
