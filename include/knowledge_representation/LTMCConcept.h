@@ -117,6 +117,16 @@ public:
   }
 
   /**
+   * @brief Get the instance of a particular name
+   * @param name the name of the instance
+   * @return the instance, or empty if the instance does not exist
+   */
+  boost::optional<InstanceImpl> getInstanceNamed(const std::string& name) const
+  {
+    return this->ltmc.get().getInstanceNamed(*this, name);
+  }
+
+  /**
    * @brief Removes all references to a concept
    *
    * References include all entity-attributes that refer to this concept. But note that this method doesn't

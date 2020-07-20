@@ -6,28 +6,20 @@ import sys
 import os
 import yaml
 
+def get_instance(ltmc, names):
+    instance_name, concept_name = names
+    concept = ltmc.get_concept(concept_name)
+    instance = ltmc.get_instance_named(concept, instance_name)
+    if not instance:
+        instance = concept.create_instance(instance_name)
+    return instance
 
-def add_attribute_entry(entity, entry, ltmc):
-    keys = entry.keys()
-    if "concept_name" in keys:
-        concept = ltmc.get_concept(entry["concept_name"])
-        entity.add_attribute_entity(entry["name"], concept)
-    if "instance_name" in keys:
-        instance_entity = ltmc.get_instance_named(entry["instance_name"])
-        entity.add_attribute_entity(entry["name"], instance_entity)
-    if "value" in keys:
-        value = entry["value"]
-        if isinstance(value, float):
-            entity.add_attribute_float(entry["name"], value)
-            return
-        elif isinstance(value, int):
-            entity.add_attribute_int(entry["name"], value)
-            return
-        elif isinstance(value, bool):
-            entity.add_attribute_bool(entry["name"], value)
-            return
-        entity.add_attribute_str(entry["name"], entry["value"])
-
+def add_attributes(ltmc, entity, attributes):
+    for attribute in attributes:
+        name = attribute["name"]
+        if "instance" in attribute["value"].keys():
+            instance = get_instance(ltmc, attribute["value"]["instance"])
+            entity.add_attribute(name, instance)
 
 def populate(ltmc, file_path):
     if not os.path.isfile(file_path):
@@ -36,23 +28,17 @@ def populate(ltmc, file_path):
         return False
     data = read_yaml_from_file(file_path)
 
-    if data.get("instances"):
-        object_names = data["instances"].keys()
-        # Get the id for each named entity
-        object_name_to_entity = {name: ltmc.get_instance_named(name) for name in object_names}
-
-        for name, attributes in data["instances"].items():
-            for attribute in attributes:
-                add_attribute_entry(object_name_to_entity[name], attribute, ltmc)
-
-    if data.get("concepts"):
-        concept_names = data["concepts"].keys()
-        # Get the id for each named entity
-        concept_name_to_entity = {name: ltmc.get_concept(name) for name in concept_names}
-
-        for name, attributes in data["concepts"].items():
-            for attribute in attributes:
-                add_attribute_entry(concept_name_to_entity[name], attribute, ltmc)
+    if data.get("entities"):
+        for entry in data["entities"]:
+            if "concept" in entry.keys():
+                concept = ltmc.get_concept(entry["concept"])
+                if "attributes" in entry.keys():
+                    add_attributes(ltmc, concept, entry["attributes"])
+            if "instance" in entry.keys():
+                instance = get_instance(ltmc, entry["instance"])
+                if "attributes" in entry.keys():
+                    add_attributes(ltmc, concept, entry["attributes"])
+                    
     return True
 
 
