@@ -55,7 +55,6 @@ TEST_F(EntityTest, EntityEqualityWorks)
 
 TEST_F(EntityTest, EntityAssignmentWorks)
 {
-
   auto some_entity = ltmc.addEntity();
   auto old_id = some_entity.entity_id;
   some_entity = entity;
