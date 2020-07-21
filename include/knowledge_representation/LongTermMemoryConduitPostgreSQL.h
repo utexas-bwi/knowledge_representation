@@ -69,6 +69,8 @@ public:
 
   boost::optional<EntityImpl> getEntity(uint entity_id);
 
+  boost::optional<InstanceImpl> getInstanceNamed(const ConceptImpl& concept, const std::string& name);
+
   boost::optional<InstanceImpl> getInstance(uint entity_id);
 
   boost::optional<ConceptImpl> getConcept(uint entity_id);
@@ -207,8 +209,6 @@ protected:
   std::vector<ConceptImpl> getChildrenRecursive(const ConceptImpl& concept);
 
   std::vector<InstanceImpl> getInstances(const ConceptImpl& concept);
-
-  InstanceImpl getInstanceNamed(const ConceptImpl& concept, const std::string& name);
 
   int removeInstances(const ConceptImpl& concept);
 

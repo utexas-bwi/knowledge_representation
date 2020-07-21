@@ -484,7 +484,7 @@ protected:
     return static_cast<Impl*>(this)->getInstances(concept);
   }
 
-  InstanceImpl getInstanceNamed(const ConceptImpl& concept, const std::string& name)
+  boost::optional<InstanceImpl> getInstanceNamed(const ConceptImpl& concept, const std::string& name)
   {
     return static_cast<Impl*>(this)->getInstanceNamed(concept, name);
   };

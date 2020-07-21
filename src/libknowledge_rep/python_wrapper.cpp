@@ -337,8 +337,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("remove_instances_recursive", &Concept::removeInstancesRecursive)
       .def("remove_references", &Concept::removeReferences)
       .def("get_instances", &Concept::getInstances)
-      // TODO(nickswalker): Decide whether to expose or remove this convenience from LTMC
-      //.def("get_instance_named", &Concept::getInstanceNamed)
+      .def<optional<Instance> (Concept::*)(const string&) const>("get_instance_named", &Concept::getInstanceNamed,
+                                                                 python::return_value_policy<ReturnOptional>())
       .def("get_name", &Concept::getName)
       .def("get_children", &Concept::getChildren)
       .def("get_children_recursive", &Concept::getChildrenRecursive)

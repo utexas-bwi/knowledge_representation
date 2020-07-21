@@ -291,7 +291,7 @@ Concept LongTermMemoryConduitPostgreSQL::getConcept(const string& name)
   }
 }
 
-Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const Concept& concept, const string& name)
+boost::optional<Instance> LongTermMemoryConduitPostgreSQL::getInstanceNamed(const Concept& concept, const string& name)
 {
   pqxx::work txn{ *conn, "getInstanceNamed" };
   auto result = txn.parameterized("SELECT entity_id FROM entity_attributes_str WHERE attribute_name = 'name' "
@@ -301,14 +301,13 @@ Instance LongTermMemoryConduitPostgreSQL::getInstanceNamed(const Concept& concep
   txn.commit();
   if (result.empty())
   {
-    // We know creating will succeed because we didn't find any instances in previous query
-    return *concept.createInstance(name);
+    return {};
   }
   else
   {
     // Can only be one instance with a given name
     assert(result.size() == 1);
-    return { result[0]["entity_id"].as<uint>(), *this };
+    return Instance{ result[0]["entity_id"].as<uint>(), *this };
   }
 }
 
