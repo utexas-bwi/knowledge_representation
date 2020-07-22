@@ -17,30 +17,34 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("map_yaml_path", type=str, help="Path to a ROS-style map YAML file")
-    parser.add_argument("--allow-errors", type=bool, default=False, help="Allow warnings and non-fatal errors in "
-                                                                         "loading to be ignored")
-    # roslaunch passes additional arguments to <node> executables, so we'll gracefully ignore those
-    args, unknown = parser.parse_known_args()
-    ltmc = knowledge_representation.get_default_ltmc()
-
+def load_map(ltmc, file_path, allow_errors=False):
     with warnings.catch_warnings(record=True) as w:
-        map_name, annotations = load_map_from_yaml(args.map_yaml_path)
-        if not args.allow_errors and len(w) != 0:
+        map_name, annotations = load_map_from_yaml(file_path)
+        if not allow_errors and len(w) != 0:
             for warning in w:
                 eprint(warning.message)
             eprint("Map loading aborted due to warnings")
             exit(1)
         stats = populate_with_map_annotations(ltmc, map_name, *annotations)
-        if not args.allow_errors and len(w) != 0:
+        if not allow_errors and len(w) != 0:
             for warning in w:
                 eprint(warning.message)
             eprint("Map loading aborted due to warnings")
             exit(1)
         s_points, s_poses, s_regions = stats
         print("Loaded map '{}' with {} points, {} poses, {} regions".format(map_name, s_points, s_poses, s_regions))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("map_yaml_paths", type=str, nargs="+", help="Paths to ROS-style map YAML files")
+    parser.add_argument("--allow-errors", type=bool, default=False, help="Allow warnings and non-fatal errors in "
+                                                                         "loading to be ignored")
+    # roslaunch passes additional arguments to <node> executables, so we'll gracefully ignore those
+    args, unknown = parser.parse_known_args()
+    ltmc = knowledge_representation.get_default_ltmc()
+    for path in args.map_yaml_paths:
+        load_map(ltmc, path, args.allow_errors)
 
 
 if __name__ == "__main__":

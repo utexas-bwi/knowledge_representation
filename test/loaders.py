@@ -2,6 +2,7 @@
 import sys
 import unittest
 from knowledge_representation.map_loader import load_map_from_yaml
+from knowledge_representation.knowledge_loader import load_knowledge_from_yaml
 import os
 
 resource_path = os.path.dirname(__file__) + "/resources"
@@ -22,6 +23,11 @@ class TestLoaders(unittest.TestCase):
         self.assertEqual(6, len(points))
         self.assertEqual(2, len(poses))
         self.assertEqual(2, len(regions))
+
+    def test_load_knowledge_works(self):
+        concepts, instances = load_knowledge_from_yaml(resource_path + "/knowledge.yaml")
+        self.assertEqual(1, len(concepts))
+        self.assertEqual(2, len(instances))
 
 
 if __name__ == '__main__':

@@ -1,70 +1,49 @@
 #!/usr/bin/env python
+
+from __future__ import print_function
+
 import knowledge_representation
-from knowledge_representation import LongTermMemoryConduit
+from knowledge_representation.knowledge_loader import load_knowledge_from_yaml, populate_with_knowledge
 import argparse
+
+
+import warnings
+
 import sys
-import os
-import yaml
 
 
-def get_instance(ltmc, names):
-    instance_name, concept_name = names
-    concept = ltmc.get_concept(concept_name)
-    instance = concept.get_instance_named(instance_name)
-    if not instance:
-        instance = concept.create_instance(instance_name)
-    return instance
-
-
-def add_attributes(ltmc, entity, attributes):
-    for attribute in attributes:
-        name = attribute["name"]
-        if "instance" in attribute["value"].keys():
-            instance = get_instance(ltmc, attribute["value"]["instance"])
-            entity.add_attribute(name, instance)
-
-
-def populate(ltmc, file_path):
-    if not os.path.isfile(file_path):
-        print(
-            "File not found at " + file_path + ".")
-        return False
-    data = read_yaml_from_file(file_path)
-
-    if data.get("entities"):
-        for entry in data["entities"]:
-            if "concept" in entry.keys():
-                concept = ltmc.get_concept(entry["concept"])
-                if "attributes" in entry.keys():
-                    add_attributes(ltmc, concept, entry["attributes"])
-            if "instance" in entry.keys():
-                instance = get_instance(ltmc, entry["instance"])
-                if "attributes" in entry.keys():
-                    add_attributes(ltmc, concept, entry["attributes"])
-
-    return True
-
-
-def read_yaml_from_file(file_path):
-    with open(file_path, 'r') as stream:
-        try:
-            contents = yaml.load(stream)
-            return contents
-        except yaml.YAMLError:
-            print("File found at " + file_path + ", but cannot be parsed by YAML parser.")
-            exit(1)
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("file_paths", type=str, nargs="+")
-    args = parser.parse_args()
+    parser.add_argument("file_paths", type=str, nargs="+", help="Paths to knowledge YAML files")
+    parser.add_argument("--allow-errors", type=bool, default=False, help="Allow warnings and non-fatal errors in "
+                                                                         "loading to be ignored")
+    # roslaunch passes additional arguments to <node> executables, so we'll gracefully ignore those
+    args, unknown = parser.parse_known_args()
     ltmc = knowledge_representation.get_default_ltmc()
-    success = False
-    for path in args.file_paths:
-        success = populate(ltmc, path)
-    exit_code = 0 if success else 1
-    exit(exit_code)
+
+    with warnings.catch_warnings(record=True) as w:
+        all_knowledge = []
+        for path in args.file_paths:
+            knowledge = load_knowledge_from_yaml(path)
+            all_knowledge.append(knowledge)
+        # Bail out from any loading issues here
+        if not args.allow_errors and len(w) != 0:
+            for warning in w:
+                eprint(warning.message)
+            eprint("Knowledge loading aborted due to warnings")
+            exit(1)
+        concept_count, instance_count = populate_with_knowledge(ltmc, all_knowledge)
+
+        if not args.allow_errors and len(w) != 0:
+            for warning in w:
+                eprint(warning.message)
+            eprint("Knowledge loading aborted due to warnings")
+            exit(1)
+        print("Loaded {} concepts and {} instances".format(concept_count, instance_count))
 
 
 if __name__ == "__main__":
