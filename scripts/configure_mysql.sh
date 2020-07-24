@@ -24,14 +24,17 @@ debconf-set-selections <<< 'mysql-apt-config mysql-apt-config/select-server sele
 debconf-set-selections <<< 'mysql-apt-config mysql-apt-config/select-tools select '
 debconf-set-selections <<< 'mysql-apt-config mysql-apt-config/unsupported-platform select abort'
 
-
+# Set a fixed password for CI
+if [[ -n "$IN_DOCKER" ]]; then
+  sudo apt install git -y
+fi
 
 cd /tmp && \
 sudo apt install wget && \
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb -O sql.deb && \
 sudo DEBIAN_FRONTEND=noninteractive dpkg -i sql.deb && \
 sudo apt update && \
-sudo apt install -y mysql-server mysql-shell &&\
+sudo apt install -y mysql-server &&\
 git clone https://github.com/mysql/mysql-connector-cpp.git &&\
 cd mysql-connector-cpp &&\
 git checkout tags/8.0.15 &&\
