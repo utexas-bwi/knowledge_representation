@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">knowledge_representation
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">master</span>
    </div>
    <div id="projectbrief">Persistent knowledge for robots</div>
   </td>
@@ -124,6 +124,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a464e83105c0eaa07c083ec4669fe9d97"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCConcept.html#a464e83105c0eaa07c083ec4669fe9d97">getChildrenRecursive</a> () const</td></tr>
 <tr class="memdesc:a464e83105c0eaa07c083ec4669fe9d97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all concepts that are descended from this concept.  <a href="classknowledge__rep_1_1LTMCConcept.html#a464e83105c0eaa07c083ec4669fe9d97">More...</a><br /></td></tr>
 <tr class="separator:a464e83105c0eaa07c083ec4669fe9d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65ffe2e23d53f94242f4dc1bfb214531"><td class="memItemLeft" align="right" valign="top">boost::optional&lt; <a class="el" href="classknowledge__rep_1_1LTMCInstance.html">InstanceImpl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCConcept.html#a65ffe2e23d53f94242f4dc1bfb214531">getInstanceNamed</a> (const std::string &amp;name) const</td></tr>
+<tr class="memdesc:a65ffe2e23d53f94242f4dc1bfb214531"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the instance of a particular name.  <a href="classknowledge__rep_1_1LTMCConcept.html#a65ffe2e23d53f94242f4dc1bfb214531">More...</a><br /></td></tr>
+<tr class="separator:a65ffe2e23d53f94242f4dc1bfb214531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aa22c8a659efd4b679dfbc8b70a3f13"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">removeReferences</a> ()</td></tr>
 <tr class="memdesc:a5aa22c8a659efd4b679dfbc8b70a3f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all references to a concept.  <a href="classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13">More...</a><br /></td></tr>
 <tr class="separator:a5aa22c8a659efd4b679dfbc8b70a3f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -398,6 +401,43 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 
 </div>
 </div>
+<a id="a65ffe2e23d53f94242f4dc1bfb214531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65ffe2e23d53f94242f4dc1bfb214531">&#9670;&nbsp;</a></span>getInstanceNamed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::optional&lt;<a class="el" href="classknowledge__rep_1_1LTMCInstance.html">InstanceImpl</a>&gt; getInstanceNamed </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the instance of a particular name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the instance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the instance, or empty if the instance does not exist </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00124">124</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
+
+</div>
+</div>
 <a id="a5aa22c8a659efd4b679dfbc8b70a3f13"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5aa22c8a659efd4b679dfbc8b70a3f13">&#9670;&nbsp;</a></span>removeReferences()</h2>
 
@@ -424,7 +464,7 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 <p>Removes all references to a concept. </p>
 <p>References include all entity-attributes that refer to this concept. But note that this method doesn't delete the entities that are the subjects of the references. This means that all instances of this concept will continue to exist, but they will no longer be identified as instances of this concept. </p><dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00127">127</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00137">137</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
 
 </div>
 </div>
@@ -455,7 +495,7 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 <p>Get entities that directly instantiate this concept. </p>
 <dl class="section return"><dt>Returns</dt><dd>a list of all entities that are instances of this concept </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00145">145</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00155">155</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
 
 </div>
 </div>
@@ -486,7 +526,7 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 <p>Get entities that directly instantiate this concept. </p>
 <dl class="section return"><dt>Returns</dt><dd>a list of all entities that are instances of this concept </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00150">150</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00160">160</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
 
 </div>
 </div>
@@ -516,7 +556,7 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 <p>Get entities that directly instantiate this concept. </p>
 <dl class="section return"><dt>Returns</dt><dd>a list of all entities that are instances of this concept </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00155">155</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LTMCConcept_8h_source.html#l00165">165</a> of file <a class="el" href="LTMCConcept_8h_source.html">LTMCConcept.h</a>.</p>
 
 </div>
 </div>
@@ -530,7 +570,7 @@ class knowledge_rep::LTMCConcept&lt; LTMCImpl &gt;</h3>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>knowledge_rep</b></li><li class="navelem"><a class="el" href="classknowledge__rep_1_1LTMCConcept.html">LTMCConcept</a></li>
-    <li class="footer">Generated on Wed Jul 8 2020 05:43:25 for knowledge_representation by
+    <li class="footer">Generated on Fri Jul 24 2020 05:21:55 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

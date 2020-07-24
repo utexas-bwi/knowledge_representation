@@ -8,6 +8,7 @@ var classknowledge__rep_1_1LTMCConcept =
     [ "createInstance", "classknowledge__rep_1_1LTMCConcept.html#a281051427a06699dc29c25133f150172", null ],
     [ "getChildren", "classknowledge__rep_1_1LTMCConcept.html#a6a05ae545f0abeb66adb5f521a6659a2", null ],
     [ "getChildrenRecursive", "classknowledge__rep_1_1LTMCConcept.html#a464e83105c0eaa07c083ec4669fe9d97", null ],
+    [ "getInstanceNamed", "classknowledge__rep_1_1LTMCConcept.html#a65ffe2e23d53f94242f4dc1bfb214531", null ],
     [ "removeReferences", "classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13", null ],
     [ "operator==", "classknowledge__rep_1_1LTMCConcept.html#a5357d36e24b05958d6984577ffb0443c", null ],
     [ "operator!=", "classknowledge__rep_1_1LTMCConcept.html#a41e7b83f170c7be50f75e29124b0b7ea", null ],

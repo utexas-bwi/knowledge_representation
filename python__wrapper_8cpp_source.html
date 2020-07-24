@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">knowledge_representation
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">master</span>
    </div>
    <div id="projectbrief">Persistent knowledge for robots</div>
   </td>
@@ -394,8 +394,8 @@ $(document).ready(function(){initNavTree('python__wrapper_8cpp_source.html','');
 <div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;      .def(<span class="stringliteral">&quot;remove_instances_recursive&quot;</span>, &amp;Concept::removeInstancesRecursive)</div>
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      .def(<span class="stringliteral">&quot;remove_references&quot;</span>, &amp;Concept::removeReferences)</div>
 <div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      .def(<span class="stringliteral">&quot;get_instances&quot;</span>, &amp;Concept::getInstances)</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;      <span class="comment">// TODO(nickswalker): Decide whether to expose or remove this convenience from LTMC</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;      <span class="comment">//.def(&quot;get_instance_named&quot;, &amp;Concept::getInstanceNamed)</span></div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;      .def&lt;optional&lt;Instance&gt; (Concept::*)(<span class="keyword">const</span> <span class="keywordtype">string</span>&amp;) <span class="keyword">const</span>&gt;(<span class="stringliteral">&quot;get_instance_named&quot;</span>, &amp;Concept::getInstanceNamed,</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                                                                 python::return_value_policy&lt;ReturnOptional&gt;())</div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;      .def(<span class="stringliteral">&quot;get_name&quot;</span>, &amp;Concept::getName)</div>
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;      .def(<span class="stringliteral">&quot;get_children&quot;</span>, &amp;Concept::getChildren)</div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;      .def(<span class="stringliteral">&quot;get_children_recursive&quot;</span>, &amp;Concept::getChildrenRecursive)</div>
@@ -524,7 +524,7 @@ $(document).ready(function(){initNavTree('python__wrapper_8cpp_source.html','');
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4adb94294ee7feadc35a332ae3cb3685.html">libknowledge_rep</a></li><li class="navelem"><b>python_wrapper.cpp</b></li>
-    <li class="footer">Generated on Wed Jul 8 2020 05:43:25 for knowledge_representation by
+    <li class="footer">Generated on Fri Jul 24 2020 05:21:55 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>

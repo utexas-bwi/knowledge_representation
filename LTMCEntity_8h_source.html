@@ -26,7 +26,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">knowledge_representation
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">master</span>
    </div>
    <div id="projectbrief">Persistent knowledge for robots</div>
   </td>
@@ -196,29 +196,22 @@ $(document).ready(function(){initNavTree('LTMCEntity_8h_source.html',''); initRe
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordflow">return</span> this-&gt;entity_id != other.entity_id;</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  }</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  LTMCEntity&amp; operator=(<span class="keyword">const</span> LTMCEntity&amp; that)</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="comment">// FIXME(nickswalker): Handle self-assignment correctly (see clang tidy)</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    this-&gt;entity_id = that.entity_id;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    this-&gt;ltmc = that.ltmc;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  }</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  std::vector&lt;EntityAttribute&gt; operator[](<span class="keyword">const</span> std::string&amp; attr_name)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classknowledge__rep_1_1LTMCEntity.html#a2ac5934be48d2c3c128bb23e4d00dae9">getAttributes</a>(attr_name);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  };</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  std::reference_wrapper&lt;LongTermMemoryConduitInterface&lt;LTMCImpl&gt;&gt; ltmc;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;};</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCEntity&lt;LTMCImpl&gt;&amp; e)</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;{</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Entity(&quot;</span> &lt;&lt; e.entity_id &lt;&lt; <span class="stringliteral">&quot;)&quot;</span>;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;}</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  std::vector&lt;EntityAttribute&gt; operator[](<span class="keyword">const</span> std::string&amp; attr_name)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classknowledge__rep_1_1LTMCEntity.html#a2ac5934be48d2c3c128bb23e4d00dae9">getAttributes</a>(attr_name);</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  };</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  std::reference_wrapper&lt;LongTermMemoryConduitInterface&lt;LTMCImpl&gt;&gt; ltmc;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;};</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> LTMCImpl&gt;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;std::ostream&amp; operator&lt;&lt;(std::ostream&amp; strm, <span class="keyword">const</span> LTMCEntity&lt;LTMCImpl&gt;&amp; e)</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;{</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keywordflow">return</span> strm &lt;&lt; <span class="stringliteral">&quot;Entity(&quot;</span> &lt;&lt; e.entity_id &lt;&lt; <span class="stringliteral">&quot;)&quot;</span>;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;}</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}  <span class="comment">// namespace knowledge_rep</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclassknowledge__rep_1_1LTMCEntity_html_a5bc2a781be2586924afce4e4a4ea6697"><div class="ttname"><a href="classknowledge__rep_1_1LTMCEntity.html#a5bc2a781be2586924afce4e4a4ea6697">knowledge_rep::LTMCEntity::isValid</a></div><div class="ttdeci">bool isValid() const</div><div class="ttdoc">Verifies that the entity still exists in the LTMC An entity can be invalidated if it is explicitly de...</div><div class="ttdef"><b>Definition:</b> <a href="LTMCEntity_8h_source.html#l00169">LTMCEntity.h:169</a></div></div>
@@ -239,7 +232,7 @@ $(document).ready(function(){initNavTree('LTMCEntity_8h_source.html',''); initRe
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_612c4df28c85d54f06844f941890c577.html">knowledge_representation</a></li><li class="navelem"><b>LTMCEntity.h</b></li>
-    <li class="footer">Generated on Wed Jul 8 2020 05:43:25 for knowledge_representation by
+    <li class="footer">Generated on Fri Jul 24 2020 05:21:55 for knowledge_representation by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.18 </li>
   </ul>
