@@ -19,7 +19,8 @@
     <depend>libpqxx</depend>
     <depend>libpqxx-dev</depend>
     <depend>postgresql</depend>
-    <depend>python-dev</depend>
+    <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>
+    <depend condition="$ROS_PYTHON_VERSION == 3">python3</depend>
     <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-imaging</exec_depend>
     <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-pil</exec_depend>
 
