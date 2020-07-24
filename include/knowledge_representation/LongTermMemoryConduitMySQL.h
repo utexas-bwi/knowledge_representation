@@ -15,6 +15,7 @@
 #include <typeindex>
 #include <utility>
 #include <vector>
+#include <memory>
 
 namespace knowledge_rep
 {
