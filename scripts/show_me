@@ -2,6 +2,8 @@
 """
 Quickly inspect individual entities or see a summary of the whole knowledgebase
 """
+from __future__ import print_function
+
 import operator
 
 import knowledge_representation
@@ -111,7 +113,7 @@ def about_id(entity_id, show_attributes=True):
 def about_entity_attributes(entity):
     attributes = entity.get_attributes()
     if len(attributes) == 0:
-        print "No attributes"
+        print("No attributes")
         return
     headers = ["Attribute Name", "Value"]
     rows = []
