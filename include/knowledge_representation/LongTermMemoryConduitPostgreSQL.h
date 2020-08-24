@@ -122,7 +122,7 @@ public:
       for (const auto& row : query_result)
       {
         result.emplace_back(row["entity_id"].as<uint>(), row["attribute_name"].as<std::string>(),
-                            row["attribute_name"].as<T>());
+                            row["attribute_value"].as<T>());
       }
     }
     catch (const std::exception& e)
