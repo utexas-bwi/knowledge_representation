@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
         )
 find_package(Boost REQUIRED COMPONENTS python)
 
-if($ENV{ROS_DISTRO} STREQUAL "kinetic")
+if($ENV{ROS_DISTRO} STREQUAL "kinetic" OR $ENV{ROS_DISTRO} STREQUAL "melodic")
 find_package(PythonLibs 2.7 REQUIRED)
 else()
     find_package(PythonLibs 3.8 REQUIRED)
