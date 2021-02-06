@@ -185,6 +185,10 @@ TEST_F(MapTest, RegionEqualityWorks)
 TEST_F(MapTest, AddDoorWorks)
 {
   EXPECT_TRUE(door.hasConcept(ltmc.getConcept("door")));
+  EXPECT_EQ(0, door.x_0);
+  EXPECT_EQ(1, door.y_0);
+  EXPECT_EQ(2, door.x_1);
+  EXPECT_EQ(3, door.y_1);
 }
 
 TEST_F(MapTest, GetDoorWorks)
@@ -242,6 +246,17 @@ TEST_F(MapTest, MapRenameWorks)
   EXPECT_EQ("new map", downcast.getName().get());
 }
 
+TEST_F(MapTest, MapDeleteWorks)
+{
+  ASSERT_TRUE(map.isValid());
+  EXPECT_TRUE(map.deleteEntity());
+  // We expect that all owned geometry is deleted
+  EXPECT_FALSE(point.isValid());
+  EXPECT_FALSE(pose.isValid());
+  EXPECT_FALSE(region.isValid());
+  EXPECT_FALSE(door.isValid());
+}
+
 TEST_F(MapTest, PointNameWorks)
 {
   EXPECT_EQ("test point", point.getName());
@@ -274,6 +289,12 @@ TEST_F(MapTest, RegionNameWorks)
 
   Instance as_instance = region;
   EXPECT_EQ("test region", as_instance.getName().get());
+}
+
+TEST_F(MapTest, RegionContainedPointsWorks)
+{
+  EXPECT_EQ(1, region.getContainedPoints().size());
+  EXPECT_EQ(1, region.getContainedPoses().size());
 }
 
 TEST_F(MapTest, DoorNameWorks)

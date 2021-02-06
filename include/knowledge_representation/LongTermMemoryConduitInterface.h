@@ -534,7 +534,7 @@ protected:
 
   DoorImpl addDoor(MapImpl& map, const std::string& name, double x_0, double y_0, double x_1, double y_1)
   {
-    return static_cast<Impl*>(this)->addDoor(map, name, x_0, y_0, x_1, y_0);
+    return static_cast<Impl*>(this)->addDoor(map, name, x_0, y_0, x_1, y_1);
   }
 
   boost::optional<PointImpl> getPoint(MapImpl& map, const std::string& name)

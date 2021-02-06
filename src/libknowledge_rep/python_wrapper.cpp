@@ -417,11 +417,12 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("__str__", to_str_wrap<Region>);
 
   class_<Door, bases<Instance>>("Door", init<uint, string, double, double, double, double, Map, LTMC&>())
+      .def_readonly("parent_map", &Door::parent_map)
       .def_readonly("x_0", &Door::x_0)
       .def_readonly("y_0", &Door::y_0)
       .def_readonly("x_1", &Door::x_1)
       .def_readonly("y_1", &Door::y_1)
-      .def("__str__", to_str_wrap<Region>);
+      .def("__str__", to_str_wrap<Door>);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit",
                                                     init<const string&, python::optional<const string&>>())
