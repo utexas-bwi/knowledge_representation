@@ -50,10 +50,10 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
   auto concepts = robot.getConcepts();
   EXPECT_EQ(1, concepts.size());
   EXPECT_EQ("robot", concepts[0].getName());
-  EXPECT_EQ(6, ltmc.getAllEntities().size());
-  EXPECT_EQ(5, ltmc.getAllConcepts().size());
+  EXPECT_EQ(7, ltmc.getAllEntities().size());
+  EXPECT_EQ(6, ltmc.getAllConcepts().size());
   EXPECT_EQ(1, ltmc.getAllInstances().size());
-  EXPECT_EQ(16, ltmc.getAllAttributes().size());
+  EXPECT_EQ(17, ltmc.getAllAttributes().size());
 }
 
 TEST_F(LTMCTest, GetConceptWorks)

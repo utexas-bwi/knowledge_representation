@@ -8,6 +8,7 @@
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCPose.h>
 #include <knowledge_representation/LTMCRegion.h>
+#include <knowledge_representation/LTMCDoor.h>
 #include <vector>
 #include <utility>
 #include <regex>
@@ -449,6 +450,38 @@ boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(uint entity_i
       const auto points = strToPoints(str);
       auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
       return Region{ region["entity_id"].as<uint>(), region["region_name"].as<string>(), points, parent_map, *this };
+    }
+    return {};
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << std::endl;
+    return {};
+  }
+}
+
+boost::optional<Door> LongTermMemoryConduitPostgreSQL::getDoor(uint entity_id)
+{
+  try
+  {
+    pqxx::work txn{ *conn, "getDoor" };
+    string query = "SELECT entity_id, door_name, x_0, y_0, x_1, y_1, parent_map_id "
+                   "FROM doors_points WHERE entity_id"
+                   "= $1";
+    auto result = txn.parameterized(query)(entity_id).exec();
+    txn.commit();
+    if (!result.empty())
+    {
+      auto door = result[0];
+      auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
+      return Door{ door["entity_id"].as<uint>(),
+                     door["door_name"].as<string>(),
+                     door["x_0"].as<double>(),
+                     door["y_0"].as<double>(),
+                     door["x_1"].as<double>(),
+                     door["y_1"].as<double>(),
+                     parent_map,
+                     *this };
     }
     return {};
   }
@@ -1012,6 +1045,22 @@ Region LongTermMemoryConduitPostgreSQL::addRegion(Map& map, const string& name, 
   return { region_entity.entity_id, name, points, map, *this };
 }
 
+Door LongTermMemoryConduitPostgreSQL::addDoor(Map& map, const string& name, double x_0, double y_0, double x_1,
+                                              double y_1)
+{
+  auto door_entity = addEntity();
+  map.addAttribute("has", door_entity);
+
+  pqxx::work txn{ *conn, "addDoor" };
+  auto result = txn.parameterized("INSERT INTO doors VALUES ($1, $2, $3, lseg(point($4, $5), point($6,$7)))")(
+                       door_entity.entity_id)(name)(map.getId())(x_0)(y_0)(x_1)(y_1)
+                    .exec();
+  txn.parameterized("INSERT INTO instance_of VALUES ($1,$2)")(door_entity.entity_id)("door").exec();
+  txn.commit();
+  door_entity.addAttribute("name", name);
+  return { door_entity.entity_id, name, x_0, y_0, x_1, y_1, map, *this };
+}
+
 boost::optional<Point> LongTermMemoryConduitPostgreSQL::getPoint(Map& map, const string& name)
 {
   pqxx::work txn{ *conn, "getPoint" };
@@ -1071,6 +1120,30 @@ boost::optional<Region> LongTermMemoryConduitPostgreSQL::getRegion(Map& map, con
   return {};
 }
 
+boost::optional<Door> LongTermMemoryConduitPostgreSQL::getDoor(Map& map, const string& name)
+{
+  pqxx::work txn{ *conn, "getDoor" };
+  string query = "SELECT entity_id, x_0, y_0, x_1, y_1, door_name "
+                 "FROM doors_points WHERE parent_map_id "
+                 "= $1 AND door_name = $2";
+  auto q_result = txn.parameterized(query)(map.getId())(name).exec();
+  txn.commit();
+  assert(q_result.size() <= 1);
+  if (q_result.size() == 1)
+  {
+    auto door = q_result[0];
+    return Door{ door["entity_id"].as<uint>(),
+                 name,
+                 door["x_0"].as<double>(),
+                 door["y_0"].as<double>(),
+                 door["x_1"].as<double>(),
+                 door["y_1"].as<double>(),
+                 map,
+                 *this };
+  }
+  return {};
+}
+
 vector<Point> LongTermMemoryConduitPostgreSQL::getAllPoints(Map& map)
 {
   pqxx::work txn{ *conn, "getAllPoints" };
@@ -1091,10 +1164,9 @@ vector<Pose> LongTermMemoryConduitPostgreSQL::getAllPoses(Map& map)
 {
   pqxx::work txn{ *conn, "getAllPoses" };
 
-  auto q_result =
-      txn.parameterized("SELECT entity_id, x, y, theta, pose_name FROM poses_point_angle WHERE parent_map_id = $1")(
-             map.getId())
-          .exec();
+  auto q_result = txn.parameterized("SELECT entity_id, x, y, theta, pose_name FROM poses_point_angle WHERE "
+                                    "parent_map_id = $1")(map.getId())
+                      .exec();
   txn.commit();
   vector<Pose> poses;
   for (const auto& row : q_result)
@@ -1120,6 +1192,22 @@ vector<Region> LongTermMemoryConduitPostgreSQL::getAllRegions(Map& map)
     regions.emplace_back(row["entity_id"].as<uint>(), row["region_name"].as<string>(), points, map, *this);
   }
   return regions;
+}
+
+vector<Door> LongTermMemoryConduitPostgreSQL::getAllDoors(Map& map)
+{
+  pqxx::work txn{ *conn, "getAllDoors" };
+  string query = "SELECT entity_id, door_name, x_0, y_0, x_1, y_1 FROM doors_points WHERE parent_map_id = $1";
+
+  auto q_result = txn.parameterized(query)(map.getId()).exec();
+  txn.commit();
+  vector<Door> doors;
+  for (const auto& row : q_result)
+  {
+    doors.emplace_back(row["entity_id"].as<uint>(), row["door_name"].as<string>(), row["x_0"].as<double>(),
+                       row["y_0"].as<double>(), row["x_1"].as<double>(), row["y_1"].as<double>(), map, *this);
+  }
+  return doors;
 }
 
 std::vector<Region> LongTermMemoryConduitPostgreSQL::getContainingRegions(Map& map, std::pair<double, double> point)

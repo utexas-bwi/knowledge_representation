@@ -11,9 +11,11 @@
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCPose.h>
 #include <knowledge_representation/LTMCRegion.h>
+#include <knowledge_representation/LTMCDoor.h>
 
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
+using knowledge_rep::Door;
 using knowledge_rep::Entity;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::Instance;
@@ -35,6 +37,7 @@ protected:
     , point(map.addPoint("test point", 0, 1))
     , pose(map.addPose("test pose", 0, 1, 0))
     , region(map.addRegion("test region", { { 0, 1 }, { 2, 3 } }))
+    , door(map.addDoor("test door", 0, 1, 2, 3))
   {
   }
 
@@ -50,6 +53,7 @@ protected:
   knowledge_rep::Point point;
   knowledge_rep::Pose pose;
   knowledge_rep::Region region;
+  knowledge_rep::Door door;
 };
 
 TEST_F(MapTest, GetMap)
@@ -178,6 +182,37 @@ TEST_F(MapTest, RegionEqualityWorks)
   EXPECT_NE(second, region);
 }
 
+TEST_F(MapTest, AddDoorWorks)
+{
+  EXPECT_TRUE(door.hasConcept(ltmc.getConcept("door")));
+}
+
+TEST_F(MapTest, GetDoorWorks)
+{
+  auto retrieved = map.getDoor("test door");
+  EXPECT_EQ(door, retrieved);
+  // EXPECT_THAT(retrieved.get().points, ::testing::ContainerEq(region.points));
+}
+
+TEST_F(MapTest, GetAllDoorsWorks)
+{
+  auto second = map.addDoor("second door", 1.1, 2.2, 3.3, 4.4);
+  auto retrieved = map.getAllDoors();
+  EXPECT_TRUE(retrieved[0] == door || retrieved[1] == door);
+  EXPECT_TRUE(retrieved[0] == second || retrieved[1] == second);
+  second.deleteEntity();
+  EXPECT_EQ(1, map.getAllDoors().size());
+}
+
+TEST_F(MapTest, DoorEqualityWorks)
+{
+  auto second = map.addDoor("second door", 1.1, 2.2, 3.3, 4.4);
+  EXPECT_EQ(door, door);
+  EXPECT_EQ(second, second);
+  EXPECT_NE(door, second);
+  EXPECT_NE(second, door);
+}
+
 TEST_F(MapTest, MapNameWorks)
 {
   EXPECT_EQ("test map", map.getName());
@@ -239,4 +274,17 @@ TEST_F(MapTest, RegionNameWorks)
 
   Instance as_instance = region;
   EXPECT_EQ("test region", as_instance.getName().get());
+}
+
+TEST_F(MapTest, DoorNameWorks)
+{
+  EXPECT_EQ("test door", door.getName());
+  ASSERT_EQ(1, door["name"].size());
+  EXPECT_EQ("test door", door["name"][0].getStringValue());
+  /*map.addAttribute("name", "second name");
+  EXPECT_EQ("test region", region.getName());
+  EXPECT_EQ("test region", region["name"][0].getStringValue());*/
+
+  Instance as_instance = door;
+  EXPECT_EQ("test door", as_instance.getName().get());
 }

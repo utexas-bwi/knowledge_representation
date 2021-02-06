@@ -23,6 +23,7 @@ class LTMCMap : public LTMCInstance<LTMCImpl>
   using PointImpl = LTMCPoint<LTMCImpl>;
   using PoseImpl = LTMCPose<LTMCImpl>;
   using RegionImpl = LTMCRegion<LTMCImpl>;
+  using DoorImpl = LTMCDoor<LTMCImpl>;
 
   friend LTMCImpl;
   uint map_id;
@@ -127,6 +128,14 @@ public:
   }
 
   /**
+   * @brief Add a new door to the map
+   */
+  DoorImpl addDoor(const std::string& name, double x_0, double y_0, double x_1, double y_1)
+  {
+    return this->ltmc.get().addDoor(*this, name, x_0, y_0, x_1, y_1);
+  }
+
+  /**
    * @brief Retrieve an existing point by its unique name
    */
   boost::optional<PointImpl> getPoint(const std::string& name)
@@ -135,43 +144,59 @@ public:
   }
 
   /**
- * @brief Retrieve an existing pose by its unique name
- */
+   * @brief Retrieve an existing pose by its unique name
+   */
   boost::optional<PoseImpl> getPose(const std::string& name)
   {
     return this->ltmc.get().getPose(*this, name);
   }
 
   /**
- * @brief Retrieve an existing region by its unique name
- */
+   * @brief Retrieve an existing region by its unique name
+   */
   boost::optional<RegionImpl> getRegion(const std::string& name)
   {
     return this->ltmc.get().getRegion(*this, name);
   }
 
   /**
- * @brief Get all points that belong to this map
- */
+   * @brief Retrieve an existing door by its unique name
+   */
+  boost::optional<DoorImpl> getDoor(const std::string& name)
+  {
+    return this->ltmc.get().getDoor(*this, name);
+  }
+
+  /**
+   * @brief Get all points that belong to this map
+   */
   std::vector<PointImpl> getAllPoints()
   {
     return this->ltmc.get().getAllPoints(*this);
   }
 
   /**
- * @brief Get all poses that belong to this map
- */
+   * @brief Get all poses that belong to this map
+   */
   std::vector<PoseImpl> getAllPoses()
   {
     return this->ltmc.get().getAllPoses(*this);
   }
 
   /**
- * @brief Get all regions that belong to this map
- */
+   * @brief Get all regions that belong to this map
+   */
   std::vector<RegionImpl> getAllRegions()
   {
     return this->ltmc.get().getAllRegions(*this);
+  }
+
+  /**
+   * @brief Get all doors that belong to this map
+   */
+  std::vector<DoorImpl> getAllDoors()
+  {
+    return this->ltmc.get().getAllDoors(*this);
   }
 
   /**

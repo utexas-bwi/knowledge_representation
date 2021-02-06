@@ -33,6 +33,9 @@ class LTMCPose;
 template <typename RegionLTMCImpl>
 class LTMCRegion;
 
+template <typename DoorLTMCImpl>
+class LTMCDoor;
+
 class EntityAttribute;
 
 enum AttributeValueType;
@@ -62,6 +65,7 @@ public:
   using PointImpl = LTMCPoint<Impl>;
   using PoseImpl = LTMCPose<Impl>;
   using RegionImpl = LTMCRegion<Impl>;
+  using DoorImpl = LTMCDoor<Impl>;
 
   friend EntityImpl;
   friend InstanceImpl;
@@ -70,6 +74,7 @@ public:
   friend PointImpl;
   friend PoseImpl;
   friend RegionImpl;
+  friend DoorImpl;
   friend Impl;
 
   LongTermMemoryConduitInterface(LongTermMemoryConduitInterface&& that) noexcept = default;
@@ -123,9 +128,9 @@ public:
   };
 
   /**
- * @brief Inserts a new entity into the database.
- * @return the new entity
- */
+   * @brief Inserts a new entity into the database.
+   * @return the new entity
+   */
   EntityImpl addEntity()
   {
     return static_cast<Impl*>(this)->addEntity();
@@ -142,75 +147,87 @@ public:
   };
 
   /**
-* @brief Returns an entity with the given ID, if it exists
-* @param entity_id the ID of the entity to fetch
-* @return the entity requested, or an empty optional if no such entity exists
-*/
+   * @brief Returns an entity with the given ID, if it exists
+   * @param entity_id the ID of the entity to fetch
+   * @return the entity requested, or an empty optional if no such entity exists
+   */
   boost::optional<EntityImpl> getEntity(uint entity_id)
   {
     return static_cast<Impl*>(this)->getEntity(entity_id);
   };
 
   /**
- * @brief Returns an instance with the given ID, if it exists
- * @param entity_id the ID of the instance to fetch
- * @return the instance requested, or an empty optional if no such instance exists
- */
+   * @brief Returns an instance with the given ID, if it exists
+   * @param entity_id the ID of the instance to fetch
+   * @return the instance requested, or an empty optional if no such instance exists
+   */
   boost::optional<InstanceImpl> getInstance(uint entity_id)
   {
     return static_cast<Impl*>(this)->getInstance(entity_id);
   };
 
   /**
-  * @brief Returns an concept with the given ID, if it exists
-  * @param entity_id the ID of the concept to fetch
-  * @return the concept requested, or an empty optional if no such concept exists
-  */
+   * @brief Returns an concept with the given ID, if it exists
+   * @param entity_id the ID of the concept to fetch
+   * @return the concept requested, or an empty optional if no such concept exists
+   */
   boost::optional<ConceptImpl> getConcept(uint entity_id)
   {
     return static_cast<Impl*>(this)->getConcept(entity_id);
   };
 
   /**
-  * @brief Returns an concept with the given ID, if it exists
-  * @param entity_id the ID of the concept to fetch
-  * @return the concept requested, or an empty optional if no such concept exists
-  */
+   * @brief Returns an concept with the given ID, if it exists
+   * @param entity_id the ID of the concept to fetch
+   * @return the concept requested, or an empty optional if no such concept exists
+   */
   boost::optional<MapImpl> getMap(uint entity_id)
   {
     return static_cast<Impl*>(this)->getMap(entity_id);
   };
 
   /**
- * @brief Returns an concept with the given ID, if it exists
- * @param entity_id the ID of the concept to fetch
- * @return the concept requested, or an empty optional if no such concept exists
- */
+   * @brief Returns an concept with the given ID, if it exists
+   * @param entity_id the ID of the concept to fetch
+   * @return the concept requested, or an empty optional if no such concept exists
+   */
   boost::optional<PointImpl> getPoint(uint entity_id)
   {
     return static_cast<Impl*>(this)->getPoint(entity_id);
   };
 
   /**
-* @brief Returns an concept with the given ID, if it exists
-* @param entity_id the ID of the concept to fetch
-* @return the concept requested, or an empty optional if no such concept exists
-*/
+   * @brief Returns an concept with the given ID, if it exists
+   * @param entity_id the ID of the concept to fetch
+   * @return the concept requested, or an empty optional if no such concept exists
+   */
   boost::optional<PoseImpl> getPose(uint entity_id)
   {
     return static_cast<Impl*>(this)->getPose(entity_id);
   };
 
   /**
-* @brief Returns a region with the given ID, if it exists
+   * @brief Returns a region with the given ID, if it exists
    *
    * Useful for discovering whether an ID is a region
-* @param entity_id the ID of the region to fetch
-* @return the region requested, or an empty optional if no such region exists
-*/
+   * @param entity_id the ID of the region to fetch
+   * @return the region requested, or an empty optional if no such region exists
+   */
   boost::optional<RegionImpl> getRegion(uint entity_id)
   {
     return static_cast<Impl*>(this)->getRegion(entity_id);
+  };
+
+  /**
+   * @brief Returns a door with the given ID, if it exists
+   *
+   * Useful for discovering whether an ID is a door
+   * @param entity_id the ID of the door to fetch
+   * @return the door requested, or an empty optional if no such door exists
+   */
+  boost::optional<DoorImpl> getDoor(uint entity_id)
+  {
+    return static_cast<Impl*>(this)->getDoor(entity_id);
   };
 
   // ATTRIBUTES
@@ -268,12 +285,12 @@ public:
   }
 
   /**
- * @brief Queries for all entities that are identified as maps
+   * @brief Queries for all entities that are identified as maps
    *
    * No operations are provided for bulk retrieving geometry as they can easily be accomplished
    * on a map by map basis.
- * @return all maps in the LTMC
- */
+   * @return all maps in the LTMC
+   */
   std::vector<MapImpl> getAllMaps()
   {
     return static_cast<Impl*>(this)->getAllMaps();
@@ -299,9 +316,9 @@ public:
   }
 
   /**
- * @brief Remove all entities and all entity attributes except for the robot
- * @return The number of entities removed
- */
+   * @brief Remove all entities and all entity attributes except for the robot
+   * @return The number of entities removed
+   */
   uint deleteAllEntities()
   {
     return static_cast<Impl*>(this)->deleteAllEntities();
@@ -344,21 +361,21 @@ public:
 
   // CONVENIENCE
   /**
- * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
- * @param name
- * @return the existing concept, or the newly created one. In either case, the concept will at least have the name
- *         passed as a parameter.
- */
+   * @brief Retrieves a concept of the given name, or creates one with the name if no such concept exists
+   * @param name
+   * @return the existing concept, or the newly created one. In either case, the concept will at least have the name
+   *         passed as a parameter.
+   */
   ConceptImpl getConcept(const std::string& name)
   {
     return static_cast<Impl*>(this)->getConcept(name);
   };
 
   /**
- * @brief Retrieves a map of the given name, or creates one with the name if no such map exists.
- * @param name
- * @return
- */
+   * @brief Retrieves a map of the given name, or creates one with the name if no such map exists.
+   * @param name
+   * @return
+   */
   MapImpl getMap(const std::string& name)
   {
     return static_cast<Impl*>(this)->getMap(name);
@@ -515,6 +532,11 @@ protected:
     return static_cast<Impl*>(this)->addRegion(map, name, points);
   }
 
+  DoorImpl addDoor(MapImpl& map, const std::string& name, double x_0, double y_0, double x_1, double y_1)
+  {
+    return static_cast<Impl*>(this)->addDoor(map, name, x_0, y_0, x_1, y_0);
+  }
+
   boost::optional<PointImpl> getPoint(MapImpl& map, const std::string& name)
   {
     return static_cast<Impl*>(this)->getPoint(map, name);
@@ -529,6 +551,12 @@ protected:
   {
     return static_cast<Impl*>(this)->getRegion(map, name);
   }
+
+  boost::optional<DoorImpl> getDoor(MapImpl& map, const std::string& name)
+  {
+    return static_cast<Impl*>(this)->getDoor(map, name);
+  }
+
   std::vector<PointImpl> getAllPoints(MapImpl& map)
   {
     return static_cast<Impl*>(this)->getAllPoints(map);
@@ -542,6 +570,11 @@ protected:
   std::vector<RegionImpl> getAllRegions(MapImpl& map)
   {
     return static_cast<Impl*>(this)->getAllRegions(map);
+  }
+
+  std::vector<DoorImpl> getAllDoors(MapImpl& map)
+  {
+    return static_cast<Impl*>(this)->getAllDoors(map);
   }
 
   std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point)

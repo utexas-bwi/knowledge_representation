@@ -22,6 +22,7 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   using PointImpl = LTMCPoint<LongTermMemoryConduitPostgreSQL>;
   using PoseImpl = LTMCPose<LongTermMemoryConduitPostgreSQL>;
   using RegionImpl = LTMCRegion<LongTermMemoryConduitPostgreSQL>;
+  using DoorImpl = LTMCDoor<LongTermMemoryConduitPostgreSQL>;
 
   // Give wrapper classes access to our protected members. Database access
   // is isolated into this class, so any wrapper methods that need to talk to the database
@@ -33,6 +34,7 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   friend PointImpl;
   friend PoseImpl;
   friend RegionImpl;
+  friend DoorImpl;
 
   // Allow the interface to forward calls to our protected members
   friend class LongTermMemoryConduitInterface;
@@ -83,6 +85,8 @@ public:
   boost::optional<PoseImpl> getPose(uint entity_id);
 
   boost::optional<RegionImpl> getRegion(uint entity_id);
+
+  boost::optional<DoorImpl> getDoor(uint entity_id);
 
   // ATTRIBUTES
 
@@ -222,17 +226,23 @@ protected:
 
   RegionImpl addRegion(MapImpl& map, const std::string& name, const std::vector<std::pair<double, double>>& points);
 
+  DoorImpl addDoor(MapImpl& map, const std::string& name, double x_0, double y_0, double x_1, double y_1);
+
   boost::optional<PointImpl> getPoint(MapImpl& map, const std::string& name);
 
   boost::optional<PoseImpl> getPose(MapImpl& map, const std::string& name);
 
   boost::optional<RegionImpl> getRegion(MapImpl& map, const std::string& name);
 
+  boost::optional<DoorImpl> getDoor(MapImpl& map, const std::string& name);
+
   std::vector<PointImpl> getAllPoints(MapImpl& map);
 
   std::vector<PoseImpl> getAllPoses(MapImpl& map);
 
   std::vector<RegionImpl> getAllRegions(MapImpl& map);
+
+  std::vector<DoorImpl> getAllDoors(MapImpl& map);
 
   std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point);
 
@@ -267,6 +277,7 @@ typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;
 typedef LTMCPoint<LongTermMemoryConduitPostgreSQL> Point;
 typedef LTMCPose<LongTermMemoryConduitPostgreSQL> Pose;
 typedef LTMCRegion<LongTermMemoryConduitPostgreSQL> Region;
+typedef LTMCDoor<LongTermMemoryConduitPostgreSQL> Door;
 typedef LTMCMap<LongTermMemoryConduitPostgreSQL> Map;
 typedef LongTermMemoryConduitPostgreSQL LongTermMemoryConduit;
 }  // namespace knowledge_rep

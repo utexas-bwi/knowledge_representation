@@ -14,6 +14,7 @@
 #include <knowledge_representation/LTMCPose.h>
 #include <knowledge_representation/LTMCPoint.h>
 #include <knowledge_representation/LTMCRegion.h>
+#include <knowledge_representation/LTMCDoor.h>
 #include <knowledge_representation/convenience.h>
 #include <vector>
 #include <string>
@@ -24,6 +25,7 @@ using boost::optional;
 using knowledge_rep::AttributeValue;
 using knowledge_rep::AttributeValueType;
 using knowledge_rep::Concept;
+using knowledge_rep::Door;
 using knowledge_rep::Entity;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::Instance;
@@ -301,6 +303,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<vector<Region>>("PyRegionList").def(vector_indexing_suite<vector<Region>, true>());
 
+  class_<vector<Door>>("PyDoorList").def(vector_indexing_suite<vector<Door>, true>());
+
   class_<vector<Region::Point2D>>("PyDoublePairList").def(vector_indexing_suite<vector<Region::Point2D>, true>());
 
   class_<vector<std::pair<string, AttributeValueType>>>("PyStrAttributeValueTypeTupleList")
@@ -376,12 +380,15 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def<Pose (Map::*)(const string&, double, double, double)>("add_pose", &Map::addPose)
       .def<Pose (Map::*)(const string&, double, double, double, double)>("add_pose", &Map::addPose)
       .def("add_region", &Map::addRegion)
+      .def("add_door", &Map::addDoor)
       .def("get_point", &Map::getPoint, python::return_value_policy<ReturnOptional>())
       .def("get_pose", &Map::getPose, python::return_value_policy<ReturnOptional>())
       .def("get_region", &Map::getRegion, python::return_value_policy<ReturnOptional>())
+      .def("get_door", &Map::getDoor, python::return_value_policy<ReturnOptional>())
       .def("get_all_points", &Map::getAllPoints)
       .def("get_all_poses", &Map::getAllPoses)
       .def("get_all_regions", &Map::getAllRegions)
+      .def("get_all_doors", &Map::getAllDoors)
       .def("deep_copy", &Map::deepCopy)
       .def("rename", &Map::rename)
       .def("__str__", to_str_wrap<Map>);
@@ -407,6 +414,13 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses)
       .def("is_point_contained", &Region::isPointContained)
+      .def("__str__", to_str_wrap<Region>);
+
+  class_<Door, bases<Instance>>("Door", init<uint, string, double, double, double, double, Map, LTMC&>())
+      .def_readonly("x_0", &Door::x_0)
+      .def_readonly("y_0", &Door::y_0)
+      .def_readonly("x_1", &Door::x_1)
+      .def_readonly("y_1", &Door::y_1)
       .def("__str__", to_str_wrap<Region>);
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit",
@@ -451,5 +465,8 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def<optional<Point> (LTMC::*)(uint)>("get_point", &LTMC::getPoint, python::return_value_policy<ReturnOptional>())
       .def<optional<Pose> (LTMC::*)(uint)>("get_pose", &LTMC::getPose, python::return_value_policy<ReturnOptional>())
       .def<optional<Region> (LTMC::*)(uint)>("get_region", &LTMC::getRegion,
+                                             python::return_value_policy<ReturnOptional>())
+      .def<optional<Door> (LTMC::*)(uint)>("get_door", &LTMC::getDoor,
                                              python::return_value_policy<ReturnOptional>());
+
 }

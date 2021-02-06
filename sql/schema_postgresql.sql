@@ -249,7 +249,7 @@ CREATE TABLE doors
     entity_id int NOT NULL,
     door_name varchar(24) NOT NULL,
     parent_map_id int NOT NULL,
-    door lseg NOT NULL,
+    line lseg NOT NULL,
     PRIMARY KEY (entity_id, door_name, parent_map_id),
     UNIQUE (door_name, parent_map_id),
     FOREIGN KEY (entity_id)
@@ -261,6 +261,11 @@ CREATE TABLE doors
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+/* Simplifies retrieving doors as (x_0,y_0) (x_1,y_1) tuples*/
+CREATE VIEW doors_points AS
+SELECT entity_id, start[0] as x_0, start[1] as y_0, end_point[0] as x_1, end_point[1] as y_1, door_name, parent_map_id FROM (SELECT entity_id, line[0] as start, line[1] as end_point, door_name, parent_map_id FROM
+    doors) AS dummy_sub_alias;
 
 /******************* FUNCTIONS */
 
@@ -439,7 +444,8 @@ VALUES ('answer_to', 'id'),
 ('is_open', 'bool'),
 ('is_placed', 'id'),
 ('name', 'str'),
-('part_of', 'id');
+('part_of', 'id'),
+('approach_to', 'id');
 $$;
 
 
@@ -450,9 +456,9 @@ AS
 $$
 
 INSERT INTO entities
-VALUES (1), (2), (3), (4), (5), (6);
+VALUES (1), (2), (3), (4), (5), (6), (7);
 INSERT INTO concepts
-VALUES (2, 'robot'), (3, 'map'), (4, 'point'), (5, 'pose'), (6, 'region') ;
+VALUES (2, 'robot'), (3, 'map'), (4, 'point'), (5, 'pose'), (6, 'region'), (7, 'door');
 INSERT INTO instance_of
 VALUES (1, 'robot');
 

@@ -26,6 +26,7 @@ Mobile robots often have to answer questions like "what room am I in?" or "which
 * **Points** are a special kind of instance which store an x and y coordinate.
 * **Poses** are a special kind of instance which store an x and y coordinate as well as a direction.
 * **Regions** are a special kind of instance which store a list of x and y coordinates defining a closed region.
+* **Doors** are a special kind of instance which store a pair of x and y coordinates defining a door.
 
 All of these types are uniquely tied to a single **map**, a special kind of instance.
 

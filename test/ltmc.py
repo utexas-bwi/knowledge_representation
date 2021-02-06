@@ -96,6 +96,16 @@ class TestLTMC(unittest.TestCase):
         self.assertEqual(region, map.get_region("test region"))
         self.assertEqual(1, len(map.get_all_regions()))
 
+        door = map.add_door("test door", 0.0, 1.1, 2.2, 3.3)
+        self.assertTrue(door)
+        self.assertEqual(door.x_0, 0.0)
+        self.assertEqual(door.y_0, 1.1)
+        self.assertEqual(door.x_1, 2.2)
+        self.assertEqual(door.y_1, 3.3)
+
+        self.assertEqual(door, map.get_door("test door"))
+        self.assertEqual(1, len(map.get_all_doors()))
+
 
 if __name__ == '__main__':
     import rosunit
