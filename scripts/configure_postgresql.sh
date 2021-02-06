@@ -3,7 +3,7 @@
 sudo service postgresql start
 
 # Set a fixed password for CI
-if [[ -n "$IN_DOCKER" ]]; then
+if [[ -n "$CI" ]]; then
   ENTERED_PASSWORD="nopass"
 else
   ENTERED_PASSWORD="$1"
@@ -28,7 +28,7 @@ EOF
 
 chmod 600 ~/.pgpass
 
-if [[ -n "$IN_DOCKER" ]]; then
+if [[ -n "$CI" ]]; then
   echo "Executing Industrial CI setup"
   # The previous invocations won't work because the postgres user doesn't
   # have permission to access the working directory
