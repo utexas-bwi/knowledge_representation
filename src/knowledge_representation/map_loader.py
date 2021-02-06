@@ -21,6 +21,10 @@ float_pattern = r"[-+]?\d*\.\d+|[-+]?\d+"
 translation_pattern = r"^translate\(({})\,({})\)".format(float_pattern, float_pattern)
 
 
+def float_s3(string):
+    return round(float(string), 3)
+
+
 def populate_doors(doors, map):
     door_count = 0
     point_count = 0
@@ -214,7 +218,7 @@ def load_svg(svg_data):
             # This was probably created by the annotation tool. Already processed above
             continue
 
-        pixel_coord = float(circle.attrib["cx"]) + translate[0], float(circle.attrib["cy"]) + translate[1]
+        pixel_coord = float_s3(circle.attrib["cx"]) + translate[0], float_s3(circle.attrib["cy"]) + translate[1]
         extra_points.append((name, pixel_coord))
 
     points += extra_points
@@ -232,7 +236,7 @@ def get_group_transform(group):
     if not translate_match:
         raise RuntimeError("Can't process because it has a complex transform: {}".format(group))
     else:
-        return float(translate_match.group(1)), float(translate_match.group(2))
+        return float_s3(translate_match.group(1)), float_s3(translate_match.group(2))
 
 
 def get_text_from_group(group):
@@ -263,7 +267,7 @@ def process_door_groups(door_groups):
             continue
         for circle in circles:
             approach_points.append(
-                (float(circle.attrib["cx"]) + translate[0], float(circle.attrib["cy"]) + translate[1]))
+                (float_s3(circle.attrib["cx"]) + translate[0], float_s3(circle.attrib["cy"]) + translate[1]))
         try:
             door_line = extract_line_from_path(door_group.find(path_el), translate)
         except RuntimeError:
@@ -288,8 +292,8 @@ def extract_line_from_path(path, translate=None):
     if len(path_geom) == 1 and is_line(path_geom[0]):
         line = path_geom[0]
         # We assume line starts at origin and points towards the second point
-        start_coord = (line.start.real + translate[0], line.start.imag + translate[1])
-        end_coord = (line.end.real + translate[0], line.end.imag + translate[1])
+        start_coord = (float_s3(line.start.real) + translate[0], float_s3(line.start.imag) + translate[1])
+        end_coord = (float_s3(line.end.real) + translate[0], float_s3(line.end.imag) + translate[1])
         return start_coord, end_coord
     else:
         raise RuntimeError()
@@ -346,7 +350,7 @@ def process_paths(path_groups):
             lines = map(lambda l: ((l.start.real, l.start.imag), (l.end.real, l.end.imag)), path_geom)
             # Each line segment starts where the previous ended, so we can drop the end points
             points = map(lambda l: l[0], lines)
-            points = map(lambda p: (float(p[0]), float(p[1])), points)
+            points = map(lambda p: (float_s3(p[0]), float_s3(p[1])), points)
             points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), points)
             regions.append((name, points))
         else:
@@ -365,7 +369,7 @@ def process_point_annotations(point_names, point_annotations, point_groups):
             warn("Can't process point '{}' because it has a complex transform: {}".format(name,
                                                                                           parent.attrib["transform"]))
             continue
-        pixel_coord = float(point.attrib["cx"]) + translate[0], float(point.attrib["cy"]) + translate[1]
+        pixel_coord = float_s3(point.attrib["cx"]) + translate[0], float_s3(point.attrib["cy"]) + translate[1]
         points.append((name, pixel_coord))
     return points
 
@@ -381,8 +385,8 @@ def process_pose_annotations(pose_names, pose_annotations, pose_groups):
             warn("Can't process pose '{}' because it has a complex transform: {}".format(name,
                                                                                          parent.attrib["transform"]))
             continue
-        start_cord = float(pose.attrib["x1"]) + translate[0], float(pose.attrib["y1"]) + translate[1]
-        stop_cord = float(pose.attrib["x2"]) + translate[0], float(pose.attrib["y2"]) + translate[1]
+        start_cord = float_s3(pose.attrib["x1"]) + translate[0], float_s3(pose.attrib["y1"]) + translate[1]
+        stop_cord = float_s3(pose.attrib["x2"]) + translate[0], float_s3(pose.attrib["y2"]) + translate[1]
         poses.append((name, start_cord, stop_cord))
     return poses
 
@@ -399,7 +403,7 @@ def process_region_annotations(region_names, region_annotations, region_groups):
                                                                                            parent.attrib["transform"]))
             continue
         points_strs = region.attrib["points"].split()
-        poly_points = [(float(x_str), float(y_str)) for x_str, y_str in map(lambda x: x.split(","), points_strs)]
+        poly_points = [(float_s3(x_str), float_s3(y_str)) for x_str, y_str in map(lambda x: x.split(","), points_strs)]
         # Apply any translation
         poly_points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), poly_points)
         regions.append((name, poly_points))

@@ -7,7 +7,8 @@ from __future__ import print_function
 import operator
 
 import knowledge_representation
-from knowledge_representation import Entity, Concept, Instance, Map, Point, Pose, Region, AttributeValueType, id_to_typed_wrapper
+from knowledge_representation import Entity, Concept, Instance, Map, Point, Pose, Region, Door, AttributeValueType, \
+    id_to_typed_wrapper
 from tabulate import tabulate
 import argparse
 
@@ -38,7 +39,7 @@ def summarize_attributes(attributes):
     header = ["Attribute Name", "Value Type"]
     rows = []
     for attr_name, value_type in attributes:
-        type_as_str = AttributeValueType.names.keys()[AttributeValueType.names.values().index(value_type)]
+        type_as_str = str(value_type)
         rows.append([attr_name, type_as_str])
     print(tabulate(rows, header))
 
@@ -51,8 +52,14 @@ def summarize_typed_entity(entity):
     :param entity: A valid entity in it's most specific typed form
     :return: a string summarizing the entity
     """
+    if entity is None:
+        return "Something is wrong"
     if isinstance(entity, Map):
-        result = "Map \"{}\": {} points, {} poses, {} regions".format(entity.get_name(), len(entity.get_all_points()), len(entity.get_all_poses()), len(entity.get_all_regions()))
+        result = "Map \"{}\": {} points, {} poses, {} regions, {} doors".format(entity.get_name(),
+                                                                                len(entity.get_all_points()),
+                                                                                len(entity.get_all_poses()),
+                                                                                len(entity.get_all_regions()),
+                                                                                len(entity.get_all_doors()))
     elif isinstance(entity, Point):
         # We leave off parent_map for brevity
         result = "Point \"{}\": x={:.3}, y={:.3}".format(entity.get_name(), entity.x, entity.y)
@@ -60,6 +67,9 @@ def summarize_typed_entity(entity):
         result = "Pose \"{}\": x={:.3}, y={:.3}, t={:.3}".format(entity.get_name(), entity.x, entity.y, entity.theta)
     elif isinstance(entity, Region):
         result = "Region \"{}\": {} points".format(entity.get_name(), len(entity.points))
+    elif isinstance(entity, Door):
+        result = "Door \"{}\": x_0={}, y_0={}, x_1={}, y_1={}".format(entity.get_name(), entity.x_0, entity.y_0,
+                                                                      entity.x_1, entity.y_1)
     elif isinstance(entity, Concept):
         result = "Concept \"{}\"".format(entity.get_name())
     elif isinstance(entity, Instance):
@@ -67,7 +77,7 @@ def summarize_typed_entity(entity):
         result = "Instance "
         if name:
             result = "\"{}\" ".format(name)
-        result += str(map(lambda x: x.get_name(), entity.get_concepts()))
+        result += str(list(map(lambda x: x.get_name(), entity.get_concepts())))
     else:
         # It's just an entity
         if len(entity.get_attributes("name")) > 0:
@@ -84,24 +94,28 @@ def about_id(entity_id, show_attributes=True):
         about_concept(typed.name, show_attributes)
         return
 
+    if isinstance(typed, Instance):
+        print(summarize_typed_entity(typed))
+
     parent_map = None
-    if isinstance(typed, Map):
-        print(summarize_typed_entity(typed))
-    elif isinstance(typed, Point):
-        print(summarize_typed_entity(typed))
+    inside_regions = None
+    if isinstance(typed, Point):
         parent_map = typed.parent_map
+        inside_regions = typed.get_containing_regions()
     elif isinstance(typed, Pose):
-        print(summarize_typed_entity(typed))
         parent_map = typed.parent_map
+        inside_regions = typed.get_containing_regions()
     elif isinstance(typed, Region):
         about_region(typed)
+        parent_map = typed.parent_map
+    elif isinstance(typed, Door):
         parent_map = typed.parent_map
 
     if parent_map:
         print("Belongs to map {} (\'{}\')".format(parent_map.entity_id, parent_map.get_name()))
 
-    if isinstance(typed, Instance):
-        print(summarize_typed_entity(typed))
+    if inside_regions:
+        print("Inside regions {}".format(str(list(map(Region.name, inside_regions)))))
 
     if not typed:
         print("Entity {} does not exist".format(entity_id))
@@ -140,12 +154,16 @@ def about_concept(concept_name, show_attributes=True):
 
 
 def about_region(region):
-    print("Region \"{}\"".format(region.get_name()))
     rows = []
     for point in region.points:
         rows.append([point[0], point[1]])
 
+    contains = list(region.get_contained_points())
+    contains += list(region.get_contained_poses())
     print(tabulate(rows, ["x", "y"]))
+    print("")
+    print("Contains:")
+    summarize_entities(contains)
     print("")
 
 

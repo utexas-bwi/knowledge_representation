@@ -32,7 +32,8 @@ def load_map(ltmc, file_path, allow_errors=False):
             eprint("Map loading aborted due to warnings")
             exit(1)
         s_points, s_poses, s_regions, s_doors = stats
-        print("Loaded map '{}' with {} points, {} poses, {} regions, {} doors".format(map_metadata["name"], s_points, s_poses, s_regions, s_doors))
+        print("Loaded map '{}' with {} points, {} poses, {} regions, {} doors"
+              .format(map_metadata["name"], s_points, s_poses, s_regions, s_doors))
 
 
 def main():

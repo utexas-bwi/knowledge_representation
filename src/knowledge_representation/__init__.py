@@ -1,5 +1,5 @@
 from knowledge_representation._libknowledge_rep_wrapper_cpp import LongTermMemoryConduit, PyAttributeList, Entity, \
-    EntityAttribute, Concept, Instance, AttributeValueType, Map, Point, Pose, Region
+    EntityAttribute, Concept, Instance, AttributeValueType, Map, Point, Pose, Region, Door
 
 
 def get_default_ltmc():
@@ -35,5 +35,7 @@ def id_to_typed_wrapper(ltmc, entity_id):
         return ltmc.get_pose(entity_id)
     if "region" in concepts:
         return ltmc.get_region(entity_id)
+    if "door" in concepts:
+        return ltmc.get_door(entity_id)
 
     return as_instance
