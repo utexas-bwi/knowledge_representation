@@ -18,6 +18,10 @@ def add_attributes(entity, attributes):
         value = attribute["value"]
         entity.add_attribute(name, value)
 
+def add_instance_of(ltmc, instance, concept_names):
+    for concept_name in concept_names:
+        concept = ltmc.get_concept(concept_name)
+        instance.make_instance_of(concept)
 
 def evaluate_attribute_values(ltmc, attributes):
     for attribute in attributes:
@@ -26,7 +30,6 @@ def evaluate_attribute_values(ltmc, attributes):
             attribute["value"] = get_instance(ltmc, value["instance_name"], value["concept_name"])
         elif isinstance(value, dict) and "concept" in value.keys():
             attribute["value"] = ltmc.get_concept(value["concept"])
-
 
 def read_yaml_from_file(file_path):
     if not os.path.isfile(file_path):
@@ -61,6 +64,10 @@ def validate_attributes(attributes):
             pass
     return attributes
 
+def validate_instance_of(concept_names):
+    if not isinstance(concept_names, list):
+        warn("Expected a list of concept names")
+    return concept_names
 
 def load_knowledge_from_yaml(file_path):
     knowledge = read_yaml_from_file(file_path)
@@ -91,6 +98,9 @@ def load_knowledge_from_yaml(file_path):
             if not entry.get("attributes"):
                 entry["attributes"] = []
             entry["attributes"] = validate_attributes(entry["attributes"])
+            if not entry.get("instance_of"):
+                entry["instance_of"] = []
+            entry["instance_of"] = validate_instance_of(entry["instance_of"])
             instances.append(entry)
         else:
             warn("Unrecognized entry: {}".format(entry))
@@ -110,6 +120,7 @@ def populate_with_knowledge(ltmc, all_data):
             instance = get_instance(ltmc, instance_name, concept_name)
             evaluate_attribute_values(ltmc, instance_data["attributes"])
             add_attributes(instance, instance_data["attributes"])
+            add_instance_of(ltmc, instance, instance_data["instance_of"])
             instance_count += 1
 
     return concept_count, instance_count
