@@ -18,10 +18,12 @@ def add_attributes(entity, attributes):
         value = attribute["value"]
         entity.add_attribute(name, value)
 
+
 def add_instance_of(ltmc, instance, concept_names):
     for concept_name in concept_names:
         concept = ltmc.get_concept(concept_name)
         instance.make_instance_of(concept)
+
 
 def evaluate_attribute_values(ltmc, attributes):
     for attribute in attributes:
@@ -30,6 +32,7 @@ def evaluate_attribute_values(ltmc, attributes):
             attribute["value"] = get_instance(ltmc, value["instance_name"], value["concept_name"])
         elif isinstance(value, dict) and "concept" in value.keys():
             attribute["value"] = ltmc.get_concept(value["concept"])
+
 
 def read_yaml_from_file(file_path):
     if not os.path.isfile(file_path):
@@ -64,10 +67,12 @@ def validate_attributes(attributes):
             pass
     return attributes
 
+
 def validate_instance_of(concept_names):
     if not isinstance(concept_names, list):
         warn("Expected a list of concept names")
     return concept_names
+
 
 def load_knowledge_from_yaml(file_path):
     knowledge = read_yaml_from_file(file_path)

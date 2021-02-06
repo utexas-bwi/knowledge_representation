@@ -53,7 +53,7 @@ TEST_F(LTMCTest, InitialConfigurationIsValid)
   EXPECT_EQ(7, ltmc.getAllEntities().size());
   EXPECT_EQ(6, ltmc.getAllConcepts().size());
   EXPECT_EQ(1, ltmc.getAllInstances().size());
-  EXPECT_EQ(17, ltmc.getAllAttributes().size());
+  EXPECT_EQ(18, ltmc.getAllAttributes().size());
 }
 
 TEST_F(LTMCTest, GetConceptWorks)
