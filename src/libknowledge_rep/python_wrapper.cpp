@@ -466,7 +466,5 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def<optional<Pose> (LTMC::*)(uint)>("get_pose", &LTMC::getPose, python::return_value_policy<ReturnOptional>())
       .def<optional<Region> (LTMC::*)(uint)>("get_region", &LTMC::getRegion,
                                              python::return_value_policy<ReturnOptional>())
-      .def<optional<Door> (LTMC::*)(uint)>("get_door", &LTMC::getDoor,
-                                             python::return_value_policy<ReturnOptional>());
-
+      .def<optional<Door> (LTMC::*)(uint)>("get_door", &LTMC::getDoor, python::return_value_policy<ReturnOptional>());
 }

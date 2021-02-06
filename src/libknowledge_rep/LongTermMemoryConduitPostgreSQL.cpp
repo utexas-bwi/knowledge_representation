@@ -475,13 +475,13 @@ boost::optional<Door> LongTermMemoryConduitPostgreSQL::getDoor(uint entity_id)
       auto door = result[0];
       auto parent_map = *getMapForMapId(result[0]["parent_map_id"].as<uint>());
       return Door{ door["entity_id"].as<uint>(),
-                     door["door_name"].as<string>(),
-                     door["x_0"].as<double>(),
-                     door["y_0"].as<double>(),
-                     door["x_1"].as<double>(),
-                     door["y_1"].as<double>(),
-                     parent_map,
-                     *this };
+                   door["door_name"].as<string>(),
+                   door["x_0"].as<double>(),
+                   door["y_0"].as<double>(),
+                   door["x_1"].as<double>(),
+                   door["y_1"].as<double>(),
+                   parent_map,
+                   *this };
     }
     return {};
   }
