@@ -19,20 +19,20 @@ def eprint(*args, **kwargs):
 
 def load_map(ltmc, file_path, allow_errors=False):
     with warnings.catch_warnings(record=True) as w:
-        map_name, annotations = load_map_from_yaml(file_path)
+        map_metadata, annotations = load_map_from_yaml(file_path)
         if not allow_errors and len(w) != 0:
             for warning in w:
                 eprint(warning.message)
             eprint("Map loading aborted due to warnings")
             exit(1)
-        stats = populate_with_map_annotations(ltmc, map_name, *annotations)
+        stats = populate_with_map_annotations(ltmc, map_metadata["name"], *annotations)
         if not allow_errors and len(w) != 0:
             for warning in w:
                 eprint(warning.message)
             eprint("Map loading aborted due to warnings")
             exit(1)
-        s_points, s_poses, s_regions = stats
-        print("Loaded map '{}' with {} points, {} poses, {} regions".format(map_name, s_points, s_poses, s_regions))
+        s_points, s_poses, s_regions, s_doors = stats
+        print("Loaded map '{}' with {} points, {} poses, {} regions, {} doors".format(map_metadata["name"], s_points, s_poses, s_regions, s_doors))
 
 
 def main():

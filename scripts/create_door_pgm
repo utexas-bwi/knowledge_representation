@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import argparse
+import os
+import sys
+import warnings
+
+from PIL import Image
+
+from knowledge_representation.map_image_utils import draw_doors
+from knowledge_representation.map_loader import load_map_from_yaml
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+def bake_door_pgm(file_path, allow_errors=False):
+    with warnings.catch_warnings(record=True) as w:
+        map_metadata, annotations = load_map_from_yaml(file_path, use_pixel_coords=True)
+
+        if not allow_errors and len(w) != 0:
+            for warning in w:
+                eprint(warning.message)
+            eprint("Door baking aborted due to warnings")
+            exit(1)
+
+        doors = annotations[3]
+
+        out_path = os.path.dirname(file_path) + "/"
+        map_image = Image.open(out_path + map_metadata["image"])
+        draw_doors(map_image, doors)
+        map_image.save(out_path + map_metadata["name"] + "_doors.pgm")
+        print("Baked '{}_doors.pgm' with {} doors".format(map_metadata["name"], len(doors)))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("map_yaml_paths", type=str, nargs="+", help="Paths to map YAML files")
+    parser.add_argument("--allow-errors", type=bool, default=False, help="Allow warnings and non-fatal errors in "
+                                                                         "loading to be ignored")
+
+    # roslaunch passes additional arguments to <node> executables, so we'll gracefully ignore those
+    args, unknown = parser.parse_known_args()
+    for path in args.map_yaml_paths:
+        bake_door_pgm(path, args.allow_errors)
+
+
+if __name__ == "__main__":
+    main()

@@ -9,13 +9,13 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    preserveAspectRatio="xMidYMid meet"
-   width="378"
-   height="227"
-   viewBox="0 0 378 227"
+   width="375"
+   height="223"
+   viewBox="0 0 375 223"
    version="1.1"
    id="svg46"
    sodipodi:docname="map_inkscape.svg"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)">
+   inkscape:version="1.0.1 (0767f8302a, 2020-10-17)">
   <metadata
      id="metadata52">
     <rdf:RDF>
@@ -24,6 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -190,29 +191,30 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1136"
+     inkscape:window-width="1515"
+     inkscape:window-height="968"
      id="namedview48"
      showgrid="false"
-     inkscape:zoom="2.6218227"
-     inkscape:cx="136.57668"
-     inkscape:cy="116.55847"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g1118" />
+     inkscape:zoom="14.831269"
+     inkscape:cx="11.085444"
+     inkscape:cy="136.14643"
+     inkscape:window-x="217"
+     inkscape:window-y="103"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg46"
+     showguides="true" />
   <image
-     sodipodi:absref="/home/nick/workspaces/homeskies_ws/src/knowledge_representation/test/resources/map/map.pgm"
+     sodipodi:absref="/home/nick/workspaces/homeskies/src/knowledge_representation/test/resources/map/map.pgm"
      xlink:href="map.pgm"
-     y="0"
-     x="0"
-     width="378"
-     height="227"
-     preserveAspectRatio="none"
-     id="image64"
-     inkscape:label="image64"
+     sodipodi:insensitive="true"
      style="display:inline"
-     sodipodi:insensitive="true" />
+     inkscape:label="image64"
+     id="image64"
+     preserveAspectRatio="none"
+     height="223"
+     width="375"
+     x="0"
+     y="0" />
   <g
      id="g10">
     <text
@@ -260,10 +262,10 @@
     <circle
        id="circle14-6"
        style="fill:#f10000;stroke:#f10000"
-       r="3.5"
        cy="233.18904"
        cx="149.46678"
-       class="circle_annotation" />
+       class="circle_annotation"
+       r="3.5" />
   </g>
   <g
      id="g978-7"
@@ -397,5 +399,69 @@
        cy="165.80513"
        cx="222.45621"
        class="circle_annotation" />
+  </g>
+  <g
+     id="g88">
+    <circle
+       style="fill:#ff0000;fill-rule:evenodd"
+       id="path68"
+       cx="13.108473"
+       cy="136.97704"
+       r="1.727037" />
+    <circle
+       style="fill:#ff0000;fill-rule:evenodd"
+       id="path68-3"
+       cx="12.552642"
+       cy="144.86409"
+       r="1.727037"
+       inkscape:transform-center-x="2.6881649"
+       inkscape:transform-center-y="8.0826679" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.6667px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
+       x="19.937864"
+       y="152.08687"
+       id="text87"><tspan
+         sodipodi:role="line"
+         id="tspan85"
+         x="19.937864"
+         y="152.08687"
+         style="font-size:10.6667px">inkdoor1</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 2.1140883,141.02865 H 22.114088"
+       id="path66" />
+  </g>
+  <g
+     id="g107"
+     transform="translate(82.020443,-162.34074)">
+    <circle
+       style="fill:#ff0000;fill-rule:evenodd"
+       id="path68-6"
+       cx="104.44855"
+       cy="176.79721"
+       r="1.727037" />
+    <circle
+       style="fill:#ff0000;fill-rule:evenodd"
+       id="path68-3-7"
+       cx="91.563507"
+       cy="176.76047"
+       r="1.727037" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.6667px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
+       x="102.12562"
+       y="187.62563"
+       id="text87-5"><tspan
+         sodipodi:role="line"
+         id="tspan85-3"
+         x="102.12562"
+         y="187.62563"
+         style="font-size:10.6667px">inkdoor2</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 98.563591,167.3048 0.08219,19.6429"
+       id="path66-5"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>

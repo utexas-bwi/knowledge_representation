@@ -12,17 +12,19 @@ class TestLoaders(unittest.TestCase):
 
     def test_load_annotator_tool_map_works(self):
         name, annotations = load_map_from_yaml(resource_path + "/map/map.yaml")
-        points, poses, regions = annotations
+        points, poses, regions, doors = annotations
         self.assertEqual(2, len(points))
         self.assertEqual(8, len(poses))
         self.assertEqual(6, len(regions))
+        self.assertEqual(0, len(doors))
 
     def test_load_inkscape_map_works(self):
         name, annotations = load_map_from_yaml(resource_path + "/map/map_inkscape.yaml")
-        points, poses, regions = annotations
+        points, poses, regions, doors = annotations
         self.assertEqual(6, len(points))
         self.assertEqual(2, len(poses))
         self.assertEqual(2, len(regions))
+        self.assertEqual(2, len(doors))
 
     def test_load_knowledge_works(self):
         concepts, instances = load_knowledge_from_yaml(resource_path + "/knowledge.yaml")
