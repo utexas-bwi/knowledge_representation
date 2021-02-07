@@ -24,9 +24,13 @@ class LTMCPose : public LTMCInstance<LTMCImpl>
   using RegionImpl = LTMCRegion<LTMCImpl>;
 
 public:
+  /// The map that owns this pose
   MapImpl parent_map;
+  /// The x component of the pose
   double x;
+  /// The y component of the pose
   double y;
+  /// The theta (in radians) component of the pose
   double theta;
   LTMCPose(uint entity_id, std::string name, double x, double y, double theta, MapImpl parent_map,
            LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
@@ -45,7 +49,7 @@ public:
    */
   std::vector<RegionImpl> getContainingRegions()
   {
-    return this->ltmc.get().getContainingRegions(parent_map, { x, y });
+    return this->ltmc.get().getContainingRegions(parent_map, x, y);
   }
 
   bool operator==(const LTMCPose& other) const

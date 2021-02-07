@@ -24,8 +24,11 @@ class LTMCPoint : public LTMCInstance<LTMCImpl>
   using RegionImpl = LTMCRegion<LTMCImpl>;
 
 public:
+  /// The map that owns this point
   MapImpl parent_map;
+  /// The x component of the coordinate
   double x;
+  /// The y component of the coordinate
   double y;
 
   LTMCPoint(uint entity_id, std::string name, double x, double y, MapImpl parent_map,
@@ -45,7 +48,7 @@ public:
    */
   std::vector<RegionImpl> getContainingRegions()
   {
-    return this->ltmc.get().getContainingRegions(parent_map, { x, y });
+    return this->ltmc.get().getContainingRegions(parent_map, x, y);
   }
 
   bool operator==(const LTMCPoint& other) const

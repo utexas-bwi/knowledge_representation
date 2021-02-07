@@ -1,6 +1,12 @@
-# knowledge_representation [![CI](https://github.com/utexas-bwi/knowledge_representation/workflows/CI/badge.svg)](https://github.com/utexas-bwi/knowledge_representation/actions?query=workflow%3ACI)
+# knowledge_representation
 
-Mechanisms for storing and querying information about the world. A nicely packaged [database schema](https://en.wikipedia.org/wiki/Database_schema) to structure the kinds of knowledge that a robot might need and tools for [CRUD operations](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) within that structure. Integrate it into your robot's perception so you can query where objects were seen, or into your task planning system so you can easily manage all of your facts.
+[![CI](https://github.com/utexas-bwi/knowledge_representation/workflows/CI/badge.svg)](https://github.com/utexas-bwi/knowledge_representation/actions?query=workflow%3ACI)
+
+Mechanisms for storing and querying information about the world. A nicely
+packaged [database schema](https://en.wikipedia.org/wiki/Database_schema) to structure the kinds of knowledge that a
+robot might need and tools for [CRUD operations](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) within
+that structure. Integrate it into your robot's perception so you can query where objects were seen, or into your task
+planning system so you can easily manage all of your facts.
 
 * Persistent storage of facts and map geometry backed by a local PostgreSQL database
 * Convenient APIs for common queries, like getting all instances of a type of object

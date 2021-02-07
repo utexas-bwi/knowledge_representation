@@ -177,9 +177,9 @@ public:
   };
 
   /**
-   * @brief Returns an concept with the given ID, if it exists
-   * @param entity_id the ID of the concept to fetch
-   * @return the concept requested, or an empty optional if no such concept exists
+   * @brief Returns a map with the given ID, if it exists
+   * @param entity_id the ID of the map to fetch
+   * @return the map requested, or an empty optional if no such map exists
    */
   boost::optional<MapImpl> getMap(uint entity_id)
   {
@@ -187,9 +187,9 @@ public:
   };
 
   /**
-   * @brief Returns an concept with the given ID, if it exists
-   * @param entity_id the ID of the concept to fetch
-   * @return the concept requested, or an empty optional if no such concept exists
+   * @brief Returns a point with the given ID, if it exists
+   * @param entity_id the ID of the point to fetch
+   * @return the point requested, or an empty optional if no such point exists
    */
   boost::optional<PointImpl> getPoint(uint entity_id)
   {
@@ -197,9 +197,9 @@ public:
   };
 
   /**
-   * @brief Returns an concept with the given ID, if it exists
-   * @param entity_id the ID of the concept to fetch
-   * @return the concept requested, or an empty optional if no such concept exists
+   * @brief Returns a pose with the given ID, if it exists
+   * @param entity_id the ID of the pose to fetch
+   * @return the pose requested, or an empty optional if no such pose exists
    */
   boost::optional<PoseImpl> getPose(uint entity_id)
   {

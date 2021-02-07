@@ -24,8 +24,11 @@ class LTMCRegion : public LTMCInstance<LTMCImpl>
   using PoseImpl = LTMCPose<LTMCImpl>;
 
 public:
+  /// Shorthand for specifying 2D coordinates
   using Point2D = std::pair<double, double>;
+  /// The map that owns this region
   MapImpl parent_map;
+  /// The points that define the closed boundary of the region
   std::vector<Point2D> points;
   LTMCRegion(uint entity_id, std::string name, std::vector<Point2D> points, MapImpl parent_map,
              LongTermMemoryConduitInterface<LTMCImpl>& ltmc)
@@ -60,9 +63,36 @@ public:
    * @brief Checks whether a point is in or on the bounds of the region
    * @return whether the point is contained in the region
    */
+  bool isPointContained(double x, double y)
+  {
+    return this->ltmc.get().isPointContained(*this, x, y);
+  }
+
+  /**
+   * @brief Checks whether a point is in or on the bounds of the region
+   * @return whether the point is contained in the region
+   */
   bool isPointContained(const Point2D& point)
   {
-    return this->ltmc.get().isPointContained(*this, point);
+    return this->ltmc.get().isPointContained(*this, point.first, point.second);
+  }
+
+  /**
+   * @brief Checks whether a point is in or on the bounds of the region
+   * @return whether the point is contained in the region
+   */
+  bool isPointContained(const PointImpl& point)
+  {
+    return this->ltmc.get().isPointContained(*this, point.x, point.y);
+  }
+
+  /**
+   * @brief Checks whether a pose is in or on the bounds of the region
+   * @return whether the pose is contained in the region
+   */
+  bool isPoseContained(const PoseImpl& pose)
+  {
+    return this->ltmc.get().isPointContained(*this, pose.x, pose.y);
   }
 
   bool operator==(const LTMCRegion& other) const

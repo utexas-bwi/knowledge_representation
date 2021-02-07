@@ -19,10 +19,16 @@ class LTMCDoor : public LTMCInstance<LTMCImpl>
   using MapImpl = LTMCMap<LTMCImpl>;
 
 public:
+  /// The map that owns this door
   MapImpl parent_map;
+
+  /// The x component of the first point of the door line
   double x_0;
+  /// The y component of the first point of the door line
   double y_0;
+  /// The x component of the second point of the door line
   double x_1;
+  /// The y component of the second point of the door line
   double y_1;
 
   LTMCDoor(uint entity_id, std::string name, double x_0, double y_0, double x_1, double y_1, MapImpl parent_map,
