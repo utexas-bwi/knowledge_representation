@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
     <name>knowledge_representation</name>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
     <description>APIs for storing and querying information about the world.
     Provides C++ and Python API's to make getting facts in and out easy (while still exposing a full SQL interface).
         Supports PostgreSQL and MySQL backends.</description>
