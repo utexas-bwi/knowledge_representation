@@ -25,25 +25,25 @@
 var NAVTREE =
 [
   [ "knowledge_representation", "index.html", [
-    [ "knowledge_representation <a href=\"https://github.com/utexas-bwi/knowledge_representation/actions?query=workflow%3ACI\"><img src=\"https://github.com/utexas-bwi/knowledge_representation/workflows/CI/badge.svg\" alt=\"CI\"/></a>", "index.html", [
-      [ "Representation", "index.html#autotoc_md1", [
-        [ "Map Types", "index.html#autotoc_md2", null ]
-      ] ],
-      [ "Installation", "index.html#autotoc_md3", null ],
-      [ "Usage", "index.html#autotoc_md4", [
-        [ "C++/Python API", "index.html#autotoc_md5", null ],
-        [ "Loading Knowledge", "index.html#autotoc_md6", null ],
-        [ "Exploration", "index.html#autotoc_md7", null ],
-        [ "As Part of a ROS System", "index.html#autotoc_md8", null ]
-      ] ],
-      [ "Development", "index.html#autotoc_md9", null ]
+    [ "Representation", "index.html#autotoc_md1", [
+      [ "Map Types", "index.html#autotoc_md2", null ]
     ] ],
+    [ "Installation", "index.html#autotoc_md3", null ],
+    [ "Usage", "index.html#autotoc_md4", [
+      [ "C++/Python API", "index.html#autotoc_md5", null ],
+      [ "Loading Knowledge", "index.html#autotoc_md6", null ],
+      [ "Exploration", "index.html#autotoc_md7", null ],
+      [ "As Part of a ROS System", "index.html#autotoc_md8", null ]
+    ] ],
+    [ "Development", "index.html#autotoc_md9", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Variables", "functions_vars.html", null ],
+        [ "Typedefs", "functions_type.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -54,7 +54,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+"EntityAttribute_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

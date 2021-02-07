@@ -10,6 +10,7 @@ var classknowledge__rep_1_1LongTermMemoryConduitInterface =
     [ "getPoint", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a3dbb5bf5f9808fa5fe81e0d670512931", null ],
     [ "getPose", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#af600819c0a564312bc11b4ca8c4fda56", null ],
     [ "getRegion", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#ad41ede4c2bb208dbb61336cb8cd1ddcc", null ],
+    [ "getDoor", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#ae0a6741fb424342828b9d46ca6568c5d", null ],
     [ "deleteAttribute", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a0c99a9d063f7daadafa1edae3d8342ca", null ],
     [ "attributeExists", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a81247d832b3cbdc08363ca793ef1c244", null ],
     [ "getAllEntities", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a22e5ab2ba523ab8318d93bd38842aca9", null ],

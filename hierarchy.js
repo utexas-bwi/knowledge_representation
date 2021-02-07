@@ -6,11 +6,14 @@ var hierarchy =
     [ "LongTermMemoryConduitInterface< LongTermMemoryConduitPostgreSQL >", "classknowledge__rep_1_1LongTermMemoryConduitInterface.html", [
       [ "LongTermMemoryConduitPostgreSQL", "classknowledge__rep_1_1LongTermMemoryConduitPostgreSQL.html", null ]
     ] ],
-    [ "LTMCConcept< LTMCImpl >", "classknowledge__rep_1_1LTMCConcept.html", null ],
-    [ "LTMCEntity< LTMCImpl >", "classknowledge__rep_1_1LTMCEntity.html", null ],
-    [ "LTMCInstance< LTMCImpl >", "classknowledge__rep_1_1LTMCInstance.html", null ],
-    [ "LTMCMap< LTMCImpl >", "classknowledge__rep_1_1LTMCMap.html", null ],
-    [ "LTMCPoint< LTMCImpl >", "classknowledge__rep_1_1LTMCPoint.html", null ],
-    [ "LTMCPose< LTMCImpl >", "classknowledge__rep_1_1LTMCPose.html", null ],
-    [ "LTMCRegion< LTMCImpl >", "classknowledge__rep_1_1LTMCRegion.html", null ]
+    [ "LTMCEntity< LTMCImpl >", "classknowledge__rep_1_1LTMCEntity.html", [
+      [ "LTMCConcept< LTMCImpl >", "classknowledge__rep_1_1LTMCConcept.html", null ],
+      [ "LTMCInstance< LTMCImpl >", "classknowledge__rep_1_1LTMCInstance.html", [
+        [ "LTMCDoor< LTMCImpl >", "classknowledge__rep_1_1LTMCDoor.html", null ],
+        [ "LTMCMap< LTMCImpl >", "classknowledge__rep_1_1LTMCMap.html", null ],
+        [ "LTMCPoint< LTMCImpl >", "classknowledge__rep_1_1LTMCPoint.html", null ],
+        [ "LTMCPose< LTMCImpl >", "classknowledge__rep_1_1LTMCPose.html", null ],
+        [ "LTMCRegion< LTMCImpl >", "classknowledge__rep_1_1LTMCRegion.html", null ]
+      ] ]
+    ] ]
 ];

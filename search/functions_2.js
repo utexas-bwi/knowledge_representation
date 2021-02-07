@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['deepcopy_95',['deepCopy',['../classknowledge__rep_1_1LTMCMap.html#a34adb656d4120a762071bd9453db3d47',1,'knowledge_rep::LTMCMap']]],
-  ['deleteallattributes_96',['deleteAllAttributes',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a799ab14acaa0b0fc4326dd90dabf777a',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
-  ['deleteallentities_97',['deleteAllEntities',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a7e099145876fb87b29fedbf8d1224501',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
-  ['deleteattribute_98',['deleteAttribute',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a0c99a9d063f7daadafa1edae3d8342ca',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
-  ['deleteentity_99',['deleteEntity',['../classknowledge__rep_1_1LTMCEntity.html#a63eba9d9725ef1462a32b369fd8e1e54',1,'knowledge_rep::LTMCEntity']]]
+  ['deepcopy_112',['deepCopy',['../classknowledge__rep_1_1LTMCMap.html#a34adb656d4120a762071bd9453db3d47',1,'knowledge_rep::LTMCMap']]],
+  ['deleteallattributes_113',['deleteAllAttributes',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a799ab14acaa0b0fc4326dd90dabf777a',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
+  ['deleteallentities_114',['deleteAllEntities',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a7e099145876fb87b29fedbf8d1224501',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
+  ['deleteattribute_115',['deleteAttribute',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a0c99a9d063f7daadafa1edae3d8342ca',1,'knowledge_rep::LongTermMemoryConduitInterface']]],
+  ['deleteentity_116',['deleteEntity',['../classknowledge__rep_1_1LTMCEntity.html#a63eba9d9725ef1462a32b369fd8e1e54',1,'knowledge_rep::LTMCEntity']]]
 ];

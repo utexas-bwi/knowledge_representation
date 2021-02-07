@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['removeattribute_70',['removeAttribute',['../classknowledge__rep_1_1LTMCEntity.html#ae00ef06fb5c8e1231f3d342806800422',1,'knowledge_rep::LTMCEntity']]],
-  ['removeinstances_71',['removeInstances',['../classknowledge__rep_1_1LTMCConcept.html#aabb891170f74a52d50b121f288367d97',1,'knowledge_rep::LTMCConcept']]],
-  ['removeinstancesrecursive_72',['removeInstancesRecursive',['../classknowledge__rep_1_1LTMCConcept.html#a645a1d76e70875c69b773017e46f9858',1,'knowledge_rep::LTMCConcept']]],
-  ['removereferences_73',['removeReferences',['../classknowledge__rep_1_1LTMCConcept.html#a5aa22c8a659efd4b679dfbc8b70a3f13',1,'knowledge_rep::LTMCConcept']]],
-  ['rename_74',['rename',['../classknowledge__rep_1_1LTMCMap.html#a764f0331cfa8454d51ff96a2cf1f715d',1,'knowledge_rep::LTMCMap']]]
+  ['parent_5fmap_75',['parent_map',['../classknowledge__rep_1_1LTMCDoor.html#a5974cc30542b5f97644d4ecd76cda6c9',1,'knowledge_rep::LTMCDoor::parent_map()'],['../classknowledge__rep_1_1LTMCPoint.html#a5974cc30542b5f97644d4ecd76cda6c9',1,'knowledge_rep::LTMCPoint::parent_map()'],['../classknowledge__rep_1_1LTMCPose.html#a5974cc30542b5f97644d4ecd76cda6c9',1,'knowledge_rep::LTMCPose::parent_map()'],['../classknowledge__rep_1_1LTMCRegion.html#a5974cc30542b5f97644d4ecd76cda6c9',1,'knowledge_rep::LTMCRegion::parent_map()']]],
+  ['point2d_76',['Point2D',['../classknowledge__rep_1_1LTMCRegion.html#aad65da52de150f979dc6d2232e9a9824',1,'knowledge_rep::LTMCRegion']]],
+  ['points_77',['points',['../classknowledge__rep_1_1LTMCRegion.html#a8fe6c42df64c391c19145a24279b21d5',1,'knowledge_rep::LTMCRegion']]]
 ];
