@@ -413,7 +413,10 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def_readonly("parent_map", &Region::parent_map)
       .def("get_contained_points", &Region::getContainedPoints)
       .def("get_contained_poses", &Region::getContainedPoses)
-      .def("is_point_contained", &Region::isPointContained)
+      .def<bool (Region::*)(double, double)>("is_point_contained", &Region::isPointContained)
+      .def<bool (Region::*)(const Region::Point2D&)>("is_point_contained", &Region::isPointContained)
+      .def<bool (Region::*)(const Point&)>("is_point_contained", &Region::isPointContained)
+      .def<bool (Region::*)(const Pose&)>("is_pose_contained", &Region::isPoseContained)
       .def("__str__", to_str_wrap<Region>);
 
   class_<Door, bases<Instance>>("Door", init<uint, string, double, double, double, double, Map, LTMC&>())

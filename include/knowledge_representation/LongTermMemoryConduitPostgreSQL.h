@@ -244,7 +244,7 @@ protected:
 
   std::vector<DoorImpl> getAllDoors(MapImpl& map);
 
-  std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point);
+  std::vector<RegionImpl> getContainingRegions(MapImpl& map, double x, double y);
 
   bool renameMap(MapImpl& map, const std::string& new_name);
 
@@ -254,7 +254,7 @@ protected:
 
   std::vector<PoseImpl> getContainedPoses(RegionImpl& region);
 
-  bool isPointContained(const RegionImpl& region, std::pair<double, double> point);
+  bool isPointContained(const RegionImpl& region, double x, double y);
 
 private:
   /**

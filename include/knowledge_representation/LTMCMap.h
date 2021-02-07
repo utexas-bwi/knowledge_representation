@@ -212,6 +212,7 @@ public:
     const auto points = getAllPoints();
     const auto poses = getAllPoses();
     const auto regions = getAllRegions();
+    const auto doors = getAllDoors();
     for (const auto point : points)
     {
       new_map.addPoint(point.getName(), point.x, point.y);
@@ -223,6 +224,10 @@ public:
     for (const auto region : regions)
     {
       new_map.addRegion(region.getName(), region.points);
+    }
+    for (const auto door : doors)
+    {
+      new_map.addDoor(door.getName(), door.x_0, door.y_0, door.x_1, door.y_1);
     }
     return new_map;
   }

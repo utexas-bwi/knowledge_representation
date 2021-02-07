@@ -1210,11 +1210,11 @@ vector<Door> LongTermMemoryConduitPostgreSQL::getAllDoors(Map& map)
   return doors;
 }
 
-std::vector<Region> LongTermMemoryConduitPostgreSQL::getContainingRegions(Map& map, std::pair<double, double> point)
+std::vector<Region> LongTermMemoryConduitPostgreSQL::getContainingRegions(Map& map, double x, double y)
 {
   pqxx::work txn{ *conn, "getContainingRegions" };
   auto result = txn.parameterized("SELECT entity_id, region, region_name FROM regions WHERE parent_map_id = $1 AND "
-                                  "region @> point($2,$3)")(map.map_id)(point.first)(point.second)
+                                  "region @> point($2,$3)")(map.map_id)(x)(y)
                     .exec();
   txn.commit();
   vector<Region> regions;
@@ -1287,11 +1287,11 @@ vector<Pose> LongTermMemoryConduitPostgreSQL::getContainedPoses(Region& region)
   return poses;
 }
 
-bool LongTermMemoryConduitPostgreSQL::isPointContained(const Region& region, std::pair<double, double> point)
+bool LongTermMemoryConduitPostgreSQL::isPointContained(const Region& region, double x, double y)
 {
   pqxx::work txn{ *conn, "isPointContained" };
   auto result = txn.parameterized("SELECT count(*) FROM regions WHERE entity_id = $1 AND region @> point($2,$3)")(
-                       region.entity_id)(point.first)(point.second)
+                       region.entity_id)(x)(y)
                     .exec();
   txn.commit();
   return result[0]["count"].as<uint>() == 1;

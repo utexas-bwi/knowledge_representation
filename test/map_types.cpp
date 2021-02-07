@@ -71,6 +71,7 @@ TEST_F(MapTest, CopyMap)
   EXPECT_EQ(map.getAllPoints().size(), copy.getAllPoints().size());
   EXPECT_EQ(map.getAllPoses().size(), copy.getAllPoses().size());
   EXPECT_EQ(map.getAllRegions().size(), copy.getAllRegions().size());
+  EXPECT_EQ(map.getAllDoors().size(), copy.getAllDoors().size());
 }
 
 TEST_F(MapTest, GetAllMaps)

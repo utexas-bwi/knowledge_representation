@@ -577,9 +577,9 @@ protected:
     return static_cast<Impl*>(this)->getAllDoors(map);
   }
 
-  std::vector<RegionImpl> getContainingRegions(MapImpl& map, std::pair<double, double> point)
+  std::vector<RegionImpl> getContainingRegions(MapImpl& map, double x, double y)
   {
-    return static_cast<Impl*>(this)->getContainingRegions(map, point);
+    return static_cast<Impl*>(this)->getContainingRegions(map, x, y);
   }
 
   bool renameMap(MapImpl& map, const std::string& new_name)
@@ -599,9 +599,9 @@ protected:
     return static_cast<Impl*>(this)->getContainedPoses(region);
   }
 
-  bool isPointContained(const RegionImpl& region, std::pair<double, double> point)
+  bool isPointContained(const RegionImpl& region, double x, double y)
   {
-    return static_cast<Impl*>(this)->isPointContained(region, point);
+    return static_cast<Impl*>(this)->isPointContained(region, x, y);
   }
 
 private:
