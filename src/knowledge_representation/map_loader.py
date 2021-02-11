@@ -2,11 +2,10 @@ import os
 from xml.etree import ElementTree as ElTree
 import yaml
 from PIL import Image
-import re
 from warnings import warn
 
 from knowledge_representation.map_image_utils import point_to_map_coords
-from svgpathtools.parser import parse_transform
+from svgpathtools.parser import parse_transform, parse_path
 import numpy as np
 
 svg_el = "{http://www.w3.org/2000/svg}svg"
@@ -20,27 +19,66 @@ group_el = "{http://www.w3.org/2000/svg}g"
 tspan_el = "{http://www.w3.org/2000/svg}tspan"
 
 
+def get_text_from_group(group):
+    # Inkscape tucks things in a tspan. Check that first
+    text = group.find(".//{}".format(tspan_el))
+    if text is None:
+        text = group.find(".//{}".format(text_el))
+    if text is None:
+        return None
+    return text.text
+
+
+def get_point(element):
+    return float_s3(element.attrib["cx"]), float_s3(element.attrib["cy"])
+
+
 def float_s3(string):
     return round(float(string), 3)
 
 
-def populate_doors(doors, map):
-    door_count = 0
-    point_count = 0
-    for name, ((x_0, y_0), (x_1, y_1)), approach_points in doors:
-        door = map.add_door(name, x_0, y_0, x_1, y_1)
-        if not door.is_valid():
-            warn("Failed to add door '{}': ({},{}) ({},{})".format(name, x_0, y_0, x_0, y_1))
-            continue
-        for i, (x, y) in enumerate(approach_points):
-            point = map.add_point("{}_approach{}".format(name, i), x, y)
-            if not point.is_valid():
-                warn("Failed to add approach {} for door '{}': {}, {}".format(i, name, x, y))
-                continue
-            point.add_attribute("approach_to", door)
-            point_count += 1
-        door_count += 1
-    return door_count, point_count
+def np_point_to_tuple(np_point):
+    return tuple(np_point[:2, 0])
+
+
+def apply_transform(point, transform):
+    if isinstance(point, tuple):
+        # Convert to homogeneous form
+        point = np.array([[point[0], point[1], 1]])
+    return np_point_to_tuple(transform @ point.transpose())
+
+
+def get_transform(element):
+    if "transform" in element.attrib:
+        return parse_transform(element.attrib["transform"])
+    else:
+        return np.identity(3)
+
+
+def is_line(path_part):
+    from svgpathtools import Line
+    return isinstance(path_part, Line)
+
+
+def extract_line_from_path(path, transform=None):
+    """
+    Treat a path as a line-segment and extract end points. Throws
+    if the path isn't a line.
+
+    :param path:
+    :param transform: the transform to apply to the coordinates
+    :return: tuple of line-segment start and end coordinates
+    """
+    path_geom = parse_path(path.attrib["d"])
+
+    if len(path_geom) == 1 and is_line(path_geom[0]):
+        line = path_geom[0]
+        # We assume line starts at origin and points towards the second point
+        start_coord = (float_s3(line.start.real), float_s3(line.start.imag))
+        end_coord = (float_s3(line.end.real), float_s3(line.end.imag))
+        return apply_transform(start_coord, transform), apply_transform(end_coord, transform)
+    else:
+        raise RuntimeError()
 
 
 def populate_with_map_annotations(ltmc, map_name, points, poses, regions, doors):
@@ -91,6 +129,25 @@ def populate_with_map_annotations(ltmc, map_name, points, poses, regions, doors)
     return point_count, pose_count, region_count, door_count
 
 
+def populate_doors(doors, map):
+    door_count = 0
+    point_count = 0
+    for name, ((x_0, y_0), (x_1, y_1)), approach_points in doors:
+        door = map.add_door(name, x_0, y_0, x_1, y_1)
+        if not door.is_valid():
+            warn("Failed to add door '{}': ({},{}) ({},{})".format(name, x_0, y_0, x_0, y_1))
+            continue
+        for i, (x, y) in enumerate(approach_points):
+            point = map.add_point("{}_approach{}".format(name, i), x, y)
+            if not point.is_valid():
+                warn("Failed to add approach {} for door '{}': {}, {}".format(i, name, x, y))
+                continue
+            point.add_attribute("approach_to", door)
+            point_count += 1
+        door_count += 1
+    return door_count, point_count
+
+
 def load_map_from_yaml(path_to_yaml, use_pixel_coords=False):
     """
     Attempt to load map annotations given a path to a YAML file. Emits warnings for issues with particular annotations.
@@ -129,7 +186,7 @@ def load_map_from_yaml(path_to_yaml, use_pixel_coords=False):
     svg_problems = check_svg_valid(svg_data, map_metadata)
     for prob in svg_problems:
         warn(prob)
-    annotations = load_svg(svg_data)
+    annotations = process_svg(svg_data)
     if not use_pixel_coords:
         annotations = transform_to_map_coords(map_metadata, *annotations)
     return map_metadata, annotations
@@ -173,7 +230,14 @@ def check_svg_valid(svg_data, map_info):
     return problems
 
 
-def load_svg(svg_data):
+def process_svg(svg_data):
+    """
+    Extracts annotations from SVG data. See documentation for an explanation of
+    how annotations are expected to be structured.
+
+    :param svg_data: string containing SVG data
+    :return: extracted point, pose, region and door annotations
+    """
     tree = ElTree.fromstring(svg_data)
     parent_map = {c: p for p in tree.iter() for c in p}
     point_annotations = tree.findall(".//{}[@class='circle_annotation']".format(circle_el))
@@ -204,7 +268,7 @@ def load_svg(svg_data):
     extra_points = []
 
     for group in point_groups:
-        name = get_text_from_group(group).text
+        name = get_text_from_group(group)
         transform = get_transform(group)
 
         circle = group.find(".//{}".format(circle_el))
@@ -224,18 +288,10 @@ def load_svg(svg_data):
     return points, poses, regions, doors
 
 
-def get_text_from_group(group):
-    # Inkscape tucks things in a tspan. Check that first
-    text = group.find(".//{}".format(tspan_el))
-    if text is None:
-        text = group.find(".//{}".format(text_el))
-    return text
-
-
 def process_door_groups(door_groups):
     doors = []
     for door_group in door_groups:
-        name = get_text_from_group(door_group).text
+        name = get_text_from_group(door_group)
         transform = get_transform(door_group)
         approach_points = []
         circles = door_group.findall(circle_el)
@@ -255,46 +311,6 @@ def process_door_groups(door_groups):
         doors.append((name, door_line, approach_points))
 
     return doors
-
-
-def get_point(element):
-    return float_s3(element.attrib["cx"]), float_s3(element.attrib["cy"])
-
-
-def np_point_to_tuple(np_point):
-    return tuple(np_point[:2, 0])
-
-
-def apply_transform(point, transform):
-    if isinstance(point, tuple):
-        point = np.array([[point[0], point[1], 1]])
-    return np_point_to_tuple(transform @ point.transpose())
-
-
-def get_transform(element):
-    if "transform" in element.attrib:
-        return parse_transform(element.attrib["transform"])
-    else:
-        return np.identity(3)
-
-
-def is_line(path_part):
-    from svgpathtools import Line
-    return isinstance(path_part, Line)
-
-
-def extract_line_from_path(path, transform=None):
-    from svgpathtools import parse_path
-    path_geom = parse_path(path.attrib["d"])
-
-    if len(path_geom) == 1 and is_line(path_geom[0]):
-        line = path_geom[0]
-        # We assume line starts at origin and points towards the second point
-        start_coord = (float_s3(line.start.real), float_s3(line.start.imag))
-        end_coord = (float_s3(line.end.real), float_s3(line.end.imag))
-        return apply_transform(start_coord, transform), apply_transform(end_coord, transform)
-    else:
-        raise RuntimeError()
 
 
 def process_paths(path_groups):
@@ -319,7 +335,7 @@ def process_paths(path_groups):
         if text is None:
             warn("No text label found for path group: {}".format(group))
             continue
-        name = text.text
+        name = text
 
         transform = get_transform(group)
 
@@ -334,7 +350,6 @@ def process_paths(path_groups):
         # SVG paths are specified in a rich language of segment commands:
         # https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
         # We'll use a new dependency to extract what we can
-        from svgpathtools import parse_path
         path_geom = parse_path(path.attrib["d"])
         # If they're all lines, let's assume it's closed and use it as a region
         if all(map(is_line, path_geom)):
