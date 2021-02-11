@@ -2,74 +2,83 @@
 <svg width="375" height="223" version="1.1" viewBox="0 0 375 223" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
  <defs>
-  <marker id="TriangleOutM-3" overflow="visible" orient="auto">
-   <path transform="scale(.4)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
-  </marker>
   <marker id="TriangleOutM-3-3" overflow="visible" orient="auto">
    <path transform="scale(.4)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
   </marker>
+  <marker id="TriangleOutM-3-3-2" overflow="visible" orient="auto">
+   <path transform="scale(.4)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
  </defs>
- <image width="375" height="223" preserveAspectRatio="none" xlink:href="map.pgm"/>
- <g fill="#f10000" stroke="#f10000">
-  <text class="text_annotation" x="266.91507" y="155.37265" font-size="15px">point</text>
+ <image width="375" height="223" preserveAspectRatio="none"
+        xlink:href="file:///home/nick/workspaces/homeskies/src/knowledge_representation/test/resources/map/map.pgm"/>
+ <g>
+  <text class="text_annotation" x="256.30594" y="153.12103" fill="#f10000" font-size="8px" stroke="#f10000">
+   <tspan fill="#000000" font-size="8px" stroke="none">point</tspan>
+  </text>
   <circle class="circle_annotation" cx="266" cy="140" r="3.5"/>
  </g>
- <g fill="#f10000" stroke="#f10000">
-  <text class="text_annotation" x="0.94244844" y="25.384041" font-size="15px">tlcorner</text>
+ <g>
+  <text class="text_annotation" x="4.8136582" y="10.607345" fill="#000000" font-size="8px">tlcorner</text>
   <circle class="circle_annotation" cx=".945" cy=".383" r="3.5"/>
  </g>
  <g transform="translate(-148 -8.23)" fill="#f10000" stroke="#f10000">
-  <text class="text_annotation" x="155.01216" y="228.70796" font-size="15px">blcorner</text>
-  <circle class="circle_annotation" cx="149" cy="233" r="3.5"/>
+  <text class="text_annotation" x="154.54933" y="226.30865" font-size="8px">
+   <tspan fill="#000000" stroke="none">blcorner</tspan>
+  </text>
+  <circle class="circle_annotation" cx="149" cy="233" r="3.5" fill="#000" stroke="none"/>
  </g>
- <g transform="translate(198 -180)" fill="#f10000" stroke="#f10000">
-  <text class="text_annotation" x="120.8093" y="205.73917" font-size="15px">trcorner</text>
+ <g transform="translate(198 -180)">
+  <text class="text_annotation" x="140.90181" y="190.78355" fill="#000000" font-size="8px">trcorner</text>
   <circle class="circle_annotation" cx="178" cy="183" r="3.5"/>
  </g>
- <g>
-  <path d="m58.1 168 29.2-4.89" fill="none" marker-end="url(#TriangleOutM-3)" stroke="#000" stroke-miterlimit="1"
-        stroke-width="2"/>
+ <g transform="matrix(1 0 0 .000488 5.56 171)">
   <text x="60.797371" y="182.20187" fill="#000000" font-family="sans-serif" font-size="16px" style="line-height:1.25"
         xml:space="preserve"><tspan x="60.797371" y="182.20187" font-size="16px">inkpose</tspan></text>
  </g>
  <g>
-  <path d="m146 1.11h90.3l-6.36 73.2-83.9 8.18z" fill="none" stroke="#ffd700"/>
-  <text x="237.41788" y="13.937788" fill="#998100" font-family="sans-serif" font-size="16px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="237.41788" y="13.937788" fill="#998100" font-size="16px">living room</tspan></text>
+  <path d="m141 1.25 79 0.601-0.41 80.3-79.2-0.0433z" fill="none" stroke="#00f"/>
+  <text x="220.91058" y="9.0966434" fill="#0000ff" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="220.91058" y="9.0966434" fill="#0000ff" font-size="8px">living room</tspan></text>
  </g>
  <g transform="translate(-5.71 -51.9)">
-  <circle cx="224" cy="176" r="3" fill="#f00" fill-rule="evenodd" stroke-width=".286"/>
-  <text x="227.8734" y="179.73586" fill="#000000" font-family="sans-serif" font-size="16px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="227.8734" y="179.73586" font-size="16px">origin</tspan></text>
+  <g>
+   <circle cx="224" cy="176" r="3" fill="#1a1a1a" fill-rule="evenodd" stroke-width=".286"/>
+   <text x="227.02972" y="174.07503" fill="#000000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+         xml:space="preserve"><tspan x="227.02972" y="174.07503" font-size="8px">origin</tspan></text>
+  </g>
  </g>
  <g>
-  <path d="m285 52.2 88.7-2.02 3.14 106-12.8-0.407 0.902 51.7-38.1 0.983-0.185 13.5-34.7 0.539z" fill="none"
-        stroke="#ff8c00" stroke-width="1px"/>
-  <text x="292.49796" y="48.186642" fill="#000000" font-family="sans-serif" font-size="16px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="292.49796" y="48.186642" font-size="16px">kitchen</tspan></text>
+  <path d="m281 49.9 92.3 0.296 0.715 106-10.4-0.615 0.902 51.7-42.6 0.114 0.111 12.4-38.2 0.614z" fill="none"
+        stroke="#f00" stroke-width="1px"/>
+  <text x="283.18225" y="46.213421" fill="#ff0000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="283.18225" y="46.213421" fill="#ff0000" font-size="8px">kitchen</tspan></text>
  </g>
- <g>
-  <path d="m113 112-22.7 0.599" fill="none" marker-end="url(#TriangleOutM-3-3)" stroke="#000" stroke-miterlimit="1"
-        stroke-width="2"/>
-  <text x="117.36356" y="128.08711" fill="#000000" font-family="sans-serif" font-size="16px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="117.36356" y="128.08711" font-size="16px">inkpose2</tspan></text>
+ <g transform="translate(0 5.55)">
+  <path d="m113 112-10.3-6.71" fill="none" marker-end="url(#TriangleOutM-3-3)" stroke="#000" stroke-miterlimit="1"/>
+  <text x="113.24533" y="120.78751" fill="#000000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="113.24533" y="120.78751" font-size="8px">pose2</tspan></text>
  </g>
- <g transform="translate(153 58.5)" fill="#f10000" stroke="#f10000">
-  <text class="text_annotation" x="154.45126" y="162.87703" font-size="15px">brcorner</text>
+ <g transform="translate(153 58.5)">
+  <text class="text_annotation" x="182.93913" y="163.38864" fill="#000000" font-size="8px">brcorner</text>
   <circle class="circle_annotation" cx="222" cy="166" r="3.5"/>
  </g>
  <g>
   <circle cx="13.1" cy="137" r="1.73" fill="#f00" fill-rule="evenodd"/>
   <circle cx="12.6" cy="145" r="1.73" fill="#f00" fill-rule="evenodd"/>
-  <text x="19.937864" y="152.68159" fill="#000000" font-family="sans-serif" font-size="10.7px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="19.937864" y="152.68159" font-size="10.7px">inkdoor1</tspan></text>
+  <text x="19.937864" y="152.68159" fill="#000000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="19.937864" y="152.68159" font-size="8px">door1</tspan></text>
   <path d="m2.11 141h20" fill="none" stroke="#000" stroke-width="1px"/>
  </g>
  <g transform="translate(79.4 -166)">
   <circle cx="104" cy="177" r="1.73" fill="#f00" fill-rule="evenodd"/>
   <circle cx="91.6" cy="177" r="1.73" fill="#f00" fill-rule="evenodd"/>
-  <text x="102.12562" y="187.62563" fill="#000000" font-family="sans-serif" font-size="10.7px" style="line-height:1.25"
-        xml:space="preserve"><tspan x="102.12562" y="187.62563" font-size="10.7px">inkdoor2</tspan></text>
+  <text x="109.77447" y="184.18695" fill="#000000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="109.77447" y="184.18695" font-size="8px">door2</tspan></text>
   <path d="m98.6 167 0.0822 19.6" fill="none" stroke="#000" stroke-width="1px"/>
+ </g>
+ <g transform="translate(-27.4 57.7)">
+  <path d="m113 112 10.7-8.02" fill="none" marker-end="url(#TriangleOutM-3-3-2)" stroke="#000" stroke-miterlimit="1"/>
+  <text x="113.24533" y="120.78751" fill="#000000" font-family="sans-serif" font-size="8px" style="line-height:1.25"
+        xml:space="preserve"><tspan x="113.24533" y="120.78751" font-size="8px">pose</tspan></text>
  </g>
 </svg>
