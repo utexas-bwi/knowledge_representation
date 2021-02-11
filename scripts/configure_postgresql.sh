@@ -9,10 +9,14 @@ else
   ENTERED_PASSWORD="$1"
 fi
 
-if [[ -z "$ENTERED_PASSWORD" ]]; then
-  echo "Enter a password that will be used for local connections to the database. This will be stored in plaintext in the current user account."
-  read -sp 'Password: ' ENTERED_PASSWORD
-fi
+while true; do
+  if [[ -z "${ENTERED_PASSWORD// }" ]]; then
+    echo "Enter a password that will be used for local connections to the database. The password should not be empty or only whitespaces. This will be stored in plaintext in the current user account."
+    read -sp 'Password: ' ENTERED_PASSWORD
+  else
+    break
+  fi
+done
 
 schema_path="$(rospack find knowledge_representation)/sql/schema_postgresql.sql"
 
