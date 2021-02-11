@@ -6,6 +6,8 @@ import re
 from warnings import warn
 
 from knowledge_representation.map_image_utils import point_to_map_coords
+from svgpathtools.parser import parse_transform
+import numpy as np
 
 svg_el = "{http://www.w3.org/2000/svg}svg"
 image_el = "{http://www.w3.org/2000/svg}image"
@@ -16,9 +18,6 @@ poly_el = "{http://www.w3.org/2000/svg}polygon"
 path_el = "{http://www.w3.org/2000/svg}path"
 group_el = "{http://www.w3.org/2000/svg}g"
 tspan_el = "{http://www.w3.org/2000/svg}tspan"
-
-float_pattern = r"[-+]?\d*\.\d+|[-+]?\d+"
-translation_pattern = r"^translate\(({})\,({})\)".format(float_pattern, float_pattern)
 
 
 def float_s3(string):
@@ -206,19 +205,16 @@ def load_svg(svg_data):
 
     for group in point_groups:
         name = get_text_from_group(group).text
-        try:
-            translate = get_group_transform(group)
-        except RuntimeError:
-            warn("Can't process point group '{}' because it has a complex transform: {}".format(name, group.attrib[
-                "transform"]))
-            continue
+        transform = get_transform(group)
+
         circle = group.find(".//{}".format(circle_el))
 
         if "class" in circle.attrib:
             # This was probably created by the annotation tool. Already processed above
             continue
 
-        pixel_coord = float_s3(circle.attrib["cx"]) + translate[0], float_s3(circle.attrib["cy"]) + translate[1]
+        circle_center = get_point(circle)
+        pixel_coord = apply_transform(circle_center, transform)
         extra_points.append((name, pixel_coord))
 
     points += extra_points
@@ -226,17 +222,6 @@ def load_svg(svg_data):
     regions += path_regions
 
     return points, poses, regions, doors
-
-
-def get_group_transform(group):
-    if "transform" not in group.attrib:
-        return 0, 0
-    # We can only handle basic translate transforms right now
-    translate_match = re.match(translation_pattern, group.attrib["transform"])
-    if not translate_match:
-        raise RuntimeError("Can't process because it has a complex transform: {}".format(group))
-    else:
-        return float_s3(translate_match.group(1)), float_s3(translate_match.group(2))
 
 
 def get_text_from_group(group):
@@ -251,13 +236,7 @@ def process_door_groups(door_groups):
     doors = []
     for door_group in door_groups:
         name = get_text_from_group(door_group).text
-        translate = (0, 0)
-        try:
-            translate = get_group_transform(door_group)
-        except RuntimeError:
-            warn("Can't process door group '{}' because it has a complex transform: {}".format(name, door_group.attrib[
-                "transform"]))
-            continue
+        transform = get_transform(door_group)
         approach_points = []
         circles = door_group.findall(circle_el)
         if len(circles) != 2:
@@ -266,10 +245,10 @@ def process_door_groups(door_groups):
                 circles)))
             continue
         for circle in circles:
-            approach_points.append(
-                (float_s3(circle.attrib["cx"]) + translate[0], float_s3(circle.attrib["cy"]) + translate[1]))
+            center = get_point(circle)
+            approach_points.append(apply_transform(center, transform))
         try:
-            door_line = extract_line_from_path(door_group.find(path_el), translate)
+            door_line = extract_line_from_path(door_group.find(path_el), transform)
         except RuntimeError:
             warn("Couldn't extract line from door group '{}'".format(name))
             continue
@@ -278,23 +257,42 @@ def process_door_groups(door_groups):
     return doors
 
 
+def get_point(element):
+    return float_s3(element.attrib["cx"]), float_s3(element.attrib["cy"])
+
+
+def np_point_to_tuple(np_point):
+    return tuple(np_point[:2, 0])
+
+
+def apply_transform(point, transform):
+    if isinstance(point, tuple):
+        point = np.array([[point[0], point[1], 1]])
+    return np_point_to_tuple(transform @ point.transpose())
+
+
+def get_transform(element):
+    if "transform" in element.attrib:
+        return parse_transform(element.attrib["transform"])
+    else:
+        return np.identity(3)
+
+
 def is_line(path_part):
     from svgpathtools import Line
     return isinstance(path_part, Line)
 
 
-def extract_line_from_path(path, translate=None):
+def extract_line_from_path(path, transform=None):
     from svgpathtools import parse_path
     path_geom = parse_path(path.attrib["d"])
-    if translate is None:
-        translate = (0, 0)
 
     if len(path_geom) == 1 and is_line(path_geom[0]):
         line = path_geom[0]
         # We assume line starts at origin and points towards the second point
-        start_coord = (float_s3(line.start.real) + translate[0], float_s3(line.start.imag) + translate[1])
-        end_coord = (float_s3(line.end.real) + translate[0], float_s3(line.end.imag) + translate[1])
-        return start_coord, end_coord
+        start_coord = (float_s3(line.start.real), float_s3(line.start.imag))
+        end_coord = (float_s3(line.end.real), float_s3(line.end.imag))
+        return apply_transform(start_coord, transform), apply_transform(end_coord, transform)
     else:
         raise RuntimeError()
 
@@ -323,17 +321,11 @@ def process_paths(path_groups):
             continue
         name = text.text
 
-        translate = 0, 0
-        try:
-            translate = get_group_transform(group)
-        except RuntimeError:
-            warn("Can't process path group '{}' because it has a complex transform: {}".format(name, group.attrib[
-                "transform"]))
-            continue
+        transform = get_transform(group)
 
         # Single line segment path => pose
         try:
-            pose = extract_line_from_path(path, translate)
+            pose = extract_line_from_path(path, transform)
             poses.append(tuple([name] + list(pose)))
             continue
         except RuntimeError:
@@ -351,7 +343,7 @@ def process_paths(path_groups):
             # Each line segment starts where the previous ended, so we can drop the end points
             points = map(lambda l: l[0], lines)
             points = map(lambda p: (float_s3(p[0]), float_s3(p[1])), points)
-            points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), points)
+            points = map(lambda p: apply_transform(p, transform), points)
             regions.append((name, points))
         else:
             warn("Encountered path that couldn't be parsed {}".format(name))
@@ -362,14 +354,7 @@ def process_point_annotations(point_names, point_annotations, point_groups):
     points = []
     for point, text, parent in zip(point_annotations, point_names, point_groups):
         name = text.text
-        translate = 0, 0
-        try:
-            translate = get_group_transform(parent)
-        except RuntimeError:
-            warn("Can't process point '{}' because it has a complex transform: {}".format(name,
-                                                                                          parent.attrib["transform"]))
-            continue
-        pixel_coord = float_s3(point.attrib["cx"]) + translate[0], float_s3(point.attrib["cy"]) + translate[1]
+        pixel_coord = apply_transform(get_point(point), get_transform(parent))
         points.append((name, pixel_coord))
     return points
 
@@ -378,16 +363,10 @@ def process_pose_annotations(pose_names, pose_annotations, pose_groups):
     poses = []
     for pose, text, parent in zip(pose_annotations, pose_names, pose_groups):
         name = text.text
-        translate = 0, 0
-        try:
-            translate = get_group_transform(parent)
-        except RuntimeError:
-            warn("Can't process pose '{}' because it has a complex transform: {}".format(name,
-                                                                                         parent.attrib["transform"]))
-            continue
-        start_cord = float_s3(pose.attrib["x1"]) + translate[0], float_s3(pose.attrib["y1"]) + translate[1]
-        stop_cord = float_s3(pose.attrib["x2"]) + translate[0], float_s3(pose.attrib["y2"]) + translate[1]
-        poses.append((name, start_cord, stop_cord))
+        transform = get_transform(parent)
+        start_cord = float_s3(pose.attrib["x1"]), float_s3(pose.attrib["y1"])
+        stop_cord = float_s3(pose.attrib["x2"]), float_s3(pose.attrib["y2"])
+        poses.append((name, apply_transform(start_cord, transform), apply_transform(stop_cord, transform)))
     return poses
 
 
@@ -395,17 +374,11 @@ def process_region_annotations(region_names, region_annotations, region_groups):
     regions = []
     for region, text, parent in zip(region_annotations, region_names, region_groups):
         name = text.text
-        translate = 0, 0
-        try:
-            translate = get_group_transform(parent)
-        except RuntimeError:
-            warn("Can't process region '{}' because it has a complex transform: {}".format(name,
-                                                                                           parent.attrib["transform"]))
-            continue
+        transform = get_transform(parent)
         points_strs = region.attrib["points"].split()
         poly_points = [(float_s3(x_str), float_s3(y_str)) for x_str, y_str in map(lambda x: x.split(","), points_strs)]
         # Apply any translation
-        poly_points = map(lambda p: (p[0] + translate[0], p[1] + translate[1]), poly_points)
+        poly_points = map(lambda p: apply_transform(p, transform), poly_points)
         regions.append((name, poly_points))
     return regions
 
