@@ -45,7 +45,7 @@ def apply_transform(point, transform):
     if isinstance(point, tuple):
         # Convert to homogeneous form
         point = np.array([[point[0], point[1], 1]])
-    return np_point_to_tuple(transform @ point.transpose())
+    return np_point_to_tuple(np.matmul(transform, point.transpose()))
 
 
 def get_transform(element):
