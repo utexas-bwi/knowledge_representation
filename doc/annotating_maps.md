@@ -37,4 +37,6 @@ By default, Inkscape includes a large amount of metadata in the SVGs it outputs.
 
 ## Example
 
-An [example annotated map](https://github.com/utexas-bwi/knowledge_representation/blob/master/test/resources/map/map_inkscape.svg) is included in the repo.
+An [example annotated map](https://github.com/utexas-bwi/knowledge_representation/blob/master/test/resources/map/map_inkscape.svg) is included in the repo:
+
+![map](https://raw.githubusercontent.com/utexas-bwi/knowledge_representation/master/test/resources/map/map_inkscape.svg)
