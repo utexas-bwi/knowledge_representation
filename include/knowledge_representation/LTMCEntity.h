@@ -52,11 +52,11 @@ public:
   };
 
   /**
- * @brief Set a int-valued attribute on this entity
- * @param attribute_name
- * @param int_val
- * @return whether the modification succeeded
- */
+   * @brief Set a int-valued attribute on this entity
+   * @param attribute_name
+   * @param int_val
+   * @return whether the modification succeeded
+   */
   bool addAttribute(const std::string& attribute_name, int int_val)
   {
     return ltmc.get().addAttribute(*this, attribute_name, static_cast<int>(int_val));
@@ -74,11 +74,11 @@ public:
   };
 
   /**
- * @brief Set a string-valued attribute on this entity
- * @param attribute_name
- * @param string_val
- * @return whether the modification succeeded
- */
+   * @brief Set a string-valued attribute on this entity
+   * @param attribute_name
+   * @param string_val
+   * @return whether the modification succeeded
+   */
   bool addAttribute(const std::string& attribute_name, const std::string& string_val)
   {
     return ltmc.get().addAttribute(*this, attribute_name, string_val);

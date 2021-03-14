@@ -10,22 +10,22 @@
 #include <utility>
 #include <vector>
 
-using ::mysqlx::SessionSettings;
 using ::mysqlx::Error;
-using ::mysqlx::Session;
+using ::mysqlx::Result;
+using ::mysqlx::Row;
+using ::mysqlx::RowResult;
 using ::mysqlx::Schema;
+using ::mysqlx::Session;
+using ::mysqlx::SessionSettings;
 using ::mysqlx::Table;
 using ::mysqlx::TableInsert;
-using ::mysqlx::RowResult;
-using ::mysqlx::Row;
 using ::mysqlx::TableRemove;
-using ::mysqlx::Result;
-using std::vector;
-using std::string;
-using std::cout;
 using std::cerr;
+using std::cout;
 using std::endl;
+using std::string;
 using std::unique_ptr;
+using std::vector;
 
 namespace knowledge_rep
 {

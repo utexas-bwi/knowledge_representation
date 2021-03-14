@@ -72,22 +72,22 @@ struct EntityAttribute
   }
 
   /**
-* @brief Extracts an ID (uint) from the value
-*
-* Throws an exception if the value isn't of the expected type.
-* @return
-*/
+   * @brief Extracts an ID (uint) from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   uint getIdValue() const
   {
     return boost::get<uint>(value);
   }
 
   /**
- * @brief Extracts a bool from the value
- *
- * Throws an exception if the value isn't of the expected type.
- * @return
- */
+   * @brief Extracts a bool from the value
+   *
+   * Throws an exception if the value isn't of the expected type.
+   * @return
+   */
   bool getBoolValue() const
   {
     return boost::get<bool>(value);

@@ -96,9 +96,9 @@ public:
     return this->ltmc.get().getConceptsRecursive(*this);
   }
   /**
- * @brief whether instance descends from the concept recursively
- * @return
- */
+   * @brief whether instance descends from the concept recursively
+   * @return
+   */
   bool hasConcept(const LTMCConcept<LTMCImpl>& concept) const
   {
     auto concepts = this->getConcepts();
