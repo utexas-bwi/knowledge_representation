@@ -12,6 +12,9 @@
 
 namespace knowledge_rep
 {
+template <typename LockLTMCImpl>
+class LTMCLock;
+
 template <typename EntLTMCImpl>
 class LTMCEntity;
 
@@ -58,6 +61,7 @@ class LongTermMemoryConduitInterface
   using LTMC = LongTermMemoryConduitInterface;
 
 public:
+  using LockImpl = LTMCLock<Impl>;
   using EntityImpl = LTMCEntity<Impl>;
   using InstanceImpl = LTMCInstance<Impl>;
   using ConceptImpl = LTMCConcept<Impl>;
@@ -67,6 +71,7 @@ public:
   using RegionImpl = LTMCRegion<Impl>;
   using DoorImpl = LTMCDoor<Impl>;
 
+  friend LockImpl;
   friend EntityImpl;
   friend InstanceImpl;
   friend ConceptImpl;
@@ -80,6 +85,11 @@ public:
   LongTermMemoryConduitInterface(LongTermMemoryConduitInterface&& that) noexcept = default;
 
   LongTermMemoryConduitInterface& operator=(LongTermMemoryConduitInterface&& that) noexcept = default;
+
+  LockImpl lock()
+  {
+    return static_cast<Impl*>(this)->lock();
+  }
 
   bool addAttribute(const std::string& name, const AttributeValueType type)
   {
@@ -403,6 +413,17 @@ public:
   }
 
 protected:
+  // LOCK BACKERS
+  bool acquireLock(LockImpl& lock)
+  {
+    return static_cast<Impl*>(this)->acquireLock(lock);
+  }
+
+  bool releaseLock(LockImpl& lock)
+  {
+    return static_cast<Impl*>(this)->releaseLock(lock);
+  }
+
   // ENTITY BACKERS
   // These provide implementation for entity level operations. We want these to be centralized
   // with the rest of the database access code for ease of reimplementation in another backend,

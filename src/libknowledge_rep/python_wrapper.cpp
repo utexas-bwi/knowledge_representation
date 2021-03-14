@@ -7,6 +7,7 @@
 #include <boost/type_traits/integral_constant.hpp>
 #include <boost/utility/in_place_factory.hpp>
 #include <knowledge_representation/LongTermMemoryConduitInterface.h>
+#include <knowledge_representation/LTMCLock.h>
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
@@ -29,6 +30,7 @@ using knowledge_rep::Door;
 using knowledge_rep::Entity;
 using knowledge_rep::EntityAttribute;
 using knowledge_rep::Instance;
+using knowledge_rep::Lock;
 using knowledge_rep::LongTermMemoryConduit;
 using knowledge_rep::Map;
 using knowledge_rep::Point;
@@ -278,6 +280,76 @@ std::ostream& operator<<(std::ostream& strm, const EntityAttribute& m)
   return strm << "EntityAttribute(" << m.entity_id << " " << m.attribute_name << " " << m.value << ")";
 }
 
+/// @brief Python Context Manager for the Lock class.
+class lock_context_manager
+{
+public:
+  lock_context_manager(LongTermMemoryConduit& ltmc) : ltmc(ltmc)
+  {
+  }
+  lock_context_manager(Lock& lock) : ltmc(lock.ltmc.get())
+  {
+  }
+
+  // context manager protocol
+public:
+  // Use a static member function to get a handle to the self Python
+  // object.
+  static boost::python::object enter(boost::python::object self)
+  {
+    namespace python = boost::python;
+    lock_context_manager& myself = python::extract<lock_context_manager&>(self);
+
+    // Construct the RAII object.
+    myself.impl_ = std::make_shared<Lock>(myself.ltmc, true);
+
+    // Return this object, allowing caller to invoke other
+    // methods exposed on this class.
+    return self;
+  }
+
+  bool exit(boost::python::object type, boost::python::object value, boost::python::object traceback)
+  {
+    // Destroy the RAII object.
+    impl_.reset();
+    return false;  // Do not suppress the exception.
+  }
+
+  static bool acquire(boost::python::object self)
+  {
+    namespace python = boost::python;
+    lock_context_manager& myself = python::extract<lock_context_manager&>(self);
+    if (!myself.impl_)
+    {
+      myself.impl_ = std::make_shared<Lock>(myself.ltmc, true);
+      return true;
+    }
+    return false;
+  }
+
+  static bool release(boost::python::object self)
+  {
+    namespace python = boost::python;
+    lock_context_manager& myself = python::extract<lock_context_manager&>(self);
+    if (myself.impl_)
+    {
+      // Destroy the RAII object.
+      myself.impl_.reset();
+      return true;
+    }
+    return false;
+  }
+
+private:
+  std::shared_ptr<Lock> impl_;
+  std::reference_wrapper<knowledge_rep::LongTermMemoryConduitInterface<LongTermMemoryConduit>> ltmc;
+};
+
+lock_context_manager get_lock_context_manager(LongTermMemoryConduit& ltmc)
+{
+  return lock_context_manager(ltmc);
+}
+
 BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 {
   typedef LongTermMemoryConduit LTMC;
@@ -316,6 +388,12 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .value("str", AttributeValueType::Str)
       .value("bool", AttributeValueType::Bool)
       .value("float", AttributeValueType::Float);
+
+  class_<lock_context_manager>("Lock", boost::python::no_init)
+      .def("__enter__", &lock_context_manager::enter)
+      .def("__exit__", &lock_context_manager::exit)
+      .def("acquire", &lock_context_manager::acquire)
+      .def("release", &lock_context_manager::release);
 
   class_<Entity>("Entity", init<uint, LTMC&>())
       .def_readonly("entity_id", &Entity::entity_id)
@@ -429,6 +507,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
 
   class_<LongTermMemoryConduit, boost::noncopyable>("LongTermMemoryConduit",
                                                     init<const string&, python::optional<const string&>>())
+      .def("lock", get_lock_context_manager)
       .def<Entity (LTMC::*)()>("add_entity", &LTMC::addEntity)
       .def("add_new_attribute", &LTMC::addNewAttribute)
       .def("entity_exists", &LTMC::entityExists)

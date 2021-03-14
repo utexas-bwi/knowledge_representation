@@ -15,6 +15,7 @@ static const char* TABLE_NAMES[] = { "entity_attributes_id", "entity_attributes_
 /// A concrete implementation of the LongTermMemoryConduitInterface, leveraging libpqxx and PostgreSQL.
 class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<LongTermMemoryConduitPostgreSQL>
 {
+  using LockImpl = LTMCLock<LongTermMemoryConduitPostgreSQL>;
   using EntityImpl = LTMCEntity<LongTermMemoryConduitPostgreSQL>;
   using InstanceImpl = LTMCInstance<LongTermMemoryConduitPostgreSQL>;
   using ConceptImpl = LTMCConcept<LongTermMemoryConduitPostgreSQL>;
@@ -27,6 +28,7 @@ class LongTermMemoryConduitPostgreSQL : public LongTermMemoryConduitInterface<Lo
   // Give wrapper classes access to our protected members. Database access
   // is isolated into this class, so any wrapper methods that need to talk to the database
   // are implemented as protected members here.
+  friend LockImpl;
   friend EntityImpl;
   friend InstanceImpl;
   friend ConceptImpl;
@@ -48,6 +50,8 @@ public:
   LongTermMemoryConduitPostgreSQL(LongTermMemoryConduitPostgreSQL&& that) = default;
 
   ~LongTermMemoryConduitPostgreSQL();
+
+  LockImpl lock();
 
   // Move assignment
   LongTermMemoryConduitPostgreSQL& operator=(LongTermMemoryConduitPostgreSQL&& that) noexcept = default;
@@ -177,6 +181,11 @@ public:
   bool makeConcept(uint id, std::string name);
 
 protected:
+  // LOCK BACKERS
+  bool acquireLock(LockImpl& lock);
+
+  bool releaseLock(LockImpl& lock);
+
   // ENTITY BACKERS
   bool deleteEntity(EntityImpl& entity);
 
@@ -271,6 +280,7 @@ private:
 // These definitions are provided so that API consumers don't need to fill
 // their code with references to the specific implementation. Any implementation
 // of the LTMCInterface should provide these same typedefs to be compatible.
+typedef LTMCLock<LongTermMemoryConduitPostgreSQL> Lock;
 typedef LTMCEntity<LongTermMemoryConduitPostgreSQL> Entity;
 typedef LTMCConcept<LongTermMemoryConduitPostgreSQL> Concept;
 typedef LTMCInstance<LongTermMemoryConduitPostgreSQL> Instance;
