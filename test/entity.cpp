@@ -4,6 +4,7 @@
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>
+#include <knowledge_representation/LTMCLock.h>
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
@@ -29,7 +30,7 @@ using std::vector;
 class EntityTest : public ::testing::Test
 {
 protected:
-  EntityTest() : ltmc(knowledge_rep::getDefaultLTMC()), entity(ltmc.addEntity())
+  EntityTest() : ltmc(knowledge_rep::getDefaultLTMC()), lock(ltmc.lock()), entity(ltmc.addEntity())
   {
   }
 
@@ -41,6 +42,7 @@ protected:
   }
 
   knowledge_rep::LongTermMemoryConduit ltmc;
+  knowledge_rep::Lock lock;
   knowledge_rep::Entity entity;
 };
 

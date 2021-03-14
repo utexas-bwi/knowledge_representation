@@ -4,6 +4,7 @@
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>
+#include <knowledge_representation/LTMCLock.h>
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
@@ -31,6 +32,7 @@ class ConceptInstanceTest : public ::testing::Test
 protected:
   ConceptInstanceTest()
     : ltmc(knowledge_rep::getDefaultLTMC())
+    , lock(ltmc.lock())
     , entity(ltmc.addEntity())
     , concept(ltmc.getConcept("test concept"))
     , parent_concept(ltmc.getConcept("parent concept"))
@@ -49,6 +51,7 @@ protected:
   }
 
   knowledge_rep::LongTermMemoryConduit ltmc;
+  knowledge_rep::Lock lock;
   knowledge_rep::Entity entity;
   knowledge_rep::Concept concept;
   knowledge_rep::Concept parent_concept;

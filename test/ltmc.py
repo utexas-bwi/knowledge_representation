@@ -10,12 +10,15 @@ ltmc = knowledge_representation.get_default_ltmc()
 class TestLTMC(unittest.TestCase):
 
     def setUp(self):
+        self.lock = ltmc.lock()
+        self.lock.acquire()
         ltmc.delete_all_attributes()
         ltmc.delete_all_entities()
 
     def tearDown(self):
         ltmc.delete_all_attributes()
         ltmc.delete_all_entities()
+        self.lock.release()
 
     def test_add_entity_works(self):
         coke = ltmc.add_entity()

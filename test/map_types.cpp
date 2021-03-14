@@ -4,6 +4,7 @@
 #include <knowledge_representation/convenience.h>
 
 #include <gtest/gtest.h>
+#include <knowledge_representation/LTMCLock.h>
 #include <knowledge_representation/LTMCEntity.h>
 #include <knowledge_representation/LTMCConcept.h>
 #include <knowledge_representation/LTMCInstance.h>
@@ -33,6 +34,7 @@ class MapTest : public ::testing::Test
 protected:
   MapTest()
     : ltmc(knowledge_rep::getDefaultLTMC())
+    , lock(ltmc.lock())
     , map(ltmc.getMap("test map"))
     , point(map.addPoint("test point", 0, 1))
     , pose(map.addPose("test pose", 0, 1, 0))
@@ -49,6 +51,7 @@ protected:
   }
 
   knowledge_rep::LongTermMemoryConduit ltmc;
+  knowledge_rep::Lock lock;
   knowledge_rep::Map map;
   knowledge_rep::Point point;
   knowledge_rep::Pose pose;
