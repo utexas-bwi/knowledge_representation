@@ -1,5 +1,5 @@
-from knowledge_representation._libknowledge_rep_wrapper_cpp import LongTermMemoryConduit, PyAttributeList, Lock, Entity, \
-    EntityAttribute, Concept, Instance, AttributeValueType, Map, Point, Pose, Region, Door
+from knowledge_representation._libknowledge_rep_wrapper_cpp import LongTermMemoryConduit, PyAttributeList, \
+    Lock, Entity, EntityAttribute, Concept, Instance, AttributeValueType, Map, Point, Pose, Region, Door
 
 
 def get_default_ltmc():
