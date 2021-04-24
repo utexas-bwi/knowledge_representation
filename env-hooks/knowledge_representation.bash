@@ -4,13 +4,13 @@ ikr() {
   rosrun knowledge_representation ikr $@
 }
 
-kr-show() {
+krshow() {
     rosrun knowledge_representation show_me $@
 }
 # Is there a default MySQL knowledge_base set up?
 if mysql -u root -u root -h localhost knowledge_base  -e "SELECT * FROM entities LIMIT 1" &> /dev/null; then
 MYSQL_FOUND="true"
-kr-save() {
+krsave() {
     stamp=$(date +%Y-%m-%d_%H-%M-%S)
     if [[ $# == 1 ]]; then
        stamp=$1
@@ -25,11 +25,11 @@ if  psql -U postgres --host=localhost -d knowledge_base -c "SELECT * FROM entiti
 if [[ "$MYSQL_FOUND" == "true" ]]; then
   echo "Both MySQL and Postgres knowledge bases are initialized. Shell helpers will use Postgres"
 fi
-kr-query() {
+krquery() {
     psql -U postgres --host=localhost -d knowledge_base -c "$1"
 }
 
-kr-save() {
+krsave() {
     stamp=$(date +%Y-%m-%d_%H-%M-%S)
     if [[ $# == 1 ]]; then
        stamp=$1
