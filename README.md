@@ -77,9 +77,9 @@ The `populate_` scripts are geared towards use in a launch files. For instance, 
 Once the package is built in a catkin workspace, you can access additional shell shortcuts:
 
 * `ikr`: run the iPython environment
-* `kr-query`: run a SQL query against the knowledgebase
-* `kr-save`: save a SQL-dump of the current knowledgebase
-* `kr-show`: run `show_me`
+* `krquery`: run a SQL query against the knowledgebase
+* `krsave`: save a SQL-dump of the current knowledgebase
+* `krshow`: run `show_me`
 
 
 ## Development
