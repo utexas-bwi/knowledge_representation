@@ -69,8 +69,6 @@ LongTermMemoryConduitPostgreSQL::LongTermMemoryConduitPostgreSQL(const string& d
   conn = std::unique_ptr<pqxx::connection>(new pqxx::connection("postgresql://postgres@" + hostname + "/" + db_name));
 }
 
-LongTermMemoryConduitPostgreSQL::~LongTermMemoryConduitPostgreSQL() = default;
-
 Lock LongTermMemoryConduitPostgreSQL::lock()
 {
   return { *this, true };

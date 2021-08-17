@@ -46,10 +46,14 @@ public:
 
   explicit LongTermMemoryConduitPostgreSQL(const std::string& db_name, const std::string& hostname = "localhost");
 
+  explicit LongTermMemoryConduitPostgreSQL(std::unique_ptr<pqxx::connection>&& conn) : conn(std::move(conn))
+  {
+  }
+
   // Move constructor
   LongTermMemoryConduitPostgreSQL(LongTermMemoryConduitPostgreSQL&& that) = default;
 
-  ~LongTermMemoryConduitPostgreSQL();
+  ~LongTermMemoryConduitPostgreSQL() = default;
 
   LockImpl lock();
 
