@@ -2,6 +2,14 @@
 Changelog for package knowledge_representation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.4 (2021-08-16)
+------------------
+* Add lock capability to LTMC
+* Improve support for SVG transforms in map annotations
+* Document map annotation process
+* Improve example annotated map
+* Contributors: Nick Walker, Yuqian Jiang, Tobias Fischer
+
 0.9.3 (2021-02-06)
 ------------------
 * Add door type
