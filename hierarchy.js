@@ -15,5 +15,6 @@ var hierarchy =
         [ "LTMCPose< LTMCImpl >", "classknowledge__rep_1_1LTMCPose.html", null ],
         [ "LTMCRegion< LTMCImpl >", "classknowledge__rep_1_1LTMCRegion.html", null ]
       ] ]
-    ] ]
+    ] ],
+    [ "LTMCLock< LTMCImpl >", "classknowledge__rep_1_1LTMCLock.html", null ]
 ];

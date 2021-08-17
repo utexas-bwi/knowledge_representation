@@ -2,6 +2,7 @@ var annotated_dup =
 [
     [ "knowledge_rep", null, [
       [ "EntityAttribute", "structknowledge__rep_1_1EntityAttribute.html", "structknowledge__rep_1_1EntityAttribute" ],
+      [ "LTMCLock", "classknowledge__rep_1_1LTMCLock.html", "classknowledge__rep_1_1LTMCLock" ],
       [ "LTMCEntity", "classknowledge__rep_1_1LTMCEntity.html", "classknowledge__rep_1_1LTMCEntity" ],
       [ "LTMCConcept", "classknowledge__rep_1_1LTMCConcept.html", "classknowledge__rep_1_1LTMCConcept" ],
       [ "LTMCInstance", "classknowledge__rep_1_1LTMCInstance.html", "classknowledge__rep_1_1LTMCInstance" ],

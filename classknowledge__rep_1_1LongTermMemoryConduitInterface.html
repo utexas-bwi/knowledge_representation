@@ -182,7 +182,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>This class implements the Curiously Recurring Template Pattern (CRTP) to enable multiple database backend implementations while maintaining a static interface with no runtime dispatch. You can read more about this pattern here: <a href="https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/">https://www.fluentcpp.com/2017/05/12/curiously-recurring-template-pattern/</a></p>
 <p>As a result, the implementation of the knowledgebase is completely defined in subclasses of this interface, one for each backend implementation. These are expected to behave essentially identically, so documentation is presented here. </p>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00056">56</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00059">59</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab0b9122902556b829d57dc37619c5e60"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0b9122902556b829d57dc37619c5e60">&#9670;&nbsp;</a></span>entityExists()</h2>
@@ -217,7 +217,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether there is an entity with the given ID </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00125">125</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00135">135</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -247,9 +247,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Inserts a new entity into the database. </p>
 <dl class="section return"><dt>Returns</dt><dd>the new entity </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00134">134</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00144">144</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00144">LongTermMemoryConduitInterface&lt; Impl &gt;::addEntity()</a>, and <a class="el" href="LTMCConcept_8h_source.html#l00072">LTMCConcept&lt; LTMCImpl &gt;::createInstance()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00154">LongTermMemoryConduitInterface&lt; Impl &gt;::addEntity()</a>, and <a class="el" href="LTMCConcept_8h_source.html#l00072">LTMCConcept&lt; LTMCImpl &gt;::createInstance()</a>.</p>
 
 </div>
 </div>
@@ -286,9 +286,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether an entity with the given ID was created </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00144">144</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00154">154</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00134">LongTermMemoryConduitInterface&lt; Impl &gt;::addEntity()</a>.</p>
+<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00144">LongTermMemoryConduitInterface&lt; Impl &gt;::addEntity()</a>.</p>
 
 </div>
 </div>
@@ -325,7 +325,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the entity requested, or an empty optional if no such entity exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00154">154</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00164">164</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="LTMCConcept_8h_source.html#l00137">LTMCConcept&lt; LTMCImpl &gt;::removeReferences()</a>.</p>
 
@@ -364,7 +364,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the instance requested, or an empty optional if no such instance exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00164">164</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00174">174</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -401,9 +401,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the concept requested, or an empty optional if no such concept exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00174">174</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00184">184</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00369">LongTermMemoryConduitInterface&lt; Impl &gt;::getConcept()</a>, and <a class="el" href="LTMCConcept_8h_source.html#l00165">LTMCConcept&lt; LTMCImpl &gt;::isValid()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00379">LongTermMemoryConduitInterface&lt; Impl &gt;::getConcept()</a>, and <a class="el" href="LTMCConcept_8h_source.html#l00165">LTMCConcept&lt; LTMCImpl &gt;::isValid()</a>.</p>
 
 </div>
 </div>
@@ -440,9 +440,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the map requested, or an empty optional if no such map exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00184">184</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00194">194</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00379">LongTermMemoryConduitInterface&lt; Impl &gt;::getMap()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00389">LongTermMemoryConduitInterface&lt; Impl &gt;::getMap()</a>.</p>
 
 </div>
 </div>
@@ -479,7 +479,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the point requested, or an empty optional if no such point exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00194">194</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00204">204</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -516,7 +516,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the pose requested, or an empty optional if no such pose exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00204">204</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00214">214</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -553,7 +553,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the region requested, or an empty optional if no such region exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00216">216</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00226">226</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -590,7 +590,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the door requested, or an empty optional if no such door exists </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00228">228</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00238">238</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -627,7 +627,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether the attribute was removed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00242">242</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00252">252</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +664,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00253">253</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00263">263</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -694,7 +694,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Get all current valid entities. </p>
 <dl class="section return"><dt>Returns</dt><dd>list of all entities </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00264">264</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00274">274</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -724,7 +724,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Queries for all entities that are marked as concepts. </p>
 <dl class="section return"><dt>Returns</dt><dd>list of all concepts in the LTMC </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00273">273</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00283">283</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -754,7 +754,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Queries for all entities that are identified as instances. </p>
 <dl class="section return"><dt>Returns</dt><dd>all instances in the LTMC </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00282">282</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00292">292</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -784,7 +784,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Queries for all entities that are identified as maps. </p>
 <p>No operations are provided for bulk retrieving geometry as they can easily be accomplished on a map by map basis. </p><dl class="section return"><dt>Returns</dt><dd>all maps in the LTMC </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00294">294</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00304">304</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -814,7 +814,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Retrieves all attributes. </p>
 <dl class="section return"><dt>Returns</dt><dd>a list of tuples. First element of each is the attribute name, the second is the allowed type for the attribute </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00304">304</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00314">314</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -844,7 +844,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Retrieves all entity attributes. </p>
 <dl class="section return"><dt>Returns</dt><dd>a list of entity attributes </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00313">313</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00323">323</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -874,7 +874,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Remove all entities and all entity attributes except for the robot. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of entities removed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00322">322</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00332">332</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -904,7 +904,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Remove all attributes except those defined in the schema as defaults. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of attributes removed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00331">331</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00341">341</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -941,9 +941,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the existing concept, or the newly created one. In either case, the concept will at least have the name passed as a parameter. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00369">369</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00379">379</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00174">LongTermMemoryConduitInterface&lt; Impl &gt;::getConcept()</a>.</p>
+<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00184">LongTermMemoryConduitInterface&lt; Impl &gt;::getConcept()</a>.</p>
 
 </div>
 </div>
@@ -980,9 +980,9 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00379">379</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00389">389</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
-<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00184">LongTermMemoryConduitInterface&lt; Impl &gt;::getMap()</a>.</p>
+<p class="reference">References <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00194">LongTermMemoryConduitInterface&lt; Impl &gt;::getMap()</a>.</p>
 
 </div>
 </div>
@@ -1012,7 +1012,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <p>Gets the instance representing the robot. </p>
 <dl class="section return"><dt>Returns</dt><dd>an instance representing the robot the LTMC is running on </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00388">388</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00398">398</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 </div>
 </div>
@@ -1060,7 +1060,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether the entity with the given ID was turned into a concept with the given name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00400">400</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="LongTermMemoryConduitInterface_8h_source.html#l00410">410</a> of file <a class="el" href="LongTermMemoryConduitInterface_8h_source.html">LongTermMemoryConduitInterface.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="LTMCConcept_8h_source.html#l00137">LTMCConcept&lt; LTMCImpl &gt;::removeReferences()</a>.</p>
 
@@ -1075,7 +1075,7 @@ class knowledge_rep::LongTermMemoryConduitInterface&lt; Impl &gt;</h3>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>knowledge_rep</b></li><li class="navelem"><a class="el" href="classknowledge__rep_1_1LongTermMemoryConduitInterface.html">LongTermMemoryConduitInterface</a></li>
-    <li class="footer">Generated on Sun Feb 7 2021 01:03:49 for knowledge_representation by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+    <li class="footer">Generated on Tue Aug 17 2021 05:45:32 for knowledge_representation by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
 </body>

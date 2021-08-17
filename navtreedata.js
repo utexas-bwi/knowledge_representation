@@ -25,17 +25,28 @@
 var NAVTREE =
 [
   [ "knowledge_representation", "index.html", [
-    [ "Representation", "index.html#autotoc_md1", [
-      [ "Map Types", "index.html#autotoc_md2", null ]
+    [ "Representation", "index.html#autotoc_md10", [
+      [ "Map Types", "index.html#autotoc_md11", null ]
     ] ],
-    [ "Installation", "index.html#autotoc_md3", null ],
-    [ "Usage", "index.html#autotoc_md4", [
-      [ "C++/Python API", "index.html#autotoc_md5", null ],
-      [ "Loading Knowledge", "index.html#autotoc_md6", null ],
-      [ "Exploration", "index.html#autotoc_md7", null ],
-      [ "As Part of a ROS System", "index.html#autotoc_md8", null ]
+    [ "Installation", "index.html#autotoc_md12", null ],
+    [ "Usage", "index.html#autotoc_md13", [
+      [ "C++/Python API", "index.html#autotoc_md14", null ],
+      [ "Loading Knowledge", "index.html#autotoc_md15", null ],
+      [ "Exploration", "index.html#autotoc_md16", null ],
+      [ "As Part of a ROS System", "index.html#autotoc_md17", null ]
     ] ],
-    [ "Development", "index.html#autotoc_md9", null ],
+    [ "Development", "index.html#autotoc_md18", null ],
+    [ "Annotating Maps with Inkscape", "md_doc_annotating_maps.html", [
+      [ "Creating the annotation file", "md_doc_annotating_maps.html#autotoc_md1", null ],
+      [ "Annotating", "md_doc_annotating_maps.html#autotoc_md2", [
+        [ "Points", "md_doc_annotating_maps.html#autotoc_md3", null ],
+        [ "Poses", "md_doc_annotating_maps.html#autotoc_md4", null ],
+        [ "Regions", "md_doc_annotating_maps.html#autotoc_md5", null ],
+        [ "Doors", "md_doc_annotating_maps.html#autotoc_md6", null ]
+      ] ],
+      [ "Saving the annotation file", "md_doc_annotating_maps.html#autotoc_md7", null ],
+      [ "Example", "md_doc_annotating_maps.html#autotoc_md8", null ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
