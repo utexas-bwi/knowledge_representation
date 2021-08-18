@@ -2,6 +2,11 @@
 Changelog for package knowledge_representation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.5 (2021-08-17)
+------------------
+* Modify build configuration to support Debian Buster
+* Contributors: Nick Walker
+
 0.9.4 (2021-08-16)
 ------------------
 * Add lock capability to LTMC
