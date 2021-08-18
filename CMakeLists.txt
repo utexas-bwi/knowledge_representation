@@ -8,10 +8,11 @@ find_package(catkin REQUIRED COMPONENTS
         )
 find_package(Boost REQUIRED COMPONENTS python)
 
-if($ENV{ROS_DISTRO} STREQUAL "kinetic" OR $ENV{ROS_DISTRO} STREQUAL "melodic")
-find_package(PythonLibs 2.7 REQUIRED)
+if("$ENV{ROS_DISTRO}" STREQUAL "kinetic" OR "$ENV{ROS_DISTRO}" STREQUAL "melodic")
+    find_package(PythonLibs 2.7 REQUIRED)
 else()
-    find_package(PythonLibs 3.8 REQUIRED)
+    # Relaxed to support Debian Buster
+    find_package(PythonLibs 3.7 REQUIRED)
 endif()
 
 find_package(PostgreSQL)
@@ -27,6 +28,8 @@ if(POSTGRESQL_FOUND OR libpqxx)
     set(DB_LIBS ${PostgreSQL_LIBRARIES} ${libpqxx})
     set(EXPORTED_DEPEND "")
     add_definitions(-DUSE_POSTGRESQL)
+    # Needed to support older version of libpqxx that ships in Debian Buster
+    add_definitions(-DPQXX_HIDE_EXP_OPTIONAL)
 elseif(mysqlcppconn)
     message(WARNING "PostgreSQL not found. Using incomplete MySQL implementation.")
     set(MYSQL_AVAILABLE true)
@@ -159,3 +162,4 @@ if(DOXYGEN_FOUND)
             COMMAND ${CMAKE_COMMAND} -E echo_append "API Documentation built in ${CMAKE_CURRENT_SOURCE_DIR}/doc"
             VERBATIM)
 endif()
+
