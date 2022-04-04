@@ -21,7 +21,7 @@ fi
 
 # NOTE: If you have both mysql and postgres installed, the Postgres helpers take precedence
 # Is there a default Postgres knowledge_base set up?
-if  psql -U postgres --host=localhost -d knowledge_base -c "SELECT * FROM entities LIMIT 1" &> /dev/null; then
+if  psql -w -U postgres --host=localhost -d knowledge_base -c "SELECT * FROM entities LIMIT 1" &> /dev/null; then
 if [[ "$MYSQL_FOUND" == "true" ]]; then
   echo "Both MySQL and Postgres knowledge bases are initialized. Shell helpers will use Postgres"
 fi
