@@ -2,6 +2,11 @@
 Changelog for package knowledge_representation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.6 (2022-04-27)
+------------------
+* Silence a password prompt that would appear due to env-hooks testing Postgres
+* Contributors: Nick Walker
+
 0.9.5 (2021-08-17)
 ------------------
 * Modify build configuration to support Debian Buster
