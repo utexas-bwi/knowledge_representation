@@ -7,7 +7,7 @@ var searchData=
   ['addnewattribute_4',['addNewAttribute',['../classknowledge__rep_1_1LongTermMemoryConduitPostgreSQL.html#ae5c8c3f14f8d39e208ee00a57cbcd7e7',1,'knowledge_rep::LongTermMemoryConduitPostgreSQL']]],
   ['addpoint_5',['addPoint',['../classknowledge__rep_1_1LTMCMap.html#abbab2ffabd13ade8cb5f21975899214f',1,'knowledge_rep::LTMCMap']]],
   ['addpose_6',['addPose',['../classknowledge__rep_1_1LTMCMap.html#a9743e1a242c082207cf9e2e5f40bd481',1,'knowledge_rep::LTMCMap::addPose(const std::string &amp;name, double x, double y, double theta)'],['../classknowledge__rep_1_1LTMCMap.html#abaa1154a0c6c44d798c81c63c6cfacee',1,'knowledge_rep::LTMCMap::addPose(const std::string &amp;name, double x1, double y1, double x2, double y2)']]],
-  ['addregion_7',['addRegion',['../classknowledge__rep_1_1LTMCMap.html#a203d1302394080494c7ab9b8bf425bc7',1,'knowledge_rep::LTMCMap']]],
+  ['addregion_7',['addRegion',['../classknowledge__rep_1_1LTMCMap.html#a6d761b72ea611014d763ce90eb6d208f',1,'knowledge_rep::LTMCMap']]],
   ['annotating_20maps_20with_20inkscape_8',['Annotating Maps with Inkscape',['../md_doc_annotating_maps.html',1,'']]],
   ['attributeexists_9',['attributeExists',['../classknowledge__rep_1_1LongTermMemoryConduitInterface.html#a81247d832b3cbdc08363ca793ef1c244',1,'knowledge_rep::LongTermMemoryConduitInterface']]]
 ];

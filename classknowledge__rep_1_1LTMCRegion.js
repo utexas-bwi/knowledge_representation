@@ -1,8 +1,8 @@
 var classknowledge__rep_1_1LTMCRegion =
 [
     [ "Point2D", "classknowledge__rep_1_1LTMCRegion.html#aad65da52de150f979dc6d2232e9a9824", null ],
-    [ "getContainedPoints", "classknowledge__rep_1_1LTMCRegion.html#a844832c3ca2179b2a84bacd1746d3ac1", null ],
-    [ "getContainedPoses", "classknowledge__rep_1_1LTMCRegion.html#a3d4e506aac23d89d6b8ec6ecd64c33d3", null ],
+    [ "getContainedPoints", "classknowledge__rep_1_1LTMCRegion.html#a164c1d03dac57fe1006fa7bc6288d740", null ],
+    [ "getContainedPoses", "classknowledge__rep_1_1LTMCRegion.html#a487b3276008bf1c3f059734f43fe8c0c", null ],
     [ "isPointContained", "classknowledge__rep_1_1LTMCRegion.html#adc60c9b4cd6640075171dc9942cd5525", null ],
     [ "isPointContained", "classknowledge__rep_1_1LTMCRegion.html#a21dfbaa64d26d07cdbf38f110f1b0ec6", null ],
     [ "isPointContained", "classknowledge__rep_1_1LTMCRegion.html#adc77331317d180dd947135cf5ae466b3", null ],
