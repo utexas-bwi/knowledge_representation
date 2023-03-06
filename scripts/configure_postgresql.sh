@@ -37,6 +37,6 @@ if [[ -n "$CI" ]]; then
   # The previous invocations won't work because the postgres user doesn't
   # have permission to access the working directory
   POSTGRES_HOME=/var/lib/postgresql
-  cp $schema_path $POSTGRES_HOME
+  sudo -u postgres cp $schema_path $POSTGRES_HOME
   sudo -u postgres psql -d knowledge_base -f $POSTGRES_HOME/schema_postgresql.sql
 fi
