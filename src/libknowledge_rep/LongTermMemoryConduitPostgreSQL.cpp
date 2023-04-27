@@ -333,7 +333,7 @@ boost::optional<Instance> LongTermMemoryConduitPostgreSQL::getInstance(uint enti
     pqxx::work txn{ *conn, "getInstance" };
     auto result = txn.parameterized("SELECT count(*) FROM instance_of WHERE entity_id = $1")(entity_id).exec();
     txn.commit();
-    if (result[0]["count"].as<uint>() == 1)
+    if (result[0]["count"].as<uint>() >= 1)
     {
       return Instance{ entity_id, *this };
     }
