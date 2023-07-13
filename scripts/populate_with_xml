@@ -12,27 +12,31 @@ def room_parser(ltmc, root):
 
     placement_con = ltmc.get_concept("placement")
     beacon_con = ltmc.get_concept("beacon")
-    placement_con.add_attribute_entity("is_a", location_con)
-    beacon_con.add_attribute_entity("is_a", location_con)
+    placement_con.add_attribute("is_a", location_con)
+    beacon_con.add_attribute("is_a", location_con)
 
     for room_node in root:
         room_name = room_node.attrib['name']
-        specifc_room_concept = ltmc.get_concept(room_name)
-        specifc_room_concept.add_attribute_entity("is_a", room_con)
+        # specifc_room_concept = ltmc.get_concept(room_name)
+        # specifc_room_concept.add_attribute("is_a", room_con)
 
-        room = ltmc.get_instance_named(room_name)
-        room.make_instance_of(specifc_room_concept)
+        room = room_con.get_instance_named(room_name)
+        if not room:
+            room = room_con.create_instance(room_name)
+        # room.make_instance_of(specifc_room_concept)
 
         for location_node in room_node:
             if location_node.tag != "location":
                 continue
             location_name = location_node.attrib["name"]
 
-            specific_location_concept = ltmc.get_concept(location_name)
-            specific_location_concept.add_attribute_entity("is_a", location_con)
-            location = ltmc.get_instance_named(location_name)
-            location.make_instance_of(specific_location_concept)
-            location.add_attribute_entity("is_in", room)
+            # specific_location_concept = ltmc.get_concept(location_name)
+            # specific_location_concept.add_attribute("is_a", location_con)
+            location = location_con.get_instance_named(location_name)
+            if not location:
+                location = location_con.create_instance(location_name)
+            # location.make_instance_of(specific_location_concept)
+            location.add_attribute("is_in", room)
             if location_node.attrib.get("isPlacement"):
                 location.make_instance_of(placement_con)
             if location_node.attrib.get("isBeacon"):
@@ -54,7 +58,7 @@ def category_parser(ltmc, root):
                 continue
             object_name = obj.attrib["name"]
             object_con_id = ltmc.get_concept(object_name)
-            object_con_id.add_attribute_entity("is_a", category_concept)
+            object_con_id.add_attribute("is_a", category_concept)
 
 
 type_to_parser = {"rooms": room_parser,
