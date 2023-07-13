@@ -43,10 +43,11 @@ def category_parser(ltmc, root):
     object_con = ltmc.get_concept("object")
     for category in root:
         category_concept = ltmc.get_concept(category.attrib['name'])
-        default_location_concept = ltmc.get_concept(category.attrib['defaultLocation'])
+        location_con = ltmc.get_concept("location")
+        default_location = location_con.get_instance_named(category.attrib['defaultLocation'])
         # TODO: dump room information to continue searching if object is not at default location
-        category_concept.add_attribute_entity("is_a", object_con)
-        category_concept.add_attribute_entity("default_location", default_location_concept)
+        category_concept.add_attribute("is_a", object_con)
+        category_concept.add_attribute("default_location", default_location)
 
         for obj in category:
             if obj.tag != "object":

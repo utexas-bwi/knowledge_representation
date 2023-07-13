@@ -91,7 +91,7 @@ def about_id(entity_id, show_attributes=True):
     typed = id_to_typed_wrapper(ltmc, entity_id)
     if isinstance(typed, Concept):
         # Delegate
-        about_concept(typed.name, show_attributes)
+        about_concept(typed.get_name(), show_attributes)
         return
 
     if isinstance(typed, Instance):
