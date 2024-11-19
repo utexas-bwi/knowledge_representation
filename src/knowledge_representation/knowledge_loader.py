@@ -16,8 +16,10 @@ def add_attributes(entity, attributes):
     for attribute in attributes:
         name = attribute["name"]
         value = attribute["value"]
-        entity.add_attribute(name, value)
-
+        if isinstance(value, bool):
+            entity.add_bool_attribute(name, value)
+        else:
+            entity.add_attribute(name, value)
 
 def add_instance_of(ltmc, instance, concept_names):
     for concept_name in concept_names:

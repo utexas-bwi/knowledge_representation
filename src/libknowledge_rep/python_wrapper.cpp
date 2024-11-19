@@ -400,7 +400,7 @@ BOOST_PYTHON_MODULE(_libknowledge_rep_wrapper_cpp)
       .def<bool (Entity::*)(const string&, const Entity&)>("add_attribute", &Entity::addAttribute)
       .def<bool (Entity::*)(const string&, uint)>("add_attribute", &Entity::addAttribute)
       .def<bool (Entity::*)(const string&, int)>("add_attribute", &Entity::addAttribute)
-      .def<bool (Entity::*)(const string&, bool)>("add_attribute", &Entity::addAttribute)
+      .def<bool (Entity::*)(const string&, bool)>("add_bool_attribute", &Entity::addAttribute)
       .def<bool (Entity::*)(const string&, double)>("add_attribute", &Entity::addAttribute)
 
       .def<bool (Entity::*)(const string&, const string&)>("add_attribute", &Entity::addAttribute)

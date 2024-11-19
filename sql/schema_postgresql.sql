@@ -466,6 +466,8 @@ VALUES ('answer_to', 'id'),
 ('has', 'id'),
 ('height', 'float'),
 ('width', 'float'),
+('depth', 'float'),
+('weight', 'float'),
 ('is_a', 'id'),
 ('is_connected', 'id'),
 ('is_delivered', 'id'),
@@ -493,6 +495,8 @@ INSERT INTO concepts
 VALUES (2, 'robot'), (3, 'map'), (4, 'point'), (5, 'pose'), (6, 'region'), (7, 'door');
 INSERT INTO instance_of
 VALUES (1, 'robot');
+INSERT INTO entity_attributes_str
+VALUES (1, 'name', 'robot');
 
 /* Manual inserts will mess up the SERIAL sequence, so we have to manually bump the number*/
 SELECT setval('entities_entity_id_seq', max(entity_id))

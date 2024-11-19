@@ -115,7 +115,7 @@ def about_id(entity_id, show_attributes=True):
         print("Belongs to map {} (\'{}\')".format(parent_map.entity_id, parent_map.get_name()))
 
     if inside_regions:
-        print("Inside regions {}".format(str(list(map(Region.name, inside_regions)))))
+        print("Inside regions {}".format(str(list(map(Region.get_name, inside_regions)))))
 
     if not typed:
         print("Entity {} does not exist".format(entity_id))

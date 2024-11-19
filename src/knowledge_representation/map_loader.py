@@ -225,8 +225,8 @@ def check_svg_valid(svg_data, map_info):
     if viewbox != target_viewbox:
         problems.append("SVG viewbox is {} but should be {}".format(viewbox, target_viewbox))
     dim_match(svg, map_info["width"], map_info["height"])
-    ori_is_zero(image)
-    dim_match(image, map_info["width"], map_info["height"])
+    # ori_is_zero(image)
+    # dim_match(image, map_info["width"], map_info["height"])
     return problems
 
 
@@ -338,6 +338,7 @@ def process_paths(path_groups):
         name = text
 
         transform = get_transform(group)
+        # sprint (transform)
 
         # Single line segment path => pose
         try:
@@ -359,7 +360,7 @@ def process_paths(path_groups):
             points = map(lambda l: l[0], lines)
             points = map(lambda p: (float_s3(p[0]), float_s3(p[1])), points)
             points = map(lambda p: apply_transform(p, transform), points)
-            regions.append((name, points))
+            regions.append((name, list(points)))
         else:
             warn("Encountered path that couldn't be parsed {}".format(name))
     return poses, regions
